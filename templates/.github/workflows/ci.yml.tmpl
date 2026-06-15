@@ -30,7 +30,7 @@ jobs:
       - name: Check out the source tree
         uses: actions/checkout@v6
 
-{{CI_SETUP_STEPS}}
+      {{CI_SETUP_STEPS}}
 
       - name: Build
         shell: bash
@@ -59,4 +59,4 @@ jobs:
   # ---------------------------------------------------------------------------
   # Language-specific quality jobs (format, lint, sanitizers, …) from the profile.
   # ---------------------------------------------------------------------------
-{{CI_EXTRA_JOBS}}
+  {{CI_EXTRA_JOBS}}

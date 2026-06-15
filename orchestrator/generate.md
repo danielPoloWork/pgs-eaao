@@ -5,6 +5,13 @@ The ordered, executable procedure the architect follows to turn a confirmed
 on the previous one. Prerequisite: a `project.yaml` the maintainer has confirmed
 (see [`interview.md`](interview.md) → *Closing the interview*).
 
+> **Rendering: deterministic or manual.** Steps 3–6 substitute placeholders. You may run the
+> bundled renderer — `python tools/render.py orchestrator/project.yaml --out <output-dir>` —
+> which performs exactly the substitutions below, expands the source tree, honors the
+> `capabilities.*` gates, leaves GitHub Actions `${{ … }}` untouched, and **aborts on any
+> unresolved placeholder**. Or do a careful manual pass. Either way, Step 7 verifies the
+> result, so the two paths converge.
+
 ---
 
 ## Step 0 — Preconditions

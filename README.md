@@ -31,9 +31,10 @@ already contains, on day zero:
 | **Agent contract** | `AGENTS.md` (source of truth) + `CLAUDE.md` / `GEMINI.md` adapters, with the senior-architect persona bound to *the new project's* language and stack |
 | **Source layout** | Maven-style cross-language tree `src/{main,test,bench}/<lang>/<group-path>/<project>/` — identical shape, language-appropriate segment |
 | **Git governance** | Conventional Commits, branch-naming, one-item-per-PR / one-PR-at-a-time, the agent-vs-human boundary, the PR template + PR-metadata policy |
-| **Documentation system** | ADRs (+ template + index), design-patterns catalogue (+ the 8-category taxonomy), spec template, session journal, bug ledger, changelog split, releases |
+| **GitHub automation** | CI **and** release workflows, Dependabot, CODEOWNERS, issue forms (+ Discussions/Security routing), a label set, and a one-time `gh` setup script for branch protection / rulesets / Pages / Discussions |
+| **Documentation system** | ADRs (+ template + index), design-patterns catalogue (+ the 8-category taxonomy), spec template, session journal, bug ledger, changelog split, releases, and opt-in **i18n** (translated docs + freshness gate) |
 | **Quality gates** | A GitHub Actions CI workflow wired to the chosen toolchain's build / test / format / lint / sanitize commands, plus the agent-runnable `consistency_lint.py` |
-| **Versioning** | SemVer policy, milestone-driven release flow, post-release maintenance / hotfix / deprecation / security protocol |
+| **Versioning & comms** | SemVer policy, milestone-driven release flow, post-release maintenance / hotfix / deprecation / security protocol, and an opt-in **announcements** workflow (X / Discord / LinkedIn / Reddit …) |
 
 Every one of these is a **parameterized copy** of what already works in
 `pbr-cpp-memory-pool`. The genericity lives in three places:
@@ -99,6 +100,7 @@ enterprise-architecture-agentic-orchestrator/
 │   ├── generate.md                 # the step-by-step generation playbook
 │   ├── placeholders.md             # the canonical placeholder dictionary
 │   ├── project.yaml.template       # the project manifest skeleton (copied to project.yaml per run)
+│   ├── examples/reference.yaml     # a worked manifest (pbr-cpp-memory-pool) + render-smoke fixture
 │   └── profiles/                   # per-language toolchain knowledge
 │       ├── _schema.md              # what every profile must define
 │       ├── cpp.yaml  python.yaml  typescript.yaml
@@ -106,14 +108,37 @@ enterprise-architecture-agentic-orchestrator/
 ├── templates/                      # the parameterized enterprise scaffolding
 │   ├── AGENTS.md.tmpl  CLAUDE.md.tmpl  GEMINI.md.tmpl
 │   ├── README.md.tmpl  ROADMAP.md.tmpl  CHANGELOG.md.tmpl  SECURITY.md.tmpl  gitignore.tmpl
-│   ├── docs/**                     # adr/, patterns/, specs/, bugs/, journal/, workflow/
-│   ├── .github/**                  # PULL_REQUEST_TEMPLATE.md, workflows/ci.yml
+│   ├── docs/**                     # adr/, patterns/, specs/, bugs/, journal/, workflow/, i18n/
+│   ├── .github/**                  # PR + issue templates, CODEOWNERS, dependabot, ci.yml + release.yml
 │   └── tools/consistency_lint.py   # generic, profile-driven congruence checker
+├── tools/                          # the factory's own tooling
+│   ├── eaao_lint.py                # self-lint: placeholder/profile/playbook integrity
+│   └── render.py                   # deterministic Mustache-subset renderer
+├── .github/workflows/ci.yml        # EAAO's own CI (self-lint + render smoke)
 └── docs/
     └── adr/                        # ADRs governing EAAO's own design decisions
 ```
 
 ---
+
+## Getting started
+
+### Requirements
+
+EAAO is a markdown/YAML factory — there is nothing to compile and almost nothing to install:
+
+- **git** and an **AI coding agent** that reads `AGENTS.md` — Claude Code, Gemini Antigravity,
+  or ChatGPT Codex (this is how you normally drive it);
+- **Python 3.12+** — only for the bundled tooling (`tools/render.py`, `tools/eaao_lint.py`, and
+  the generated `consistency_lint.py`). All three are standard-library only; no `pip install`.
+
+### Get it
+
+```bash
+git clone https://github.com/danielPoloWork/pgs-eaao.git
+cd pgs-eaao
+python tools/eaao_lint.py        # optional: confirm the factory is internally congruent
+```
 
 ## Quickstart
 
@@ -134,6 +159,32 @@ You drive EAAO conversationally through the Enterprise Project Architect agent.
 
 You never have to remember the enterprise rules — they are encoded in the templates and
 enforced by the lint. You only make the project-specific decisions.
+
+### Or render it yourself (deterministic, no agent)
+
+The interview's only output is a filled manifest, so you can also fill it by hand and render
+without an agent:
+
+```bash
+cp orchestrator/project.yaml.template orchestrator/project.yaml
+# edit orchestrator/project.yaml — see orchestrator/examples/reference.yaml for a worked one
+python tools/render.py orchestrator/project.yaml --out ../my-new-repo
+cd ../my-new-repo && python tools/consistency_lint.py     # the generated repo's own gate
+```
+
+`render.py` performs exactly the substitutions in
+[`orchestrator/placeholders.md`](orchestrator/placeholders.md), honors the `capabilities.*`
+gates, leaves GitHub Actions `${{ … }}` untouched, and **aborts on any unresolved
+placeholder**. The render-smoke job in EAAO's own CI runs this against
+[`orchestrator/examples/reference.yaml`](orchestrator/examples/reference.yaml) on every push.
+
+### The tools
+
+| Tool | What it does |
+|---|---|
+| [`tools/render.py`](tools/render.py) | Renders a manifest into a repository (deterministic). |
+| [`tools/eaao_lint.py`](tools/eaao_lint.py) | Self-lint: placeholder integrity, profile completeness, playbook references. |
+| `templates/tools/consistency_lint.py` | Shipped *into* each generated repo; enforces its cross-artifact congruence. |
 
 ---
 

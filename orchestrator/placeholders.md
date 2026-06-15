@@ -38,6 +38,7 @@ Mustache-compatible renderer (or a careful manual pass) works.
 | `{{ASSIGNEE}}` | PR assignee handle (often `@me`) | `@me` |
 | `{{PROJECT_KIND}}` | `library` \| `service` \| `cli` \| `app` | `library` |
 | `{{START_VERSION}}` | Numeric start version (drives the README badge + day-zero version constant) | `0.0.0` |
+| `{{VERSION_START}}` | Versioning-start descriptor (prose) | `pre-1.0 milestone-driven` |
 
 ## 3. Source tree & language
 
@@ -66,6 +67,7 @@ Mustache-compatible renderer (or a careful manual pass) works.
 | `{{LINTER}}` | Static analyzer / linter | `clang-tidy` |
 | `{{SANITIZERS}}` | Runtime checkers, comma list | `ASan, UBSan, TSan, Valgrind` |
 | `{{COVERAGE_TOOL}}` | Coverage tool | `llvm-cov / gcovr` |
+| `{{COVERAGE_TARGET}}` | Minimum line-coverage percentage gate | `80` |
 | `{{DOC_TOOL}}` | API docs generator | `Doxygen` |
 | `{{CMD_BUILD}}` | Canonical build command | `cmake --build --preset debug` |
 | `{{CMD_TEST}}` | Canonical test command | `ctest --preset debug` |
@@ -98,6 +100,7 @@ Mustache-compatible renderer (or a careful manual pass) works.
 | `{{SPEC_OBJECTIVE}}` | Objective & business context paragraph | — |
 | `{{#EACH_FUNCTIONAL_REQ}}` | Functional requirements list | — |
 | `{{#EACH_NONFUNCTIONAL_REQ}}` | Non-functional requirements list | — |
+| `{{SPEC_ARCHITECTURE}}` | Logical architecture prose + diagram block | — |
 | `{{#EACH_PUBLIC_API}}` | Public surface entries | — |
 | `{{SPEC_VERIFICATION}}` | Verification & test strategy paragraph | — |
 | `{{#EACH_MILESTONE1_ITEM}}` | Milestone-1 roadmap items | — |
@@ -114,6 +117,7 @@ These gate optional sections so a CLI does not ship a library's packaging docs, 
 | `{{#IF_I18N}}` | Docs are translated (enables the i18n manifest + lint check) |
 | `{{#IF_PACKAGING}}` | The project is distributed via a package registry |
 | `{{#IF_SERVICE}}` | The project is a long-running service (enables deploy/runtime ADR seeds) |
+| `{{#IF_SERIES}}` | The project belongs to an umbrella series (`PROJECT_SERIES` non-empty) |
 | `{{#IF_ANNOUNCE}}` | Releases/news are announced on social channels (enables the announcements workflow) |
 | `{{#IF_PKG_ECOSYSTEM}}` | The language has a Dependabot ecosystem (derived: `PKG_ECOSYSTEM` non-empty) |
 

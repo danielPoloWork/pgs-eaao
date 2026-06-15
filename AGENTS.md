@@ -136,6 +136,11 @@ The factory is held to the bar it imposes downstream:
 | Generated-repo lint | A repo rendered from the templates passes `tools/consistency_lint.py` out of the box |
 | English-only | No non-English artifact lands on disk |
 
+The first three gates are mechanically enforced by [`tools/eaao_lint.py`](tools/eaao_lint.py)
+(run in CI via [`.github/workflows/ci.yml`](.github/workflows/ci.yml)). Run it before drafting
+any PR that touches templates, profiles, the placeholder dictionary, or the generation
+playbook — a red self-lint is a broken change.
+
 ## 9. Tool-Specific Notes
 
 - **Claude Code** — `CLAUDE.md` defers here. Use the task/planning tools for multi-step

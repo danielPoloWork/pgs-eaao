@@ -1,0 +1,27 @@
+name: eaao-ci
+
+# CI for the EAAO factory itself. The orchestrator is held to the bar it imposes downstream:
+# the self-lint asserts placeholder integrity, profile completeness, and that every template
+# the generation playbook names exists on disk.
+
+on:
+  pull_request:
+  push:
+    branches: [master, main]
+
+permissions:
+  contents: read
+
+jobs:
+  self-lint:
+    name: self-lint / factory integrity
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: EAAO self-lint
+        run: python tools/eaao_lint.py
+      - name: Byte-compile the self-lint
+        run: python -m py_compile tools/eaao_lint.py

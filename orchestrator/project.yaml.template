@@ -74,6 +74,17 @@ governance:
     i18n:       false
     packaging:  false
     service:    false
+    announce:   false
+
+i18n:                          # documentation translations (gated by capabilities.i18n)
+  default_lang: "en"           # canonical on-disk language          -> {{DOC_DEFAULT_LANG}}
+  targets: []                  # e.g. [{code: it, name: Italian}, {code: es, name: Spanish}]
+                               #                                      -> {{#EACH_DOC_LANG}}
+
+announce:                      # release/news announcements (gated by capabilities.announce)
+  channels: []                 # e.g. [{name: X, handle: "@d4np", mode: draft},
+                               #       {name: Discord, handle: "<webhook>", mode: draft}]
+                               #                                      -> {{#EACH_ANNOUNCE_CHANNEL}}
 
 spec:                         # from Phase 5 of the interview
   objective:        ""        # -> {{SPEC_OBJECTIVE}}

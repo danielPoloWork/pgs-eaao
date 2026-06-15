@@ -50,7 +50,7 @@ CONFIG = {
     # The source root that pattern code-locations must live under.
     "src_main": "{{SRC_MAIN}}",
     # Whether documentation i18n is enabled (gates check 7).
-    "i18n_enabled": False,
+    "i18n_enabled": {{I18N_ENABLED}},
 }
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

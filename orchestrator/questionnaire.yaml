@@ -127,9 +127,29 @@ phases:
         defaults: { ASSIGNEE: "@me" }
         sets: [ASSIGNEE]
       - id: Q4.6
-        prompt: "Translations (i18n) and packaging/distribution?"
-        default: { IF_I18N: false, IF_PACKAGING: false }
-        sets: [IF_I18N, IF_PACKAGING]
+        prompt: "Packaging/distribution via a package registry?"
+        default: false
+        sets: [IF_PACKAGING]
+      - id: Q4.7
+        prompt: "Translate the documentation (i18n)? If yes, which is the canonical source
+                 language and which are the target languages?"
+        default: { IF_I18N: false, DOC_DEFAULT_LANG: en }
+        sets: [IF_I18N, DOC_DEFAULT_LANG, DOC_LANGS]
+      - id: Q4.8
+        prompt: "Announce releases/news on social channels? If yes, which (X, Discord,
+                 LinkedIn, Reddit, Mastodon, a blog, …)?"
+        default: { IF_ANNOUNCE: false }
+        sets: [IF_ANNOUNCE, ANNOUNCE_CHANNELS]
+    follow_ups:
+      - when: "IF_I18N == true"
+        ask: ["Canonical on-disk language (default en — the English-only rule keeps sources
+               English; translations are derived copies)?",
+              "Target languages as code + name pairs (e.g. it=Italian, es=Spanish)?"]
+        sets: [DOC_DEFAULT_LANG, DOC_LANGS]
+      - when: "IF_ANNOUNCE == true"
+        ask: ["Which channels, and who owns each handle/webhook?",
+              "Auto-draft the announcement at release time, or fully manual?"]
+        sets: [ANNOUNCE_CHANNELS]
 
   - id: 5
     name: Specification

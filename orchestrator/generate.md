@@ -41,8 +41,8 @@ language segment substituted):
 │   ├── main/<lang>/<group_path>/<project_slug>/
 │   ├── test/<lang>/<group_path>/<project_slug>/
 │   └── bench/<lang>/<group_path>/<project_slug>/        # only if capabilities.bench
-├── docs/{adr,patterns,specs,bugs,journal,workflow,development}/
-├── .github/workflows/
+├── docs/{adr,patterns,specs,bugs,journal,workflow,development}/   # + i18n/ when capabilities.i18n
+├── .github/{ISSUE_TEMPLATE/,workflows/}        # PR template, CODEOWNERS, issue forms, CI + release
 └── tools/
 ```
 
@@ -82,7 +82,8 @@ Render, stripping the `.tmpl` suffix and substituting placeholders:
 | `templates/docs/bugs/README.md.tmpl` | `docs/bugs/README.md` | empty ledger index |
 | `templates/docs/journal/README.md.tmpl` | `docs/journal/README.md` | empty journal index |
 | `templates/docs/development/local-build.md.tmpl` | `docs/development/local-build.md` | local build/test guide (linked from README) |
-| `templates/docs/workflow/*.tmpl` | `docs/workflow/*` | git-workflow, documentation, release, maintenance, announcements, github-setup |
+| `templates/docs/workflow/*.tmpl` | `docs/workflow/*` | git-workflow, documentation, release, maintenance, github-setup; `announcements.md` **only when `capabilities.announce`** |
+| `templates/docs/i18n/*.tmpl` | `docs/i18n/*` | **only when `capabilities.i18n`** — index + `translation-status.md` manifest |
 
 Seed the **spec** (`docs/specs/01_spec_<slug>.md`) from `spec.*`: Objective, Functional &
 Non-Functional Requirements, Logical Architecture, Public Interface, Verification Strategy

@@ -98,8 +98,17 @@ How the repository is run — reproduces the reference project's GitHub rules.
 - **Q4.5 — PR metadata policy?** Confirm assignee (default `@me`), one-type-label scheme,
   and per-release milestones (reference ADR-0040). Reviewers/projects are deferred until a
   second collaborator or a board exists, exactly as upstream.
-- **Q4.6 — Translations (i18n) and packaging/distribution?** Sets `IF_I18N`,
-  `IF_PACKAGING`. Default both off unless the maintainer asks.
+- **Q4.6 — Packaging/distribution?** Distributed via a package registry? Sets
+  `IF_PACKAGING`. Default off unless the maintainer asks.
+- **Q4.7 — Documentation translations (i18n)?** Default off. If on, capture the **canonical
+  source language** (`DOC_DEFAULT_LANG`, default `en` — the English-only rule keeps sources
+  English, so translations are *derived* copies under `docs/i18n/<code>/`) and the **target
+  languages** as `code`+`name` pairs (`DOC_LANGS`, e.g. `it`=Italian, `es`=Spanish). Sets
+  `IF_I18N`; seeds `docs/i18n/translation-status.md` and the lint's `i18n-freshness` gate.
+- **Q4.8 — Release/news announcements on social channels?** Default off. If on, capture the
+  channels (`ANNOUNCE_CHANNELS`, e.g. X, Discord, LinkedIn, Reddit, Mastodon, a blog) and who
+  owns each handle/webhook. Sets `IF_ANNOUNCE`; seeds `docs/workflow/announcements.md`. The
+  agent *drafts* the announcement; a human *publishes* it — the same boundary as releases.
 
 ## Phase 5 — The functional specification
 

@@ -30,6 +30,9 @@ The mechanical step-by-step for cutting a release of `{{PROJECT_NAME}}`. The gov
    `git push origin v<X.Y.Z>` immediately after merge (if delegated).
 9. **Publish** the GitHub Release — *the maintainer* (the deliberate human checkpoint).
 10. **CI builds & attaches artifacts** on the tag push.
+{{#IF_ANNOUNCE}}11. **Announce** — the agent drafts the announcement text per channel; the
+    maintainer posts it. See [`announcements.md`](announcements.md).
+{{/IF_ANNOUNCE}}
 
 ## Boundary
 
@@ -40,6 +43,8 @@ The mechanical step-by-step for cutting a release of `{{PROJECT_NAME}}`. The gov
 | Create & push the annotated tag | Agent (if delegated) |
 | Publish the GitHub Release | **Human** |
 | Build & attach artifacts | CI |
+{{#IF_ANNOUNCE}}| Draft announcement text / **post to channels** | Agent / **Human** |
+{{/IF_ANNOUNCE}}
 
 Agents never publish releases, never amend or delete published tags, and only delete-and-
 repush an *unpublished* tag whose release run visibly failed.

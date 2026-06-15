@@ -113,6 +113,16 @@ These gate optional sections so a CLI does not ship a library's packaging docs, 
 | `{{#IF_I18N}}` | Docs are translated (enables the i18n manifest + lint check) |
 | `{{#IF_PACKAGING}}` | The project is distributed via a package registry |
 | `{{#IF_SERVICE}}` | The project is a long-running service (enables deploy/runtime ADR seeds) |
+| `{{#IF_ANNOUNCE}}` | Releases/news are announced on social channels (enables the announcements workflow) |
+
+## 9. Documentation i18n & announcements
+
+| Placeholder | Meaning | Example |
+|---|---|---|
+| `{{DOC_DEFAULT_LANG}}` | Canonical on-disk doc language (sources stay English) | `en` |
+| `{{I18N_ENABLED}}` | Python literal for the lint's CONFIG (`True`/`False`, capitalized) | `False` |
+| `{{#EACH_DOC_LANG}}` | Loop over translation target languages (`code`, `name`) | `it`/`Italian`, `es`/`Spanish` |
+| `{{#EACH_ANNOUNCE_CHANNEL}}` | Loop over announcement channels (`name`, `handle`, `mode`) | `X`/`@d4np`/`draft` |
 
 ---
 

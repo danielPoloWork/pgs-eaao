@@ -33,6 +33,13 @@ strict quality gates. Apply that perspective to every change:
 identifiers, comments, documentation, ADRs, commit messages, branch names, PR titles and
 descriptions. The maintainer may converse in another language; conversational replies may
 match that language, but anything that lands on disk or in Git is English-only.
+{{#IF_I18N}}
+The **only** exception is translated documentation under `docs/i18n/<code>/`: explicitly
+tracked, *derived* copies of the English sources, never the source of truth. The English
+page stays authoritative and a translation records the source commit it was made from, so
+the consistency lint can flag it stale. Canonical source language: **{{DOC_DEFAULT_LANG}}**.
+See [`docs/i18n/`](docs/i18n/).
+{{/IF_I18N}}
 
 ## 3. Project Overview
 
@@ -243,6 +250,10 @@ The project follows **Semantic Versioning 2.0.0**. Tags are annotated, `vMAJOR.M
   (`{{VERSION_CONST_HINT}}` in `{{VERSION_FILE}}`), rolls the changelog, drafts release
   notes, and (post-merge, if delegated) creates and pushes the annotated tag; the maintainer
   opens and merges the release PR and publishes the release.
+{{#IF_ANNOUNCE}}- **Announcements** — after a release is published, the agent *drafts* the
+  social/news announcement; a human *posts* it. Channels and policy:
+  [`docs/workflow/announcements.md`](docs/workflow/announcements.md).
+{{/IF_ANNOUNCE}}
 
 ## 12. Tool-Specific Notes
 

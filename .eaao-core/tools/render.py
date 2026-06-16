@@ -395,8 +395,11 @@ def main():
             written += 1
 
     # Render EAAO's LICENSE (with author/year) and seed the source-tree directories.
-    lic = os.path.join(ROOT, "LICENSE")
-    if os.path.exists(lic):
+    # LICENSE lives at the actual repo root (one level above .eaao-core/).
+    lic = next((p for p in (os.path.join(ROOT, "LICENSE"),
+                            os.path.join(os.path.dirname(ROOT), "LICENSE"))
+                if os.path.exists(p)), None)
+    if lic:
         with open(lic, encoding="utf-8") as handle:
             write_file(out_dir, "LICENSE", render(handle.read(), scalars, flags, sections, None, "LICENSE"))
     for key in ("SRC_MAIN", "SRC_TEST", "SRC_BENCH"):

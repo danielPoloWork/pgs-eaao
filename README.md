@@ -79,44 +79,45 @@ Every one of these is a **parameterized copy** of what already works in
 ```
 
 The full, ordered procedure is the **generation playbook**:
-[`orchestrator/generate.md`](orchestrator/generate.md).
+[`orchestrator/generate.md`](.eaao-core/orchestrator/generate.md).
 
 ---
 
 ## Repository layout
 
 ```text
-enterprise-architecture-agentic-orchestrator/
-├── README.md                       # this file
-├── AGENTS.md                       # agent contract for EAAO itself (+ the meta-architect persona)
-├── CLAUDE.md / GEMINI.md           # tool adapters → defer to AGENTS.md
+pgs-eaao/
+├── README.md                          # this file
+├── AGENTS.md                          # agent contract for EAAO itself (+ the meta-architect persona)
+├── CLAUDE.md / GEMINI.md              # tool adapters → defer to AGENTS.md
 ├── LICENSE
-├── agent/
-│   └── enterprise-architect.md     # the reusable "senior project architect" subagent definition
-├── orchestrator/                   # the engine
-│   ├── README.md                   # how to drive the orchestration
-│   ├── interview.md                # the master Q&A protocol the architect runs
-│   ├── questionnaire.yaml          # machine-readable question bank
-│   ├── generate.md                 # the step-by-step generation playbook
-│   ├── placeholders.md             # the canonical placeholder dictionary
-│   ├── project.yaml.template       # the project manifest skeleton (copied to project.yaml per run)
-│   ├── examples/reference.yaml     # a worked manifest (pbr-cpp-memory-pool) + render-smoke fixture
-│   └── profiles/                   # per-language toolchain knowledge
-│       ├── _schema.md              # what every profile must define
-│       ├── cpp.yaml  python.yaml  typescript.yaml
-│       ├── java.yaml  go.yaml      rust.yaml
-├── templates/                      # the parameterized enterprise scaffolding
-│   ├── AGENTS.md.tmpl  CLAUDE.md.tmpl  GEMINI.md.tmpl
-│   ├── README.md.tmpl  ROADMAP.md.tmpl  CHANGELOG.md.tmpl  SECURITY.md.tmpl  gitignore.tmpl
-│   ├── docs/**                     # adr/, patterns/, specs/, bugs/, journal/, workflow/, i18n/
-│   ├── .github/**                  # PR + issue templates, CODEOWNERS, dependabot, ci.yml + release.yml
-│   └── tools/consistency_lint.py   # generic, profile-driven congruence checker
-├── tools/                          # the factory's own tooling
-│   ├── eaao_lint.py                # self-lint: placeholder/profile/playbook integrity
-│   └── render.py                   # deterministic Mustache-subset renderer
-├── .github/workflows/ci.yml        # EAAO's own CI (self-lint + render smoke)
-└── docs/
-    └── adr/                        # ADRs governing EAAO's own design decisions
+├── .github/workflows/ci.yml           # EAAO's own CI (self-lint + render smoke)
+└── .eaao-core/                        # ALL the factory machinery — one ignorable folder
+    ├── agent/                         # enterprise-architect + composable roles + registry
+    │   ├── README.md                  # the agent registry/index
+    │   ├── enterprise-architect.md    # the orchestrating "senior project architect"
+    │   └── reviewer.md  security-auditor.md  release-manager.md  profile-author.md
+    ├── orchestrator/                  # the engine
+    │   ├── README.md  interview.md  generate.md  recovery.md  placeholders.md
+    │   ├── questionnaire.yaml         # machine-readable question bank
+    │   ├── project.yaml.template      # the project manifest skeleton (copied to project.yaml per run)
+    │   ├── examples/reference.yaml    # a worked manifest (pbr-cpp-memory-pool) + render-smoke fixture
+    │   └── profiles/                  # per-language toolchain knowledge (+ _schema.md)
+    ├── templates/                     # the parameterized enterprise scaffolding (the output)
+    │   ├── AGENTS.md.tmpl  CLAUDE.md.tmpl  GEMINI.md.tmpl  README.md.tmpl  …
+    │   ├── docs/**                    # adr/, patterns/, specs/, bugs/, journal/, workflow/, i18n/
+    │   ├── .github/**                 # PR + issue templates, CODEOWNERS, dependabot, ci.yml + release.yml
+    │   └── tools/consistency_lint.py  # generic, profile-driven congruence checker
+    ├── tools/                         # the factory's own tooling
+    │   ├── eaao_lint.py               # self-lint: placeholder/profile/playbook integrity
+    │   ├── render.py                  # deterministic Mustache-subset renderer
+    │   ├── autotune.py                # proposes default changes from accumulated run records
+    │   └── self_review.py             # structural quality review of a generated repo
+    ├── config/                        # customization overlays (defaults.yaml, house-rules.md)
+    ├── learning/                      # lessons ledger + run records (memory / auto-tuning input)
+    ├── eval/rubric.md                 # the self-evaluation rubric
+    ├── maintenance/stay-current.md    # the profile-refresh routine (+ cron recipe)
+    └── docs/adr/                      # ADRs governing EAAO's own design decisions
 ```
 
 ---
@@ -149,12 +150,12 @@ You drive EAAO conversationally through the Enterprise Project Architect agent.
 2. **Say what you want to build.** e.g. *"New project: a Rust token-bucket rate limiter,
    library, GitHub owner `acme`, default branch `main`."*
 3. **Answer the interview.** The architect walks
-   [`orchestrator/interview.md`](orchestrator/interview.md) — language(s), frameworks,
+   [`orchestrator/interview.md`](.eaao-core/orchestrator/interview.md) — language(s), frameworks,
    tools, governance, and the functional spec — asking only the questions whose answers
    it cannot safely default.
 4. **Review the manifest.** The architect writes `orchestrator/project.yaml` and shows it
    to you for confirmation before generating anything.
-5. **Generate.** The architect follows [`orchestrator/generate.md`](orchestrator/generate.md)
+5. **Generate.** The architect follows [`orchestrator/generate.md`](.eaao-core/orchestrator/generate.md)
    to render the new repository, runs the consistency lint, and drafts the bootstrap PR.
 
 You never have to remember the enterprise rules — they are encoded in the templates and
@@ -173,17 +174,17 @@ cd ../my-new-repo && python tools/consistency_lint.py     # the generated repo's
 ```
 
 `render.py` performs exactly the substitutions in
-[`orchestrator/placeholders.md`](orchestrator/placeholders.md), honors the `capabilities.*`
+[`orchestrator/placeholders.md`](.eaao-core/orchestrator/placeholders.md), honors the `capabilities.*`
 gates, leaves GitHub Actions `${{ … }}` untouched, and **aborts on any unresolved
 placeholder**. The render-smoke job in EAAO's own CI runs this against
-[`orchestrator/examples/reference.yaml`](orchestrator/examples/reference.yaml) on every push.
+[`orchestrator/examples/reference.yaml`](.eaao-core/orchestrator/examples/reference.yaml) on every push.
 
 ### The tools
 
 | Tool | What it does |
 |---|---|
-| [`tools/render.py`](tools/render.py) | Renders a manifest into a repository (deterministic). |
-| [`tools/eaao_lint.py`](tools/eaao_lint.py) | Self-lint: placeholder integrity, profile completeness, playbook references. |
+| [`tools/render.py`](.eaao-core/tools/render.py) | Renders a manifest into a repository (deterministic). |
+| [`tools/eaao_lint.py`](.eaao-core/tools/eaao_lint.py) | Self-lint: placeholder integrity, profile completeness, playbook references. |
 | `templates/tools/consistency_lint.py` | Shipped *into* each generated repo; enforces its cross-artifact congruence. |
 
 ---
@@ -211,5 +212,5 @@ placeholder**. The render-smoke job in EAAO's own CI runs this against
 
 EAAO is reverse-engineered from `pbr-cpp-memory-pool` — every rule, template, and gate
 here has a concrete origin in that project's `AGENTS.md`, `docs/`, `.github/`, and
-`tools/consistency_lint.py`. See [`docs/adr/`](docs/adr/) for the decisions that shaped
+`tools/consistency_lint.py`. See [`docs/adr/`](.eaao-core/docs/adr/) for the decisions that shaped
 the generalization.

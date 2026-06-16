@@ -9,7 +9,7 @@ this repository.
 > - *This* file governs work **on EAAO** (improving the orchestrator, its profiles,
 >   templates, and interview).
 > - The contract that governs a **generated project** is
->   [`templates/AGENTS.md.tmpl`](templates/AGENTS.md.tmpl), rendered into the new repo.
+>   [`templates/AGENTS.md.tmpl`](.eaao-core/templates/AGENTS.md.tmpl), rendered into the new repo.
 >   When you generate a project, you hand control to *that* contract; you do not import
 >   EAAO's rules into the new repo.
 
@@ -26,7 +26,7 @@ standing up enterprise codebases across many languages. In EAAO you wear two hat
 2. **Enterprise Project Architect** — when a maintainer asks for a new project, you run
    the intake interview, resolve the toolchain profile, and generate a governed
    repository. The full persona and operating loop for this role live in
-   [`agent/enterprise-architect.md`](agent/enterprise-architect.md).
+   [`agent/enterprise-architect.md`](.eaao-core/agent/enterprise-architect.md).
 
 Apply enterprise judgement at all times: ownership and lifetime of every artifact,
 explicit decisions recorded as ADRs, measurable correctness over assertion, and **no
@@ -53,7 +53,7 @@ factored into three layers:
 - **Templates** — `templates/**`: the reference artifacts with project facts replaced by
   `{{PLACEHOLDERS}}`.
 
-The README explains the pipeline; [`orchestrator/generate.md`](orchestrator/generate.md)
+The README explains the pipeline; [`orchestrator/generate.md`](.eaao-core/orchestrator/generate.md)
 is the executable procedure.
 
 ## 4. Repository Layout
@@ -63,31 +63,39 @@ is the executable procedure.
 ├── AGENTS.md                    # this file — governs work ON EAAO
 ├── CLAUDE.md / GEMINI.md        # tool adapters → defer here
 ├── README.md                    # what EAAO is and how it works
-├── agent/enterprise-architect.md# the reusable architect subagent definition
-├── orchestrator/                # the engine
-│   ├── README.md  interview.md  generate.md  placeholders.md
-│   ├── questionnaire.yaml        # machine-readable question bank
-│   ├── project.yaml.template     # manifest skeleton
-│   └── profiles/                 # per-language toolchain knowledge (+ _schema.md)
-├── templates/                   # parameterized enterprise scaffolding (the output)
-└── docs/adr/                    # ADRs for EAAO's own design
+├── LICENSE
+└── .eaao-core/                  # ALL factory machinery — one ignorable folder for consumers
+    ├── agent/                   # the architect + the composable role subagents (+ registry)
+    ├── orchestrator/            # the engine: interview, questionnaire, generate, placeholders, profiles
+    ├── templates/               # parameterized enterprise scaffolding (the output)
+    ├── tools/                   # eaao_lint.py (self-lint), render.py (renderer)
+    ├── config/                  # customization overlays (defaults, house-rules)
+    ├── learning/                # lessons ledger + run records (memory / auto-tuning input)
+    ├── eval/                    # self-evaluation rubric
+    ├── maintenance/             # the stay-current routine
+    └── docs/adr/                # ADRs for EAAO's own design
 ```
+
+The dot-prefix means a project that vendors EAAO ignores the whole factory with a single
+`.eaao-core/` line. EAAO's own tooling self-locates relative to `.eaao-core/`, so the move is
+path-stable; only the repo-root governance files (`README`, `AGENTS`/`CLAUDE`/`GEMINI`,
+`LICENSE`) and dotfiles live above it.
 
 ## 5. Operating loop — how the architect generates a project
 
 This is the canonical five-step loop. Each step has a home document; never skip a step.
 
-1. **Interview** ([`orchestrator/interview.md`](orchestrator/interview.md)). Gather the
+1. **Interview** ([`orchestrator/interview.md`](.eaao-core/orchestrator/interview.md)). Gather the
    project's language(s), frameworks, tools, governance, and functional spec. Ask only
    what you cannot safely default; state the defaults you assume.
-2. **Resolve profile(s)** ([`orchestrator/profiles/`](orchestrator/profiles/)). Load the
+2. **Resolve profile(s)** ([`orchestrator/profiles/`](.eaao-core/orchestrator/profiles/)). Load the
    profile for each chosen language. If none exists, author one from `_schema.md` *first*
    (and add an ADR for the new language) — never hardcode toolchain facts into a template.
-3. **Write the manifest** ([`orchestrator/project.yaml.template`](orchestrator/project.yaml.template)).
+3. **Write the manifest** ([`orchestrator/project.yaml.template`](.eaao-core/orchestrator/project.yaml.template)).
    Merge answers + profile into `orchestrator/project.yaml`. **Show it to the maintainer
    and get confirmation before rendering.** This is the last cheap checkpoint.
-4. **Render** ([`orchestrator/generate.md`](orchestrator/generate.md)). Substitute every
-   `{{PLACEHOLDER}}` (dictionary: [`orchestrator/placeholders.md`](orchestrator/placeholders.md)),
+4. **Render** ([`orchestrator/generate.md`](.eaao-core/orchestrator/generate.md)). Substitute every
+   `{{PLACEHOLDER}}` (dictionary: [`orchestrator/placeholders.md`](.eaao-core/orchestrator/placeholders.md)),
    lay down the cross-language source tree, and seed the day-zero docs (ADR-0001/0002,
    Milestone 1, the spec, the patterns catalogue).
 5. **Verify & hand off**. Run the generated `tools/consistency_lint.py`, initialize git,
@@ -116,7 +124,7 @@ The agent-vs-human boundary is identical to the reference project:
 
 - A non-trivial design decision about the orchestrator (a new placeholder convention, a
   change to the source-tree shape, adding a language) is recorded as an ADR in
-  [`docs/adr/`](docs/adr/), numbered sequentially, using the same Michael-Nygard template
+  [`docs/adr/`](.eaao-core/docs/adr/), numbered sequentially, using the same Michael-Nygard template
   the templates ship.
 - Every change keeps the README, the affected profile(s), and the affected template(s) in
   sync **in the same PR**. A template that references a placeholder the dictionary does
@@ -136,7 +144,7 @@ The factory is held to the bar it imposes downstream:
 | Generated-repo lint | A repo rendered from the templates passes `tools/consistency_lint.py` out of the box |
 | English-only | No non-English artifact lands on disk |
 
-The first three gates are mechanically enforced by [`tools/eaao_lint.py`](tools/eaao_lint.py)
+The first three gates are mechanically enforced by [`tools/eaao_lint.py`](.eaao-core/tools/eaao_lint.py)
 (run in CI via [`.github/workflows/ci.yml`](.github/workflows/ci.yml)). Run it before drafting
 any PR that touches templates, profiles, the placeholder dictionary, or the generation
 playbook — a red self-lint is a broken change.

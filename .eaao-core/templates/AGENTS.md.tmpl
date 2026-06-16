@@ -260,7 +260,14 @@ The project follows **Semantic Versioning 2.0.0**. Tags are annotated, `vMAJOR.M
 - **Claude Code** — `CLAUDE.md` defers here; config under `.claude/`.
 - **Gemini Antigravity** — `GEMINI.md` defers here; config under `.gemini/`.
 - **ChatGPT Codex** — reads `AGENTS.md` natively.
+{{#IF_HOUSE_RULES}}
+## 13. Organization House Rules
 
+Project-/organization-specific rules layered on top of the standard contract. Where one of
+these conflicts with a default above, **the house rule wins**.
+
+{{HOUSE_RULES}}
+{{/IF_HOUSE_RULES}}
 ---
 
 **When in doubt: read the spec, write an ADR, document the pattern, run the consistency

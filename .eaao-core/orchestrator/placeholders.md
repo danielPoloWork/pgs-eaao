@@ -120,8 +120,9 @@ These gate optional sections so a CLI does not ship a library's packaging docs, 
 | `{{#IF_SERIES}}` | The project belongs to an umbrella series (`PROJECT_SERIES` non-empty) |
 | `{{#IF_ANNOUNCE}}` | Releases/news are announced on social channels (enables the announcements workflow) |
 | `{{#IF_PKG_ECOSYSTEM}}` | The language has a Dependabot ecosystem (derived: `PKG_ECOSYSTEM` non-empty) |
+| `{{#IF_HOUSE_RULES}}` | An organization house-rules overlay is present (derived: `HOUSE_RULES` non-empty) |
 
-## 9. Documentation i18n & announcements
+## 9. Documentation i18n, announcements & customization
 
 | Placeholder | Meaning | Example |
 |---|---|---|
@@ -129,6 +130,7 @@ These gate optional sections so a CLI does not ship a library's packaging docs, 
 | `{{I18N_ENABLED}}` | Python literal for the lint's CONFIG (`True`/`False`, capitalized) | `False` |
 | `{{#EACH_DOC_LANG}}` | Loop over translation target languages (`code`, `name`) | `it`/`Italian`, `es`/`Spanish` |
 | `{{#EACH_ANNOUNCE_CHANNEL}}` | Loop over announcement channels (`name`, `handle`, `mode`) | `X`/`@d4np`/`draft` |
+| `{{HOUSE_RULES}}` | Organization house-rules block injected into the generated `AGENTS.md` §13 | — |
 
 ---
 

@@ -7,6 +7,10 @@ protocol with the *why* and the follow-up logic.
 
 ## How to run it
 
+- **Load the customization overlay first.** Read [`../config/defaults.yaml`](../config/README.md):
+  any value set there overrides the built-in default below (precedence: overlay → profile →
+  built-in). Copy a non-empty [`../config/house-rules.md`](../config/house-rules.md) body into
+  the manifest's `governance.house_rules`. Offer any custom roles under `../config/agents/`.
 - **Conduct it in the maintainer's language.** The answers are transcribed into
   `project.yaml` in English (§2 of `AGENTS.md`).
 - **Ask only what you cannot safely default.** Each question below carries a default. If

@@ -261,6 +261,7 @@ def build_context(m):
         "SPEC_VERIFICATION": spec.get("verification", ""),
         "DOC_DEFAULT_LANG": i18n.get("default_lang", "en"),
         "I18N_ENABLED": "True" if caps.get("i18n") else "False",
+        "HOUSE_RULES": gov.get("house_rules", ""),
     }
     scalars = {k: ("" if v is None else str(v)) for k, v in scalars.items()}
 
@@ -274,6 +275,7 @@ def build_context(m):
         "IF_ANNOUNCE": bool(caps.get("announce")),
         "IF_SERIES": bool(series.strip()),
         "IF_PKG_ECOSYSTEM": bool(pkg_eco.strip()),
+        "IF_HOUSE_RULES": bool(str(gov.get("house_rules", "") or "").strip()),
     }
 
     sections = {

@@ -33,6 +33,9 @@ Compute the values not entered directly:
   to `group_dotted` + `project_slug`.
 - `public_include_hint` from the profile's import idiom.
 - Fill any blank `toolchain.*` from the profile defaults; keep maintainer overrides.
+- Apply the [customization overlay](../config/README.md): `config/defaults.yaml` values
+  override built-in defaults, and a non-empty `config/house-rules.md` body becomes
+  `governance.house_rules` (rendered as `AGENTS.md` §13).
 
 Re-read [`placeholders.md`](placeholders.md) and confirm **every** placeholder used by the
 templates now resolves. An unresolved placeholder is a hard stop.

@@ -34,6 +34,7 @@ REQUIRED_FILES = [
     "docs/specs/template.md",
     "docs/bugs/README.md", "docs/bugs/template.md",
     "docs/journal/README.md",
+    "docs/releases/README.md",
     "docs/workflow/git-workflow.md", "docs/workflow/documentation.md",
     "docs/workflow/release.md", "docs/workflow/maintenance.md", "docs/workflow/github-setup.md",
     "docs/development/local-build.md",
@@ -87,6 +88,10 @@ def main():
     if os.path.isdir(os.path.join(repo, "docs", "i18n")):
         if not os.path.exists(os.path.join(repo, "docs", "i18n", "translation-status.md")):
             problems.append("docs/i18n/ present but translation-status.md is missing")
+    if os.path.isdir(os.path.join(repo, "docs", "benchmarks")):
+        for need in ("README.md", "template.md"):
+            if not os.path.exists(os.path.join(repo, "docs", "benchmarks", need)):
+                problems.append(f"docs/benchmarks/ present but {need} is missing")
 
     for w in warnings:
         print(f"  [warn] {w}")

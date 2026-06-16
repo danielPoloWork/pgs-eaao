@@ -388,6 +388,8 @@ def main():
                 continue
             if rel.startswith("docs/i18n/") and not flags["IF_I18N"]:
                 continue
+            if rel.startswith("docs/benchmarks/") and not flags["IF_BENCH"]:
+                continue
             if rel == "docs/workflow/announcements.md.tmpl" and not flags["IF_ANNOUNCE"]:
                 continue
             with open(src, encoding="utf-8") as handle:

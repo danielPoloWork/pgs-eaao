@@ -60,3 +60,15 @@ jobs:
   # Language-specific quality jobs (format, lint, sanitizers, …) from the profile.
   # ---------------------------------------------------------------------------
   {{CI_EXTRA_JOBS}}
+{{#IF_BENCH}}
+  # Reproducible performance gate — runs only when the project has a benchmark suite.
+  benchmark:
+    name: benchmark / reproducible perf
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      {{CI_SETUP_STEPS}}
+      - name: Run the benchmark suite
+        shell: bash
+        run: {{CMD_BENCH}}
+{{/IF_BENCH}}

@@ -94,8 +94,10 @@ Render, stripping the `.tmpl` suffix and substituting placeholders:
 | `templates/docs/bugs/template.md` | `docs/bugs/template.md` | verbatim |
 | `templates/docs/bugs/README.md.tmpl` | `docs/bugs/README.md` | empty ledger index |
 | `templates/docs/journal/README.md.tmpl` | `docs/journal/README.md` | empty journal index |
+| `templates/docs/releases/README.md.tmpl` | `docs/releases/README.md` | empty release-notes index (day-zero) |
 | `templates/docs/development/local-build.md.tmpl` | `docs/development/local-build.md` | local build/test guide (linked from README) |
 | `templates/docs/workflow/*.tmpl` | `docs/workflow/*` | git-workflow, documentation, release, maintenance, github-setup; `announcements.md` **only when `capabilities.announce`** |
+| `templates/docs/benchmarks/README.md.tmpl` + `template.md` | `docs/benchmarks/*` | **only when `capabilities.bench`** — methodology + results index + report template |
 | `templates/docs/i18n/*.tmpl` | `docs/i18n/*` | **only when `capabilities.i18n`** — index + `translation-status.md` manifest |
 
 Seed the **spec** (`docs/specs/01_spec_<slug>.md`) from `spec.*`: Objective, Functional &

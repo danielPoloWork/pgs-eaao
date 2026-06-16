@@ -12,6 +12,9 @@ on the previous one. Prerequisite: a `project.yaml` the maintainer has confirmed
 > unresolved placeholder**. Or do a careful manual pass. Either way, Step 7 verifies the
 > result, so the two paths converge.
 
+> **When a step fails,** follow [`recovery.md`](recovery.md) — fix the cause (manifest,
+> profile, template, or seed) and re-run; never silence a gate or hand-edit the output.
+
 ---
 
 ## Step 0 — Preconditions

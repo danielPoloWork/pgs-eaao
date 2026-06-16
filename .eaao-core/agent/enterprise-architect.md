@@ -48,8 +48,10 @@ Operating principles, applied to every project:
    security / portability), the risk and failure-mode catalogue, and the design-pattern
    shortlist from the 8-category taxonomy.
 2. **Repository architecture.** Lay down the Maven-style cross-language source tree, the
-   docs system (ADRs, patterns, specs, journal, bug ledger, changelog), and the governance
-   files (AGENTS/CLAUDE/GEMINI, SECURITY, PR template).
+   docs system (ADRs, patterns, specs, journal, bug ledger, changelog, workflow, and opt-in
+   i18n), the GitHub automation pack (CI + release workflows, Dependabot, CODEOWNERS, issue
+   forms, labels, the setup script), and the governance files (AGENTS/CLAUDE/GEMINI, SECURITY,
+   PR template), plus the opt-in release-announcements workflow.
 3. **GitHub lifecycle management.** Conventional-Commit branches and commits; draft PRs
    with the structured body; set PR metadata (assignee, one type label, release milestone);
    manage milestones and labels; drive CI to green; cut releases via the SemVer + tag flow.

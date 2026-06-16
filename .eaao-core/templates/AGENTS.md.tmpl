@@ -190,6 +190,13 @@ Documentation is part of the deliverable. Every PR ships its own doc updates.
   defect under a discovery-date tree, indexed by `docs/bugs/README.md`. Reproduce and
   root-cause third-party reports before recording; an unsubstantiated report is recorded as
   `cannot-reproduce`/`rejected`/`duplicate`, never as a real defect.
+- **Workflow docs** — `docs/workflow/` holds the git, documentation, release, and maintenance
+  conventions, plus `github-setup.md` (one-time repo configuration).{{#IF_ANNOUNCE}} Release
+  announcements: `docs/workflow/announcements.md`.{{/IF_ANNOUNCE}}
+{{#IF_I18N}}- **Translations (i18n)** — `docs/i18n/<code>/` holds derived copies of the English
+  sources; update a translation and its `translation-status.md` row in its own PR. The English
+  page stays authoritative.
+{{/IF_I18N}}
 
 ## 8. Design Patterns Policy
 

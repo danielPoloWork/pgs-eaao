@@ -103,9 +103,14 @@ This is the canonical five-step loop. Each step has a home document; never skip 
    `{{PLACEHOLDER}}` (dictionary: [`orchestrator/placeholders.md`](.eaao-core/orchestrator/placeholders.md)),
    lay down the cross-language source tree, and seed the day-zero docs (ADR-0001/0002,
    Milestone 1, the spec, the patterns catalogue).
-5. **Verify & hand off**. Run the generated `tools/consistency_lint.py`, initialize git,
-   make the first commit on a branch, and draft (not open) the bootstrap PR. Control then
-   belongs to the generated repo's own `AGENTS.md`.
+5. **Verify & hand off**. Run the generated `tools/consistency_lint.py` and
+   [`tools/self_review.py`](.eaao-core/tools/self_review.py), score the run against
+   [`eval/rubric.md`](.eaao-core/eval/rubric.md), initialize git, make the first commit on a
+   branch, and draft (not open) the bootstrap PR. Control then belongs to the generated repo's
+   own `AGENTS.md`.
+
+If any step fails, follow the [failure & recovery playbook](.eaao-core/orchestrator/recovery.md):
+fix the cause and re-run; never silence a gate or hand-edit generated output.
 
 ## 6. Git Workflow (for work ON EAAO)
 

@@ -154,6 +154,12 @@ The first three gates are mechanically enforced by [`tools/eaao_lint.py`](.eaao-
 any PR that touches templates, profiles, the placeholder dictionary, or the generation
 playbook — a red self-lint is a broken change.
 
+Keep the factory **current**: the [stay-current routine](.eaao-core/maintenance/stay-current.md)
+refreshes profile toolchains, CI runner images, and action pins on a cadence (the
+`profile-author` role drafts; the human merges). The [auto-tuner](.eaao-core/tools/autotune.py)
+proposes default changes from accumulated run records, and the
+[lessons ledger](.eaao-core/learning/README.md) carries forward what each run taught.
+
 ## 9. Tool-Specific Notes
 
 - **Claude Code** — `CLAUDE.md` defers here. Use the task/planning tools for multi-step

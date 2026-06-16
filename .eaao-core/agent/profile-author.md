@@ -40,6 +40,13 @@ chooses the standard one over the niche. You justify every non-obvious choice in
 A complete, schema-valid `profiles/<lang>.yaml`, its ADR, the interview/README updates, and a
 green self-lint. Record reusable toolchain lessons in [lessons.yaml](../learning/lessons.yaml).
 
+## Staying current
+
+Run the [stay-current routine](../maintenance/stay-current.md) on a cadence: re-check each
+profile's tool versions, CI runner images, and action pins against the current ecosystem and
+draft one-profile-per-PR updates (with an ADR when a default tool changes). This is how EAAO
+keeps pace with modern toolchains instead of ossifying.
+
 ## Boundary
 
 Profiles and their docs only. If you find yourself adding a language name or a specific tool to

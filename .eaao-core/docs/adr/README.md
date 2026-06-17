@@ -13,3 +13,4 @@ is sequential and never reused. Template: the generated
 | [0002](0002-interview-driven-intake.md) | Interview-driven intake before generation | Accepted |
 | [0003](0003-generated-repos-are-self-governing.md) | Generated repositories are self-governing | Accepted |
 | [0004](0004-seed-language-profiles.md) | Seed profiles for C, C#, VB.NET, JS, PHP, Lua (SQL/CSS/HTML stay secondary) | Accepted |
+| [0005](0005-seed-modern-and-legacy-profiles.md) | Seed Scala/Kotlin/Swift/Dart/Ruby + legacy COBOL/Pascal (QBasic deferred) | Accepted |

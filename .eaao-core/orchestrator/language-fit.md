@@ -31,6 +31,13 @@ exists, it **surfaces a reasoned recommendation**. The maintainer always makes t
 | **Go** | Cloud-native services, CLIs, networking, concurrency-heavy backends, DevOps/container tooling |
 | **Rust** | Memory-safe systems, performance- *and* safety-critical code, WASM, CLIs, embedded |
 | **Lua** | Embedded scripting (games, Redis, Neovim, OpenResty/nginx, Roblox), lightweight extensions/config |
+| **Kotlin** | Android, modern JVM backends, Kotlin Multiplatform, a safer Java |
+| **Scala** | Big-data (Spark), functional/typed JVM systems, data pipelines |
+| **Swift** | Apple platforms (iOS/macOS), and server-side Swift |
+| **Dart** | Flutter cross-platform apps (mobile/web/desktop), Dart CLIs |
+| **Ruby** | Web apps (Rails), scripting, DevOps tooling, rapid product development |
+| **COBOL** | Mainframe/business batch & transaction systems — legacy maintenance & modernization (GnuCOBOL) |
+| **Pascal** | Legacy desktop/embedded (Free Pascal/Delphi), maintenance of existing Pascal codebases |
 | **SQL** | Relational data: schema, queries, migrations, stored procedures, analytics — usually a *component*, not the primary language |
 | **CSS** | Styling / design systems — a *supporting layer* of a web frontend, not a standalone program |
 | **HTML** | Markup / structure / static sites & templates — a *supporting layer*, not a program |
@@ -42,13 +49,15 @@ exists, it **surfaces a reasoned recommendation**. The maintainer always makes t
 | Embedded / firmware / real-time | C, Rust, C++ |
 | OS / drivers / kernel | C, Rust, C++ |
 | High-performance / low-latency / games | C++, Rust, C |
-| Cloud-native microservices / CLIs / DevOps | Go, Rust, Java |
-| Data / ML / AI | Python (Java/Scala for big-data pipelines) |
-| Web backend | Go, Java, C#, Python, PHP, TypeScript (Node) |
+| Cloud-native microservices / CLIs / DevOps | Go, Rust, Java, Kotlin, Ruby |
+| Data / ML / AI | Python (Scala/Java for big-data pipelines) |
+| Web backend | Go, Java, Kotlin, C#, Python, Ruby, PHP, TypeScript (Node) |
 | Web frontend | TypeScript (with HTML/CSS), JavaScript |
+| Mobile apps | Kotlin (Android), Swift (iOS), Dart/Flutter (cross-platform) |
 | Desktop / Windows / enterprise LOB | C#, Java (VB only for legacy) |
 | Embedded scripting / plugins / extensions | Lua, Python |
 | Relational data / analytics | SQL (as a component of a larger project) |
+| Mainframe / legacy modernization | COBOL, Pascal (maintenance & migration) |
 | Safety-critical / WASM | Rust |
 
 ## SQL, CSS, HTML — a caveat

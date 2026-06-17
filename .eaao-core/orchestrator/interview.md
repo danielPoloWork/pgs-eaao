@@ -40,7 +40,7 @@ Establish the one-liner so every later question has context.
 
 The single most structural choice — it selects the profile and the source-tree segment.
 
-**EAAO is open to *any* programming language.** The twelve shipped profiles are seeds, not the
+**EAAO is open to *any* programming language.** The nineteen shipped profiles are seeds, not the
 allowed set — there is no "unsupported language", only "language not yet profiled".
 
 - **Q1.1 — Primary implementation language (and standard/edition)?** → `LANG`, `LANG_NAME`,

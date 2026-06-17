@@ -113,13 +113,20 @@ def check_placeholder_integrity():
 # 2. Profile completeness
 # ---------------------------------------------------------------------------
 def yaml_key_paths(text):
-    """Indentation-based key-path extractor (keys only; values/list-items ignored)."""
-    paths, stack = set(), []
-    for raw in text.splitlines():
+    """Indentation-based key-path extractor (keys only; values/list-items ignored).
+
+    The body of a block scalar (`key: |`) is skipped — its lines are literal content
+    (e.g. CI step YAML), not nested keys, so they must not become required paths.
+    """
+    lines = text.splitlines()
+    paths, stack, i = set(), [], 0
+    while i < len(lines):
+        raw = lines[i]
+        i += 1
         stripped = raw.lstrip(" ")
         if not stripped or stripped.startswith("#") or stripped.startswith("- "):
             continue
-        m = re.match(r"([A-Za-z0-9_]+)\s*:", stripped)
+        m = re.match(r"([A-Za-z0-9_]+)\s*:(.*)$", stripped)
         if not m:
             continue
         indent = len(raw) - len(stripped)
@@ -127,6 +134,10 @@ def yaml_key_paths(text):
             stack.pop()
         stack.append((indent, m.group(1)))
         paths.add(".".join(k for _, k in stack))
+        if m.group(2).strip() in ("|", "|-", "|+", ">", ">-", ">+"):
+            while i < len(lines) and (lines[i].strip() == "" or
+                                      len(lines[i]) - len(lines[i].lstrip(" ")) > indent):
+                i += 1
     return paths
 
 

@@ -34,7 +34,16 @@ errors = []
 
 
 # ---------------------------------------------------------------------------
-# Minimal YAML loader (mappings, lists, flow [..]/{..}, and `|` block scalars).
+# Minimal YAML loader. Supported subset (validated against PyYAML by
+# tools/tests/test_loader.py): block/flow mappings and sequences, block-style
+# mapping items, double-quoted scalars WITH escapes (\n \t \r \0 \" \\ \/),
+# single-quoted scalars with '' escaping, `|` (clip) and `|-` (strip) block scalars,
+# and int / true / false / null / ~ literals.
+# Deliberate deviations from YAML 1.1, kept because they are safer for a manifest:
+#   * yes/no/on/off are NOT booleans (avoids the "Norway problem"); only true/false are.
+#   * unquoted decimals/exponents stay strings (versions like 1.22 are not coerced).
+# Out of scope (best-effort, not guaranteed byte-identical): `|+` keep-chomping, folded `>`
+# scalars, anchors, tags, and multi-document streams.
 # ---------------------------------------------------------------------------
 def _strip_comment(text):
     out, q, i = [], None, 0
@@ -42,6 +51,12 @@ def _strip_comment(text):
         c = text[i]
         if q:
             out.append(c)
+            # Inside a double-quoted scalar a backslash escapes the next char, so an
+            # escaped quote (\") must not be read as closing the string.
+            if c == "\\" and q == '"' and i + 1 < len(text):
+                out.append(text[i + 1])
+                i += 2
+                continue
             if c == q:
                 q = None
         elif c in "\"'":
@@ -56,10 +71,15 @@ def _strip_comment(text):
 
 
 def _split_top(text, sep=","):
-    parts, depth, q, buf = [], 0, None, []
-    for c in text:
+    parts, depth, q, buf, i = [], 0, None, [], 0
+    while i < len(text):
+        c = text[i]
         if q:
             buf.append(c)
+            if c == "\\" and q == '"' and i + 1 < len(text):
+                buf.append(text[i + 1])     # escaped char: never a separator or quote-close
+                i += 2
+                continue
             if c == q:
                 q = None
         elif c in "\"'":
@@ -76,9 +96,30 @@ def _split_top(text, sep=","):
             buf = []
         else:
             buf.append(c)
+        i += 1
     if buf:
         parts.append("".join(buf))
     return parts
+
+
+# Recognised escapes in a YAML double-quoted scalar (the subset a manifest needs).
+_DQ_ESCAPES = {"n": "\n", "t": "\t", "r": "\r", "0": "\0",
+               '"': '"', "\\": "\\", "/": "/", " ": " "}
+
+
+def _unescape_double(body):
+    """Apply double-quoted YAML escapes; an unknown \\x degrades to the literal x."""
+    out, i = [], 0
+    while i < len(body):
+        c = body[i]
+        if c == "\\" and i + 1 < len(body):
+            nxt = body[i + 1]
+            out.append(_DQ_ESCAPES.get(nxt, nxt))
+            i += 2
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out)
 
 
 def _scalar(s):
@@ -95,8 +136,10 @@ def _scalar(s):
                 k, _, v = pair.partition(":")
                 d[k.strip()] = _scalar(v.strip())
         return d
-    if (s[0] == '"' and s[-1] == '"') or (s[0] == "'" and s[-1] == "'"):
-        return s[1:-1]
+    if len(s) >= 2 and s[0] == '"' and s[-1] == '"':
+        return _unescape_double(s[1:-1])
+    if len(s) >= 2 and s[0] == "'" and s[-1] == "'":
+        return s[1:-1].replace("''", "'")     # YAML single-quote escaping: '' -> '
     low = s.lower()
     if low in ("true", "false"):
         return low == "true"
@@ -122,7 +165,7 @@ def load_yaml(text):
                 return
             pos[0] += 1
 
-    def parse_block_scalar(parent_indent):
+    def parse_block_scalar(parent_indent, chomp=""):
         collected, base = [], None
         while pos[0] < n:
             line = lines[pos[0]]
@@ -134,11 +177,18 @@ def load_yaml(text):
                 break
             if base is None:
                 base = indent_of(line)
-            collected.append(line[base:])
+            # Never slice into real content: if a later line is less-indented than the
+            # first, dedent only by what it actually has.
+            collected.append(line[min(base, indent_of(line)):])
             pos[0] += 1
-        while collected and collected[-1] == "":
+        if chomp == "+":                       # keep: preserve trailing blank lines as-is
+            return ("\n".join(collected) + "\n") if collected else ""
+        while collected and collected[-1] == "":   # clip/strip both drop trailing blanks
             collected.pop()
-        return ("\n".join(collected) + "\n") if collected else ""
+        if not collected:
+            return ""
+        body = "\n".join(collected)
+        return body if chomp == "-" else body + "\n"   # strip: no final newline; clip: one
 
     def parse_map(indent):
         result = {}
@@ -154,7 +204,7 @@ def load_yaml(text):
             key, val = key.strip(), val.strip()
             pos[0] += 1
             if val in ("|", "|-", "|+"):
-                result[key] = parse_block_scalar(indent)
+                result[key] = parse_block_scalar(indent, val[1:])  # "" clip, "-" strip, "+" keep
             elif val == "":
                 skip_blanks()
                 if pos[0] < n:

@@ -26,7 +26,7 @@ consistency lint, and draft the bootstrap PR. The new repo is then self-governin
 
 ## Adding a language (any language)
 
-EAAO supports **any** programming language; the six shipped profiles are seeds. A new
+EAAO supports **any** programming language; the twelve shipped profiles are seeds. A new
 language is added by **data, not template edits**:
 
 1. Copy [`profiles/_template.yaml`](profiles/_template.yaml) to `profiles/<lang>.yaml` and

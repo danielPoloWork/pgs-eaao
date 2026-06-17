@@ -40,7 +40,7 @@ Establish the one-liner so every later question has context.
 
 The single most structural choice — it selects the profile and the source-tree segment.
 
-**EAAO is open to *any* programming language.** The six shipped profiles are seeds, not the
+**EAAO is open to *any* programming language.** The twelve shipped profiles are seeds, not the
 allowed set — there is no "unsupported language", only "language not yet profiled".
 
 - **Q1.1 — Primary implementation language (and standard/edition)?** → `LANG`, `LANG_NAME`,
@@ -56,6 +56,8 @@ allowed set — there is no "unsupported language", only "language not yet profi
   spec is concrete.)
 - **Q1.2 — Any secondary/interop language?** (e.g. a C ABI under a C++ core, Python
   bindings, a WASM target.) If yes, note the second profile and how the surfaces relate.
+  **SQL, CSS, and HTML are declared here** — as the schema a backend owns, or the markup/styles
+  of a frontend — not as the primary language (see [`language-fit.md`](language-fit.md)).
 - **Q1.3 — Reverse-domain group path?** Defaults to the reference convention `it/d4np`.
   → `GROUP_PATH`, `GROUP_DOTTED`. From `LANG` + `GROUP_DOTTED` + `PROJECT_SLUG` the profile
   derives `NAMESPACE` in the language's native idiom (`it::d4np::ratelimiter`,

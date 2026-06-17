@@ -12,3 +12,4 @@ is sequential and never reused. Template: the generated
 | [0001](0001-templating-and-genericity-model.md) | Three-layer genericity model (profiles, manifest, templates) | Accepted |
 | [0002](0002-interview-driven-intake.md) | Interview-driven intake before generation | Accepted |
 | [0003](0003-generated-repos-are-self-governing.md) | Generated repositories are self-governing | Accepted |
+| [0004](0004-seed-language-profiles.md) | Seed profiles for C, C#, VB.NET, JS, PHP, Lua (SQL/CSS/HTML stay secondary) | Accepted |

@@ -315,18 +315,53 @@ KNOWN_SECTIONS = {
     "governance", "i18n", "announce", "spec",
 }
 
+# Scalars without which the generated repo is structurally broken (blank title, no owner,
+# no license, nowhere to put source). build_context defaults every scalar to "", so without
+# this guard a manifest missing these would render a hollow repo and still print "Render: OK".
+REQUIRED_SCALARS = (
+    "PROJECT_NAME", "PROJECT_SLUG", "PROJECT_KIND",
+    "OWNER", "LICENSE_ID", "DEFAULT_BRANCH",
+    "LANG", "GROUP_PATH",
+)
+
+# Fields that become filesystem path segments (src tree, spec filename). Anything other than
+# plain segments — a path separator beyond '/', '.', '..', or an absolute/drive-qualified
+# value — would let the manifest steer writes outside --out. Rejected before any file is
+# created; write_file enforces a second, defense-in-depth containment check.
+_SAFE_SEGMENT = re.compile(r"[A-Za-z0-9._-]+\Z")
+
+
+def _unsafe_path_value(value):
+    """True if `value` cannot be used as one or more safe relative path segments."""
+    for part in str(value).replace("\\", "/").split("/"):
+        if part in ("", ".", "..") or not _SAFE_SEGMENT.match(part):
+            return True
+    return False
+
 
 def validate_manifest(m, scalars):
-    """Guards that turn quiet manifest mistakes into a hard, actionable failure:
-    an unknown/misspelled top-level section (which would otherwise resolve to an empty
-    mapping and blank every field under it), and a non-numeric start version (the classic
-    `start_version`/`version_start` swap)."""
+    """Guards that turn quiet manifest mistakes into a hard, actionable failure: an
+    unknown/misspelled top-level section (which would otherwise resolve to an empty mapping
+    and blank every field under it), a missing required field, a path-unsafe identifier, and
+    a non-numeric start version (the classic `start_version`/`version_start` swap)."""
     problems = []
     for key in m:
         if key not in KNOWN_SECTIONS:
             problems.append(
                 f"unknown top-level section '{key}' (typo? expected one of: "
                 f"{', '.join(sorted(KNOWN_SECTIONS))})"
+            )
+    for key in REQUIRED_SCALARS:
+        if not str(scalars.get(key, "")).strip():
+            problems.append(f"required field for {{{{{key}}}}} is missing or empty")
+    for field, key in (("identity.project_slug", "PROJECT_SLUG"),
+                       ("language.lang", "LANG"),
+                       ("language.group_path", "GROUP_PATH")):
+        val = str(scalars.get(key, "")).strip()
+        if val and _unsafe_path_value(val):
+            problems.append(
+                f"{field} '{val}' is not a safe path segment "
+                "(no path separators beyond '/', no '.', '..', or absolute paths)"
             )
     sv = scalars.get("START_VERSION", "")
     if sv and not re.fullmatch(r"\d+\.\d+\.\d+", sv):
@@ -404,7 +439,16 @@ def out_relpath(rel, slug):
 
 
 def write_file(out_dir, rel, text):
-    dest = os.path.join(out_dir, rel.replace("/", os.sep))
+    # Containment guard: resolve both sides and refuse anything that escapes the output
+    # root (path traversal via a manifest-derived rel). This backstops validate_manifest.
+    out_root = os.path.realpath(out_dir)
+    dest = os.path.realpath(os.path.join(out_root, rel.replace("/", os.sep)))
+    try:
+        contained = os.path.commonpath([out_root, dest]) == out_root
+    except ValueError:            # different drives on Windows -> definitely outside
+        contained = False
+    if not contained:
+        raise ValueError(f"refusing to write outside the output directory: {rel!r}")
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     with open(dest, "w", encoding="utf-8", newline="\n") as handle:
         handle.write(text)

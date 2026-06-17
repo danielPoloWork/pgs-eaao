@@ -21,9 +21,6 @@ import os
 import sys
 import textwrap
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from render import load_yaml  # noqa: E402  (same-dir, dependency-free reader)
-
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROFILES = os.path.join(ROOT, "orchestrator", "profiles")
 
@@ -51,9 +48,15 @@ def main():
     for path in sorted(glob.glob(os.path.join(PROFILES, "*.yaml"))):
         if os.path.basename(path).startswith("_"):
             continue
-        prof = load_yaml(open(path, encoding="utf-8").read())
-        ci = prof.get("ci") or {}
         rel = os.path.relpath(path, ROOT).replace(os.sep, "/")
+        with open(path, encoding="utf-8") as fh:
+            try:
+                prof = yaml.safe_load(fh) or {}  # real parser — independent of render.load_yaml
+            except yaml.YAMLError as exc:
+                problems.append(f"{rel}: profile is not well-formed YAML: "
+                                f"{str(exc).splitlines()[0]}")
+                continue
+        ci = prof.get("ci") or {}
         for key in ("setup_steps", "extra_jobs", "race_job"):
             frag = ci.get(key)
             if not frag or not str(frag).strip():
@@ -74,7 +77,8 @@ def main():
                 seen.add(f)
                 rel = os.path.relpath(f, repo).replace(os.sep, "/")
                 try:
-                    yaml.safe_load(open(f, encoding="utf-8").read())
+                    with open(f, encoding="utf-8") as fh:
+                        yaml.safe_load(fh)
                 except yaml.YAMLError as exc:
                     problems.append(f"{rel}: rendered YAML does not parse: "
                                     f"{str(exc).splitlines()[0]}")

@@ -45,7 +45,8 @@ def main():
     defaults = collections.defaultdict(set)
     totals = collections.Counter()
     for path in files:
-        rec = load_yaml(open(path, encoding="utf-8").read())
+        with open(path, encoding="utf-8") as handle:
+            rec = load_yaml(handle.read())
         totals_seen = set()
         for ov in rec.get("overrides", []) or []:
             if not isinstance(ov, dict):
@@ -61,7 +62,10 @@ def main():
 
     proposals = []
     for key, counter in chosen.items():
-        value, n = counter.most_common(1)[0]
+        # Most-chosen value, ties broken deterministically by value (Counter.most_common
+        # leaves equal-count order implementation-defined, which would make output flaky).
+        value = max(counter.items(), key=lambda kv: (kv[1], kv[0]))[0]
+        n = counter[value]
         if n >= args.threshold and n * 2 > totals[key]:
             old = " / ".join(sorted(d for d in defaults[key] if d)) or "(built-in)"
             proposals.append((n, len(files), key, old, value))

@@ -63,6 +63,10 @@ def main():
     check("non-numeric start_version rejected",
           has(VALID.replace('start_version: "0.0.0"', 'start_version: "pre-1.0"'),
               "not a numeric"), failures)
+    # A known section given as a scalar must be reported, not crash build_context.
+    check("section of wrong type rejected (no crash)",
+          has(VALID.replace("language: { lang: go, group_path: it/d4np }", "language: nope"),
+              "must be a mapping"), failures)
 
     # --- _unsafe_path_value unit cases ---
     for safe in ("acme", "memorypool", "it/d4np", "a.b-c_d"):
@@ -96,6 +100,19 @@ def main():
         check("traversal manifest wrote nothing outside out_dir",
               not os.path.exists(os.path.join(work, "pwned")) and
               not os.path.exists(os.path.join(os.path.dirname(work), "pwned")), failures)
+
+    # --- end-to-end: render.py refuses an --out inside the EAAO repo (self-overwrite guard) ---
+    with tempfile.TemporaryDirectory() as work:
+        manifest = os.path.join(work, "ok.yaml")
+        with open(manifest, "w", encoding="utf-8") as fh:
+            fh.write(VALID)
+        inside = os.path.join(TOOLS, "__render_should_refuse__")
+        proc = subprocess.run([sys.executable, RENDER_PY, manifest, "--out", inside],
+                              capture_output=True, text=True)
+        check("render into EAAO repo -> non-zero exit", proc.returncode == 1, failures)
+        check("render into EAAO repo -> actionable message",
+              "OUTSIDE the EAAO repository" in (proc.stdout + proc.stderr), failures)
+        check("render into EAAO repo wrote nothing", not os.path.exists(inside), failures)
 
     if failures:
         print("test-render-guards: FAIL\n")

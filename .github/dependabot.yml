@@ -1,0 +1,19 @@
+# Dependabot for the EAAO factory itself. SHA-pinned actions and the pinned CI dependency are
+# only safe to pin if something proposes bumps — that is this file. Each update opens a PR that
+# goes through the normal review/CI flow.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels: ["ci"]
+  - package-ecosystem: "pip"
+    directory: "/.eaao-core/tools"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels: ["ci"]

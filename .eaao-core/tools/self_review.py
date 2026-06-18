@@ -61,14 +61,18 @@ def main():
 
     roadmap = os.path.join(repo, "ROADMAP.md")
     if os.path.exists(roadmap):
-        text = open(roadmap, encoding="utf-8").read()
+        with open(roadmap, encoding="utf-8") as handle:
+            text = handle.read()
         for section in ROADMAP_SECTIONS:
             if section not in text:
                 problems.append(f"ROADMAP.md is missing the '{section}' section")
 
     readme = os.path.join(repo, "README.md")
-    if os.path.exists(readme) and "img.shields.io/badge/Status-v" not in open(readme, encoding="utf-8").read():
-        warnings.append("README.md has no Status-vX.Y.Z badge")
+    if os.path.exists(readme):
+        with open(readme, encoding="utf-8") as handle:
+            readme_text = handle.read()
+        if "img.shields.io/badge/Status-v" not in readme_text:
+            warnings.append("README.md has no Status-vX.Y.Z badge")
 
     # Stray, unrendered placeholders anywhere (GitHub Actions ${{ }} is allowed).
     for cur, _dirs, files in os.walk(repo):
@@ -77,7 +81,8 @@ def main():
         for fn in files:
             path = os.path.join(cur, fn)
             try:
-                text = open(path, encoding="utf-8").read()
+                with open(path, encoding="utf-8") as handle:
+                    text = handle.read()
             except (UnicodeDecodeError, OSError):
                 continue
             if PLACEHOLDER_RE.search(text):

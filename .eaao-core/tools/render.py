@@ -222,13 +222,17 @@ def load_yaml(text):
         body = "\n".join(collected)
         return body if chomp == "-" else body + "\n"   # strip: no final newline; clip: one
 
-    def parse_map(indent):
+    def parse_map(indent, first_line=None):
+        # `first_line` lets a block-style sequence item ("- key: value") feed its dash-stripped
+        # first line in without rewriting the shared `lines` buffer (the parser no longer
+        # mutates its own input). Subsequent iterations read normally from the buffer.
         result = {}
         while True:
             skip_blanks()
             if pos[0] >= n:
                 break
-            line = lines[pos[0]]
+            line = first_line if first_line is not None else lines[pos[0]]
+            first_line = None
             ind = indent_of(line)
             if ind != indent or line.strip().startswith("- "):
                 break
@@ -271,9 +275,8 @@ def load_yaml(text):
             content = line[key_col:]
             if re.match(r"[A-Za-z0-9_]+\s*:(\s|$)", content):
                 # Block-style mapping item ("- key: value" + aligned continuation lines).
-                # Rewrite the "- " lead-in to spaces so parse_map reads a normal entry.
-                lines[pos[0]] = " " * key_col + content
-                items.append(parse_map(key_col))
+                # Feed the dash-stripped first line to parse_map (no buffer mutation).
+                items.append(parse_map(key_col, first_line=" " * key_col + content))
             else:
                 items.append(_scalar(_strip_comment(content.strip())))
                 pos[0] += 1
@@ -555,6 +558,23 @@ def write_file(out_dir, rel, text):
         handle.write(text)
 
 
+def _duplicate_top_level_keys(text):
+    """Top-level keys repeated in the manifest (the loader silently keeps the last value).
+    Best-effort, column-0 keys only — manifest sections live at the top level."""
+    seen, dups = set(), []
+    for raw in text.split("\n"):
+        if not raw or raw[0] in " \t#-" or raw.lstrip() != raw:
+            continue  # indented, comment, list item, or blank — not a top-level key
+        m = re.match(r"([A-Za-z0-9_]+)\s*:", raw)
+        if not m:
+            continue
+        key = m.group(1)
+        if key in seen and key not in dups:
+            dups.append(key)
+        seen.add(key)
+    return dups
+
+
 def main():
     ap = argparse.ArgumentParser(description="Render an EAAO manifest into a repository.")
     ap.add_argument("manifest", help="path to a filled project.yaml")
@@ -562,10 +582,13 @@ def main():
     args = ap.parse_args()
 
     with open(args.manifest, encoding="utf-8") as handle:
-        manifest = load_yaml(handle.read())
+        raw = handle.read()
+    manifest = load_yaml(raw)
     scalars, flags, sections = build_context(manifest)
 
     problems = validate_manifest(manifest, scalars)
+    problems += [f"duplicate top-level key '{k}' (only the last value is kept)"
+                 for k in _duplicate_top_level_keys(raw)]
     if problems:
         print("Render: FAIL — manifest validation\n")
         for p in sorted(set(problems)):
@@ -596,10 +619,11 @@ def main():
 
     errors = []           # one accumulator for the whole run, threaded into every render()
     written = 0
-    for cur, _dirs, files in os.walk(TEMPLATES):
+    for cur, dirs, files in os.walk(TEMPLATES):
         if "__pycache__" in cur:
             continue
-        for fn in files:
+        dirs.sort()           # deterministic walk order, independent of the filesystem
+        for fn in sorted(files):
             src = os.path.join(cur, fn)
             rel = os.path.relpath(src, TEMPLATES).replace(os.sep, "/")
             if rel in NOT_RENDERED:

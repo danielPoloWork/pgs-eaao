@@ -237,12 +237,37 @@ def check_lessons():
             fail(name, f"lessons.yaml entry '{lid}': scope '{scope}' not global|lang:*|kind:*")
 
 
+# ---------------------------------------------------------------------------
+# 6. Action-pin lockstep — SHA-pinned actions shared by the factory CI and the rendered
+#    workflow templates must pin the SAME commit (templates are NOT seen by the factory's
+#    Dependabot, so they silently drift behind; ADR-0009). Floating tags (@v6) are exempt
+#    by design — only fully SHA-pinned `uses: …@<40hex> # vX.Y.Z` lines are governed.
+# ---------------------------------------------------------------------------
+PIN_RE = re.compile(r"uses:\s*([\w.-]+/[\w.-]+)@([0-9a-fA-F]{40})\s*#\s*(v[0-9][\w.-]*)")
+
+
+def check_action_pins():
+    name = "action-pins"
+    factory_ci = os.path.join(os.path.dirname(ROOT), ".github", "workflows", "ci.yml")
+    tmpl_wf = os.path.join(TEMPLATES, ".github", "workflows")
+    if not os.path.exists(factory_ci) or not os.path.isdir(tmpl_wf):
+        return  # standalone .eaao-core checkout: nothing to cross-check
+    fac = {a: (sha, ver) for a, sha, ver in PIN_RE.findall(read(factory_ci))}
+    for path in sorted(glob.glob(os.path.join(tmpl_wf, "*.tmpl"))):
+        rel = os.path.relpath(path, ROOT).replace(os.sep, "/")
+        for action, sha, ver in PIN_RE.findall(read(path)):
+            if action in fac and (sha, ver) != fac[action]:
+                fail(name, f"{rel}: {action} pinned {sha[:10]} ({ver}) but the factory CI pins "
+                           f"{fac[action][0][:10]} ({fac[action][1]}) — keep them in lockstep")
+
+
 CHECKS = [
     check_placeholder_integrity,
     check_profile_completeness,
     check_generate_references,
     check_agent_registry,
     check_lessons,
+    check_action_pins,
 ]
 
 

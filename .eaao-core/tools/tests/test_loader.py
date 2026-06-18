@@ -44,17 +44,58 @@ CASES = [
     ("nested mapping",             "language:\n  lang: cpp\n  group_path: it/d4np\n"),
     ("block-style map items",      "matrix:\n  - os: ubuntu-24.04\n    toolchain: gcc\n"),
     ("hash inside quotes",         'hint: "#include <memory_pool.h>"'),
+    ("leading '---' tolerated",    "---\nname: acme\n"),
+]
+
+# Inputs OUTSIDE the supported subset must fail LOUDLY (ValueError), not be silently
+# mis-parsed (ADR-0008's "fail loudly" promise). PyYAML also rejects these.
+MUST_RAISE = [
+    ("multi-document stream", "a: 1\n---\nb: 2"),
+    ("document end marker",   "a: 1\n...\n"),
+    ("tab indentation",       "root:\n\tchild: 1"),
+]
+
+# Documented deviations where load_yaml deliberately differs from PyYAML — asserted
+# explicitly because the strict-equality corpus above structurally cannot cover them.
+DEVIATIONS = [
+    ("leading-zero int stays string", "code: 08540", {"code": "08540"}),
+    ("decimal stays string",          "ver: 1.20",   {"ver": "1.20"}),
+    ("norway: yes is not bool",       "flag: yes",   {"flag": "yes"}),
 ]
 
 
 def main():
+    failures = []
+
+    # Loader-only invariants (no PyYAML needed): unsupported input must fail loudly, and the
+    # documented deviations from PyYAML must hold exactly (the strict-equality corpus below
+    # cannot cover them, since by definition they disagree with PyYAML).
+    for label, text in MUST_RAISE:
+        try:
+            load_yaml(text)
+            failures.append(f"{label}: expected a loud ValueError, but load_yaml accepted it")
+        except ValueError:
+            pass
+        except Exception as exc:  # noqa: BLE001
+            failures.append(f"{label}: expected ValueError, got {exc!r}")
+    for label, text, expected in DEVIATIONS:
+        got = load_yaml(text)
+        if got != expected:
+            failures.append(f"{label}: load_yaml={got!r} != expected {expected!r}")
+
     try:
         import yaml
     except ImportError:
-        print("test-loader: SKIP — PyYAML not installed (pip install pyyaml to enforce).")
+        if failures:
+            print("test-loader: FAIL\n")
+            for f in failures:
+                print(f"  {f}")
+            print(f"\n{len(failures)} loader-only failure(s).")
+            return 1
+        print("test-loader: SKIP (differential) — PyYAML not installed; "
+              "loader-only checks passed.")
         return 0
 
-    failures = []
     for label, text in CASES:
         try:
             mine = load_yaml(text)
@@ -77,7 +118,8 @@ def main():
             print(f"  {f}")
         print(f"\n{len(failures)} loader-fidelity divergence(s).")
         return 1
-    print(f"test-loader: OK — loader agrees with PyYAML on {len(CASES)} cases + reference.yaml.")
+    print(f"test-loader: OK — agrees with PyYAML on {len(CASES)} cases + reference.yaml, "
+          f"rejects {len(MUST_RAISE)} unsupported inputs, honours {len(DEVIATIONS)} deviations.")
     return 0
 
 

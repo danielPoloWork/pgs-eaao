@@ -144,11 +144,43 @@ def _scalar(s):
     if low in ("null", "~"):
         return None
     if re.fullmatch(r"-?\d+", s):
+        # A leading-zero integer (e.g. a ZIP/year like "08540") would lose the zero if
+        # coerced — keep it a string, consistent with "unquoted decimals stay strings".
+        if re.fullmatch(r"-?0\d+", s):
+            return s
         return int(s)
     return s
 
 
+_DOC_MARKERS = ("---", "...")
+
+
+def _reject_unsupported(text):
+    """Fail loudly on constructs outside the supported subset rather than mis-parsing them.
+
+    A single leading `---` document-start marker is tolerated (idiomatic, single-document);
+    any *later* `---`/`...` marks a multi-document stream (out of scope) and a tab in the
+    indentation is invalid YAML. Both would otherwise be silently flattened/merged.
+    """
+    seen_content = False
+    for num, raw in enumerate(text.split("\n"), 1):
+        s = raw.strip()
+        if s in _DOC_MARKERS:
+            if seen_content or s == "...":
+                raise ValueError(
+                    f"line {num}: multi-document streams / '...' end markers are not supported; "
+                    "the manifest must be a single YAML document"
+                )
+            continue  # a leading '---' document-start is fine
+        lead = raw[: len(raw) - len(raw.lstrip())]
+        if "\t" in lead:
+            raise ValueError(f"line {num}: tab indentation is not valid YAML — use spaces")
+        if s and not s.startswith("#"):
+            seen_content = True
+
+
 def load_yaml(text):
+    _reject_unsupported(text)   # loud failure outside the subset, not silent guessing
     lines = text.split("\n")
     n = len(lines)
     pos = [0]
@@ -157,9 +189,11 @@ def load_yaml(text):
         return len(line) - len(line.lstrip(" "))
 
     def skip_blanks():
+        # Comments, blank lines, and a tolerated leading '---' (validated by
+        # _reject_unsupported, which rejects any non-leading marker) are not content.
         while pos[0] < n:
             s = lines[pos[0]].strip()
-            if s and not s.startswith("#"):
+            if s and not s.startswith("#") and s != "---":
                 return
             pos[0] += 1
 
@@ -252,18 +286,27 @@ def load_yaml(text):
 # ---------------------------------------------------------------------------
 # Manifest -> render context (scalars, boolean flags, list sections).
 # ---------------------------------------------------------------------------
+def _map(d, key):
+    """A known section/sub-mapping must be a mapping; anything else degrades to {} so
+    build_context never crashes on a mis-typed manifest (validate_manifest reports it)."""
+    v = d.get(key) if isinstance(d, dict) else None
+    return v if isinstance(v, dict) else {}
+
+
 def build_context(m):
-    ident = m.get("identity", {}) or {}
-    own = m.get("ownership", {}) or {}
-    lang = m.get("language", {}) or {}
-    tool = m.get("toolchain", {}) or {}
-    cmds = tool.get("commands", {}) or {}
-    ci = m.get("ci", {}) or {}
-    gov = m.get("governance", {}) or {}
-    caps = gov.get("capabilities", {}) or {}
-    spec = m.get("spec", {}) or {}
-    i18n = m.get("i18n", {}) or {}
-    ann = m.get("announce", {}) or {}
+    if not isinstance(m, dict):
+        m = {}
+    ident = _map(m, "identity")
+    own = _map(m, "ownership")
+    lang = _map(m, "language")
+    tool = _map(m, "toolchain")
+    cmds = _map(tool, "commands")
+    ci = _map(m, "ci")
+    gov = _map(m, "governance")
+    caps = _map(gov, "capabilities")
+    spec = _map(m, "spec")
+    i18n = _map(m, "i18n")
+    ann = _map(m, "announce")
 
     slug = ident.get("project_slug", "")
     gpath = lang.get("group_path", "it/d4np")
@@ -393,12 +436,16 @@ def validate_manifest(m, scalars):
     and blank every field under it), a missing required field, a path-unsafe identifier, and
     a non-numeric start version (the classic `start_version`/`version_start` swap)."""
     problems = []
-    for key in m:
+    if not isinstance(m, dict):
+        return [f"manifest root must be a mapping, got {type(m).__name__}"]
+    for key, val in m.items():
         if key not in KNOWN_SECTIONS:
             problems.append(
                 f"unknown top-level section '{key}' (typo? expected one of: "
                 f"{', '.join(sorted(KNOWN_SECTIONS))})"
             )
+        elif val is not None and not isinstance(val, dict):
+            problems.append(f"section '{key}' must be a mapping, got {type(val).__name__}")
     for key in REQUIRED_SCALARS:
         if not str(scalars.get(key, "")).strip():
             problems.append(f"required field for {{{{{key}}}}} is missing or empty")
@@ -528,6 +575,23 @@ def main():
 
     slug = scalars["PROJECT_SLUG"]
     out_dir = os.path.abspath(args.out)
+
+    # Refuse to render into the EAAO repo itself: write_file confines writes *within* the
+    # output root, but nothing else stops the output root from BEING the factory. `--out .`
+    # would otherwise overwrite EAAO's own AGENTS.md / CI / LICENSE.
+    out_root = os.path.realpath(out_dir)
+    eaao_repo = os.path.realpath(os.path.dirname(ROOT))   # the repo that contains .eaao-core/
+
+    def _inside(child, parent):
+        try:
+            return child == parent or os.path.commonpath([child, parent]) == parent
+        except ValueError:                                # different drives on Windows
+            return False
+
+    if _inside(out_root, eaao_repo):
+        print("Render: FAIL — --out must be a directory OUTSIDE the EAAO repository "
+              f"(refusing to render into {out_root}, which would overwrite the factory).")
+        return 1
     os.makedirs(out_dir, exist_ok=True)
 
     errors = []           # one accumulator for the whole run, threaded into every render()

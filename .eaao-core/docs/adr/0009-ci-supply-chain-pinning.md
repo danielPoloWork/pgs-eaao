@@ -58,3 +58,22 @@ A tiered policy, by who authors the workflow and by reproducibility:
   is the author and the blast radius (a `contents: write` release job) is highest.
 - Future work, if desired: extend SHA-pinning into the per-language profiles, and add per-wheel
   hash pinning for additional Python tools — both are incremental on this foundation.
+
+## Addendum (2026-06-18)
+
+A later audit found two drift gaps in this policy as implemented:
+
+- **The literal pins in Decision §1 are point-in-time.** The factory's own
+  `.github/workflows/ci.yml` has since been bumped by Dependabot (e.g. `actions/setup-python`
+  v5.6.0 → v6.2.0) while the rendered templates were not. Dependabot's `github-actions`
+  ecosystem only scans real workflow files — never the `.tmpl` copies, nor the YAML fragments
+  embedded in language profiles — so the template pins are **not** kept current by the factory's
+  Dependabot (contrary to the spirit of §5) and must be maintained deliberately.
+- **The templates had pinned `actions/checkout` to the annotated-tag-object SHA** rather than
+  the commit SHA the factory CI uses, so the two referenced `v6.0.3` by different object SHAs.
+
+Both were reconciled in PR #11: the templates were re-pinned in lockstep with the factory CI,
+and an `action-pins` gate was added to `tools/eaao_lint.py` that fails if a SHA-pinned action
+shared by the factory CI and the workflow templates diverges. **The specific version numbers in
+§1 are illustrative of the original decision, not the current pins — the `action-pins` gate, not
+this prose, is now the source of truth for factory/template parity.**

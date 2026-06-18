@@ -74,6 +74,13 @@ def main():
     for bad in ("..", "a/../b", "", "/etc", "C:\\x", "a/..", "foo/./bar"):
         check(f"_unsafe_path_value unsafe: {bad!r}", render._unsafe_path_value(bad), failures)
 
+    # --- _duplicate_top_level_keys: repeated section detected; nested dup not a false positive ---
+    check("duplicate top-level key detected",
+          render._duplicate_top_level_keys("identity:\n  a: 1\nidentity:\n  b: 2\n") == ["identity"],
+          failures)
+    check("nested duplicate is not a top-level duplicate",
+          render._duplicate_top_level_keys("a:\n  x: 1\n  x: 2\nb: 3\n") == [], failures)
+
     # --- write_file containment: a normal rel writes, an escaping rel raises ---
     with tempfile.TemporaryDirectory() as out:
         render.write_file(out, "docs/ok.md", "hi")

@@ -58,12 +58,12 @@ ci:
         - uses: actions/setup-go@v5
           with: { go-version: '1.22', cache: true }
         - name: gofumpt
-          run: go install mvdan.cc/gofumpt@latest && test -z "$(gofumpt -l .)"
+          run: go install mvdan.cc/gofumpt@v0.10.0 && test -z "$(gofumpt -l .)"
         - uses: golangci/golangci-lint-action@v6
         - name: race + vuln
           run: |
             go test -race ./...
-            go install golang.org/x/vuln/cmd/govulncheck@latest && govulncheck ./...
+            go install golang.org/x/vuln/cmd/govulncheck@v1.4.0 && govulncheck ./...
   race_job: |
     race:
       name: race / data-race detector

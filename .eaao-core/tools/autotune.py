@@ -47,17 +47,20 @@ def main():
     for path in files:
         with open(path, encoding="utf-8") as handle:
             rec = load_yaml(handle.read())
-        totals_seen = set()
+        # Collapse duplicate overrides of the same key WITHIN one record (last wins): a key
+        # listed twice must not inflate its chosen-count past totals[key] (a false majority).
+        per_record = {}
         for ov in rec.get("overrides", []) or []:
             if not isinstance(ov, dict):
                 continue
             key = str(ov.get("key", "")).strip()
             if not key:
                 continue
-            chosen[key][str(ov.get("chosen", "")).strip()] += 1
-            defaults[key].add(str(ov.get("default", "")).strip())
-            totals_seen.add(key)
-        for key in totals_seen:
+            per_record[key] = (str(ov.get("chosen", "")).strip(),
+                               str(ov.get("default", "")).strip())
+        for key, (chosen_val, default_val) in per_record.items():
+            chosen[key][chosen_val] += 1
+            defaults[key].add(default_val)
             totals[key] += 1
 
     proposals = []

@@ -15,4 +15,5 @@ is sequential and never reused. Template: the generated
 | [0004](0004-seed-language-profiles.md) | Seed profiles for C, C#, VB.NET, JS, PHP, Lua (SQL/CSS/HTML stay secondary) | Accepted |
 | [0005](0005-seed-modern-and-legacy-profiles.md) | Seed Scala/Kotlin/Swift/Dart/Ruby + legacy COBOL/Pascal (QBasic deferred) | Accepted |
 | [0006](0006-manifest-loader-and-emitted-yaml-validation.md) | Spec-correct manifest loader + real-parser gate for emitted YAML | Accepted |
+| [0008](0008-loader-scalar-fidelity-and-differential-gate.md) | Loader scalar fidelity (quote escaping, chomping) + PyYAML differential gate | Accepted |
 | [0007](0007-renderer-write-guards-and-validation-independence.md) | Renderer write-containment, required-field validation, independent CI-YAML gate | Accepted |

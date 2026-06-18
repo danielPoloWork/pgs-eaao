@@ -24,7 +24,7 @@ jobs:
       - name: EAAO self-lint
         run: python .eaao-core/tools/eaao_lint.py
       - name: Byte-compile the factory tooling
-        run: python -m py_compile .eaao-core/tools/eaao_lint.py .eaao-core/tools/render.py .eaao-core/tools/autotune.py .eaao-core/tools/self_review.py .eaao-core/tools/profile_ci_lint.py
+        run: python -m py_compile .eaao-core/tools/eaao_lint.py .eaao-core/tools/render.py .eaao-core/tools/autotune.py .eaao-core/tools/self_review.py .eaao-core/tools/profile_ci_lint.py .eaao-core/tools/tests/test_loader.py
       - name: Auto-tuner (advisory)
         run: python .eaao-core/tools/autotune.py
 
@@ -38,6 +38,8 @@ jobs:
           python-version: '3.12'
       - name: Install PyYAML (real-parser gate for emitted CI YAML)
         run: pip install pyyaml
+      - name: Loader fidelity (hand-rolled vs PyYAML differential)
+        run: python .eaao-core/tools/tests/test_loader.py
       - name: Render the reference manifest and run the generated lint
         run: |
           python .eaao-core/tools/render.py .eaao-core/orchestrator/examples/reference.yaml --out /tmp/rendered

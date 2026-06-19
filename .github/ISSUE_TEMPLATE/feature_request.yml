@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose a capability or change for EAAO (a new language profile, template, or tooling improvement)
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Substantial changes usually become an ADR under `.eaao-core/docs/adr/` before code.
+        Describe the problem first; the solution is a proposal, not a decision. A new language
+        is normally just a new `profiles/<lang>.yaml` — say so if that is all this needs.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What maintainer- or downstream-facing problem or limitation does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

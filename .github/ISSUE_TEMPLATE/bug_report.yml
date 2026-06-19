@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible defect in the EAAO factory (renderer, lint, a profile or template)
+labels: ["bug"]
+assignees: ["danielPoloWork"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. A minimal reproduction — the failing `tools/` invocation or the
+        manifest/profile that triggers it — is the most useful thing you can provide.
+        **Security issues do not go here** — see [`SECURITY.md`](../../SECURITY.md).
+  - type: input
+    id: version
+    attributes:
+      label: Affected commit
+      placeholder: "main @ YYYY-MM-DD, or a commit SHA"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "OS, Python version (3.12+)"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - "render.py (renderer)"
+        - "eaao_lint.py (self-lint)"
+        - "a language profile"
+        - "a template"
+        - "the generated consistency_lint.py"
+        - "docs / other"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: Steps to reproduce, or (ideally) the exact command + manifest.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected vs actual behavior
+    validations:
+      required: true

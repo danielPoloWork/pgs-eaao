@@ -223,6 +223,21 @@ placeholder**. The render-smoke job in EAAO's own CI runs this against
 
 ---
 
+## Contributing & governance
+
+EAAO is **owner-governed**: contributors *suggest* via pull requests, the owner
+(`@danielPoloWork`) *decides* and **squash-merges**. Nobody pushes to `main` directly.
+
+- Start with [`CONTRIBUTING.md`](CONTRIBUTING.md): fork → feature branch → Conventional
+  Commits → run the gates (`eaao_lint`, render-smoke, `tools/tests/`) → open a PR.
+- `main` accepts the **squash** merge method only; the full branch-protection ruleset
+  (require-PR, restrict who can push) is active once the repo is public.
+- Security issues never go in a public issue — see [`SECURITY.md`](SECURITY.md). Questions and
+  ideas go to GitHub Discussions. Releases follow SemVer and are recorded in
+  [`CHANGELOG.md`](CHANGELOG.md). The full contract is [`AGENTS.md`](AGENTS.md).
+
+---
+
 ## Provenance
 
 EAAO is reverse-engineered from `pbr-cpp-memory-pool` — every rule, template, and gate

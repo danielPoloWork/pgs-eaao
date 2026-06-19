@@ -114,23 +114,33 @@ This is the canonical five-step loop. Each step has a home document; never skip 
 If any step fails, follow the [failure & recovery playbook](.eaao-core/orchestrator/recovery.md):
 fix the cause and re-run; never silence a gate or hand-edit generated output.
 
-## 6. Git Workflow (for work ON EAAO)
+## 6. Git Workflow & contribution model (for work ON EAAO)
 
-The agent-vs-human boundary is identical to the reference project:
+EAAO is **owner-governed**: anyone — a human collaborator or an AI agent — may *propose*
+changes, but only the owner decides what lands on `main`.
 
 | Action | Who |
 |---|---|
-| Create branches; stage, commit, push | Agent |
-| Draft pull request (title + body) | Agent |
-| **Open / publish the PR** | **Human** |
-| Code review; **merge to `{{DEFAULT_BRANCH}}`** | **Human** |
+| Create a **feature branch**; stage, commit, push it | Agent / contributor |
+| Draft / open a pull request (title + body) | Agent / contributor |
+| Review, request changes, **decide** | **Owner (`@danielPoloWork`)** |
+| **Squash-merge to `main`** | **Owner only** |
 
+- **Contributors only suggest.** Collaborators and agents never push to `main`, never merge,
+  and never force-push. Work happens on a feature branch (external contributors fork) and
+  reaches the owner as a pull request. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+- **The owner is the sole decider.** Every change reaches `main` through a PR the owner
+  reviews and **squash-merges** — the repository allows the *squash* merge method only.
+- **`main` is protected:** PR required, **squash-merge only**, no direct pushes, no
+  force-push, no deletion, linear history. Squash-only is enforced at the repository level
+  today; the full branch-protection ruleset (require-PR + restrict who can push) is enabled
+  once the repository is public (GitHub's free plan gates protection behind public/Pro), and
+  until then is backed by collaborator role (Triage/Read) plus this policy.
 - Branch naming: `<type>/<short-kebab>`, `type ∈ {feat, fix, refactor, perf, docs, test,
   build, chore, ci}`.
 - Conventional Commits for messages. Scopes for this repo: `interview`, `profiles`,
   `templates`, `lint`, `agent`, `docs`, `adr`, `ci`.
-- One logical change per PR; one PR at a time. Agents never merge, never push to the
-  default branch, never force-push it.
+- One logical change per PR; prefer one PR at a time.
 
 ## 7. Documentation rules (for work ON EAAO)
 

@@ -1,8 +1,8 @@
 # Using EAAO — capabilities, how it works, what is fixed, what you customize
 
 A practical map of the Enterprise Agentic Architecture Orchestrator for anyone who just
-downloaded it. For the install/quickstart see the [root README](../../README.md); the binding
-rules live in [`AGENTS.md`](../../AGENTS.md). This page is the orientation in between.
+downloaded it. For the install/quickstart see the [getting-started README](../README.md); the
+binding rules live in [`AGENTS.md`](../../AGENTS.md). This page is the orientation in between.
 
 ---
 
@@ -120,7 +120,39 @@ agent-vs-human boundary → it is **fixed**. If it is a *value*, an *overlay*, a
 
 ---
 
-## 6. Go deeper
+## 6. Distribution bundle (ship just the factory)
+
+To hand EAAO to someone who only needs to *use* it, produce a bundle with `git archive`. The
+bundle is the factory you **operate**, not this repository's own identity, so the
+`export-ignore` rules in `.gitattributes` strip two groups:
+
+- **repo-management plumbing** — CI, issue/PR templates, Dependabot, CODEOWNERS, the portfolio
+  card, `.gitignore`, `CHANGELOG.md`;
+- **this repo's identity/governance docs** — `README.md`, `SECURITY.md`, `CONTRIBUTING.md`, and
+  the i18n translations under `docs/i18n/`. The *generated* project renders its own
+  `README`/`SECURITY` from the templates; `CONTRIBUTING` and the i18n (translations of *this*
+  repo's README) are EAAO-only and not needed to operate the factory.
+
+What ships: the whole factory (`.eaao-core/`, including its tools, templates, profiles, docs,
+and [`.eaao-core/README.md`](../README.md) — the bundle's entry-point instructions), the agent
+contract (`AGENTS.md` / `CLAUDE.md` / `GEMINI.md`), and `LICENSE`. **`LICENSE` is kept on
+purpose**: `render.py` reads it as the source for each generated project's license, so removing
+it would yield license-less projects.
+
+```bash
+# from a clone of this repo — tarball or zip
+git archive --format=tar.gz --prefix=pgs-eaao/ -o pgs-eaao-bundle.tar.gz HEAD
+git archive --format=zip    --prefix=pgs-eaao/ -o pgs-eaao-bundle.zip    HEAD
+
+# preview exactly what a bundle would contain, without writing one:
+git archive HEAD | tar tf - | sort
+```
+
+The recipient unpacks it, reads [`.eaao-core/README.md`](../README.md), opens the folder with an
+AI agent (which auto-loads `AGENTS.md`), and runs the factory exactly as above — no git history
+and none of EAAO's own governance noise.
+
+## 7. Go deeper
 
 - [`AGENTS.md`](../../AGENTS.md) — the binding contract (source of truth).
 - [`orchestrator/`](../orchestrator/README.md) — the engine (interview, generate, placeholders, profiles, recovery).

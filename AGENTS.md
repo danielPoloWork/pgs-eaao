@@ -128,7 +128,7 @@ changes, but only the owner decides what lands on `main`.
 
 - **Contributors only suggest.** Collaborators and agents never push to `main`, never merge,
   and never force-push. Work happens on a feature branch (external contributors fork) and
-  reaches the owner as a pull request. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+  reaches the owner as a pull request. See [`CONTRIBUTING.md`](https://github.com/danielPoloWork/pgs-eaao/blob/main/CONTRIBUTING.md).
 - **The owner is the sole decider.** Every change reaches `main` through a PR the owner
   reviews and **squash-merges** — the repository allows the *squash* merge method only.
 - **`main` is protected:** PR required, **squash-merge only**, no direct pushes, no
@@ -172,7 +172,7 @@ The factory is held to the bar it imposes downstream:
 The first three gates are mechanically enforced by [`tools/eaao_lint.py`](.eaao-core/tools/eaao_lint.py);
 emitted-YAML validity is enforced by [`tools/profile_ci_lint.py`](.eaao-core/tools/profile_ci_lint.py)
 (a real-parser check that degrades to a skip when PyYAML is absent). Both run in CI via
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml). Run them before drafting any PR that
+[`.github/workflows/ci.yml`](https://github.com/danielPoloWork/pgs-eaao/blob/main/.github/workflows/ci.yml). Run them before drafting any PR that
 touches templates, profiles, the placeholder dictionary, or the generation playbook — a red
 gate is a broken change.
 

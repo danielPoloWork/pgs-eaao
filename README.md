@@ -150,7 +150,7 @@ EAAO is a markdown/YAML factory — there is nothing to compile and almost nothi
 ```bash
 git clone https://github.com/danielPoloWork/pgs-eaao.git
 cd pgs-eaao
-python tools/eaao_lint.py        # optional: confirm the factory is internally congruent
+python .eaao-core/tools/eaao_lint.py   # optional: confirm the factory is internally congruent
 ```
 
 ## Quickstart
@@ -179,9 +179,9 @@ The interview's only output is a filled manifest, so you can also fill it by han
 without an agent:
 
 ```bash
-cp orchestrator/project.yaml.template orchestrator/project.yaml
-# edit orchestrator/project.yaml — see orchestrator/examples/reference.yaml for a worked one
-python tools/render.py orchestrator/project.yaml --out ../my-new-repo
+cp .eaao-core/orchestrator/project.yaml.template .eaao-core/orchestrator/project.yaml
+# edit .eaao-core/orchestrator/project.yaml — see .eaao-core/orchestrator/examples/reference.yaml for a worked one
+python .eaao-core/tools/render.py .eaao-core/orchestrator/project.yaml --out ../my-new-repo
 cd ../my-new-repo && python tools/consistency_lint.py     # the generated repo's own gate
 ```
 

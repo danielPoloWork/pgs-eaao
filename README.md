@@ -138,26 +138,48 @@ pgs-eaao/
 
 ### Requirements
 
-EAAO is a markdown/YAML factory — there is nothing to compile and almost nothing to install:
+EAAO is a markdown/YAML factory — nothing to compile, almost nothing to install. What you need
+depends on how you drive it:
 
-- **git** and an **AI coding agent** that reads `AGENTS.md` — Claude Code, Gemini Antigravity,
-  or ChatGPT Codex (this is how you normally drive it);
-- **Python 3.12+** — only for the bundled tooling (`tools/render.py`, `tools/eaao_lint.py`, and
-  the generated `consistency_lint.py`). All three are standard-library only; no `pip install`.
+- **To use it conversationally (recommended)** — an **AI coding agent** that reads `AGENTS.md`:
+  Claude Code, Gemini Antigravity, or ChatGPT Codex.
+- **To use it deterministically (no agent)** — **Python 3.12+** only, for the bundled tooling
+  (`render.py`, `eaao_lint.py`, and the generated `consistency_lint.py`); standard-library only,
+  no `pip install`.
+- **To contribute to EAAO** — **git**, to clone and open pull requests. You do **not** need git
+  just to download and use the factory.
 
 ### Get it
 
+**Download the bundle — recommended, no clone.** A self-contained copy of the factory (no CI,
+changelog, or git history), attached to every release:
+
 ```bash
-git clone https://github.com/danielPoloWork/pgs-eaao.git
-cd pgs-eaao
-python .eaao-core/tools/eaao_lint.py   # optional: confirm the factory is internally congruent
+curl -L -o pgs-eaao-bundle.tar.gz \
+  https://github.com/danielPoloWork/pgs-eaao/releases/latest/download/pgs-eaao-bundle.tar.gz
+tar xzf pgs-eaao-bundle.tar.gz && cd pgs-eaao
+```
+
+Prefer a ZIP or your browser? Download either asset from the
+[latest release](https://github.com/danielPoloWork/pgs-eaao/releases/latest).
+
+**Clone the repository — to contribute to EAAO** (the full repo: CI, changelog, history):
+
+```bash
+git clone https://github.com/danielPoloWork/pgs-eaao.git && cd pgs-eaao
+```
+
+Either way, you can confirm the factory is internally congruent:
+
+```bash
+python .eaao-core/tools/eaao_lint.py
 ```
 
 ## Quickstart
 
 You drive EAAO conversationally through the Enterprise Project Architect agent.
 
-1. **Open this repo with your AI coding agent** (Claude Code, Gemini, Codex). It reads
+1. **Open the project folder with your AI coding agent** (Claude Code, Gemini, Codex). It reads
    `AGENTS.md` and adopts the meta-architect persona.
 2. **Say what you want to build.** e.g. *"New project: a Rust token-bucket rate limiter,
    library, GitHub owner `acme`, default branch `main`."*

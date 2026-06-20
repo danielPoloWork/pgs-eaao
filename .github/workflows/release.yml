@@ -1,0 +1,42 @@
+name: release-bundle
+
+# Attach the consumer factory bundle to every published GitHub release, so users can grab the
+# stripped factory without cloning. The human publishes the release (tag + release notes); this
+# workflow only builds the artifacts and uploads them — it never creates or publishes a release.
+#
+# The bundle is `git archive` of the released commit, honoring the `export-ignore` rules in
+# .gitattributes (the factory + agent contract + LICENSE; none of this repo's own plumbing).
+# See .eaao-core/docs/USAGE.md "Distribution bundle".
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write          # upload assets onto the release
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  bundle:
+    name: build & attach factory bundle
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Build the factory bundle (export-ignore strips repo-management files)
+        run: |
+          git archive --format=tar.gz --prefix=pgs-eaao/ -o pgs-eaao-bundle.tar.gz HEAD
+          git archive --format=zip    --prefix=pgs-eaao/ -o pgs-eaao-bundle.zip    HEAD
+      - name: Sanity-check the archive contents
+        run: |
+          set -e
+          listing="$(tar tzf pgs-eaao-bundle.tar.gz)"
+          echo "$listing" | grep -q '^pgs-eaao/.eaao-core/tools/render.py$' || { echo "bundle missing the factory"; exit 1; }
+          echo "$listing" | grep -Eq '^pgs-eaao/(README|SECURITY|CONTRIBUTING|CHANGELOG)\.md$' && { echo "bundle leaked a stripped file"; exit 1; } || true
+      - name: Attach to the release (version-less names → stable /latest/download link)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ github.event.release.tag_name }}" pgs-eaao-bundle.tar.gz pgs-eaao-bundle.zip --clobber

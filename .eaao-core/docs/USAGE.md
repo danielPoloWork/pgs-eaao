@@ -122,35 +122,51 @@ agent-vs-human boundary → it is **fixed**. If it is a *value*, an *overlay*, a
 
 ## 6. Distribution bundle (ship just the factory)
 
-To hand EAAO to someone who only needs to *use* it, produce a bundle with `git archive`. The
-bundle is the factory you **operate**, not this repository's own identity, so the
-`export-ignore` rules in `.gitattributes` strip two groups:
+The bundle is the factory you **operate** — `.eaao-core/` + the agent contract + `LICENSE` —
+without this repository's own CI, changelog, and governance files. It is the easiest way to hand
+EAAO to someone who only needs to *use* it.
 
-- **repo-management plumbing** — CI, issue/PR templates, Dependabot, CODEOWNERS, the portfolio
-  card, `.gitignore`, `CHANGELOG.md`;
-- **this repo's identity/governance docs** — `README.md`, `SECURITY.md`, `CONTRIBUTING.md`, and
-  the i18n translations under `docs/i18n/`. The *generated* project renders its own
-  `README`/`SECURITY` from the templates; `CONTRIBUTING` and the i18n (translations of *this*
-  repo's README) are EAAO-only and not needed to operate the factory.
+### Get it (consumers) — no clone required
 
-What ships: the whole factory (`.eaao-core/`, including its tools, templates, profiles, docs,
-and [`.eaao-core/README.md`](../README.md) — the bundle's entry-point instructions), the agent
-contract (`AGENTS.md` / `CLAUDE.md` / `GEMINI.md`), and `LICENSE`. **`LICENSE` is kept on
-purpose**: `render.py` reads it as the source for each generated project's license, so removing
-it would yield license-less projects.
+Download the ready-made bundle from the **latest GitHub release** and unpack it:
 
 ```bash
-# from a clone of this repo — tarball or zip
-git archive --format=tar.gz --prefix=pgs-eaao/ -o pgs-eaao-bundle.tar.gz HEAD
-git archive --format=zip    --prefix=pgs-eaao/ -o pgs-eaao-bundle.zip    HEAD
-
-# preview exactly what a bundle would contain, without writing one:
-git archive HEAD | tar tf - | sort
+curl -L -o pgs-eaao-bundle.tar.gz \
+  https://github.com/danielPoloWork/pgs-eaao/releases/latest/download/pgs-eaao-bundle.tar.gz
+tar xzf pgs-eaao-bundle.tar.gz && cd pgs-eaao
+# or, with the GitHub CLI:
+#   gh release download --repo danielPoloWork/pgs-eaao --pattern 'pgs-eaao-bundle.tar.gz'
 ```
 
-The recipient unpacks it, reads [`.eaao-core/README.md`](../README.md), opens the folder with an
-AI agent (which auto-loads `AGENTS.md`), and runs the factory exactly as above — no git history
-and none of EAAO's own governance noise.
+Then read [`.eaao-core/README.md`](../README.md) and run the factory (open the folder with an AI
+agent, which auto-loads `AGENTS.md`, or call `render.py` directly). `git clone` is the *other*
+path: it gives you the full repository (CI, changelog, history) and is for **contributing to
+EAAO**, not for using it.
+
+### What's in it
+
+The whole factory (`.eaao-core/`, including its tools, templates, profiles, docs, and
+[`.eaao-core/README.md`](../README.md)), the agent contract (`AGENTS.md` / `CLAUDE.md` /
+`GEMINI.md`), and `LICENSE`. **`LICENSE` is kept on purpose**: `render.py` reads it as the source
+for each generated project's license, so removing it would yield license-less projects.
+
+The `export-ignore` rules in `.gitattributes` strip two groups: **repo-management plumbing** (CI,
+issue/PR templates, Dependabot, CODEOWNERS, the portfolio card, `.gitignore`, `CHANGELOG.md`) and
+**this repo's identity/governance docs** (`README.md`, `SECURITY.md`, `CONTRIBUTING.md`, and the
+i18n translations under `docs/i18n/` — the generated project renders its own, and the i18n
+translates this repo's own README).
+
+### Build or publish one (maintainers)
+
+Every published release attaches the bundle automatically: the `.github/workflows/release.yml`
+workflow runs on release and uploads `pgs-eaao-bundle.tar.gz` / `.zip` with version-less names, so
+`…/releases/latest/download/pgs-eaao-bundle.tar.gz` is a stable link. To build one by hand from a
+clone:
+
+```bash
+git archive --format=tar.gz --prefix=pgs-eaao/ -o pgs-eaao-bundle.tar.gz HEAD
+git archive HEAD | tar tf - | sort   # preview contents without writing a file
+```
 
 ## 7. Go deeper
 

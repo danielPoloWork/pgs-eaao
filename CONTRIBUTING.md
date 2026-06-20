@@ -51,7 +51,7 @@ humans and AI agents alike).
 ## Language
 
 Every artifact that lands on disk or in Git is **English** (`AGENTS.md` §2). You may converse
-in any language; translated docs live only under `docs/i18n/`.
+in any language; translated docs live only under `.eaao-core/docs/i18n/`.
 
 By contributing, you agree your contributions are licensed under the repository's
 [MIT License](LICENSE).

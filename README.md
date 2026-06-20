@@ -7,7 +7,7 @@
 [![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](.eaao-core/orchestrator/profiles/)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196.svg)](https://www.conventionalcommits.org/)
 
-> **🌐 Translations:** [简体中文](docs/i18n/zh-Hans/README.md) · [日本語](docs/i18n/ja/README.md) — derived from this English source. Policy & freshness: [`docs/i18n/`](docs/i18n/README.md).
+> **🌐 Translations:** [简体中文](.eaao-core/docs/i18n/zh-Hans/README.md) · [日本語](.eaao-core/docs/i18n/ja/README.md) — derived from this English source. Policy & freshness: [`.eaao-core/docs/i18n/`](.eaao-core/docs/i18n/README.md).
 
 > A language-agnostic meta-project that reproduces the **enterprise agent system** of
 > `pbr-cpp-memory-pool` for *any* new project, in *any* language, with *any* toolchain —

@@ -2,14 +2,14 @@
 
 [![CI](https://github.com/danielPoloWork/pgs-eaao/actions/workflows/ci.yml/badge.svg)](https://github.com/danielPoloWork/pgs-eaao/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/danielPoloWork/pgs-eaao/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../../LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
-[![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](../../../.eaao-core/orchestrator/profiles/)
+[![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](../../../../.eaao-core/orchestrator/profiles/)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196.svg)](https://www.conventionalcommits.org/)
 
-> 🌐 本ページはプロジェクト [`README.md`](../../../README.md) の日本語訳です。
+> 🌐 本ページはプロジェクト [`README.md`](../../../../README.md) の日本語訳です。
 > **英語版が唯一の正典** —— 本訳が原文と食い違う場合は英語版が優先されます。
-> 他の言語で読む：[English](../../../README.md) · [简体中文](../zh-Hans/README.md)。
+> 他の言語で読む：[English](../../../../README.md) · [简体中文](../zh-Hans/README.md)。
 
 > 言語非依存のメタプロジェクト。維持者へのインタビューを行い、その回答を単一の manifest に
 > 記録し、パラメータ化された template からレンダリングすることで、*あらゆる*新規プロジェクト・
@@ -29,7 +29,7 @@ EAAO はある一つの問いに答えるために存在します：
 その答え：**Enterprise Project Architect** エージェントを EAAO に向け、**インテイク・
 インタビュー**を実行し、新しいリポジトリを生成させること。
 
-> **はじめての方へ。** [`.eaao-core/docs/USAGE.md`](../../../.eaao-core/docs/USAGE.md) を
+> **はじめての方へ。** [`.eaao-core/docs/USAGE.md`](../../../../.eaao-core/docs/USAGE.md) を
 > お読みください —— EAAO に何ができるか、どう動くか、何が固定で何をカスタマイズできるかの
 > 全体地図です。
 
@@ -93,7 +93,7 @@ EAAO はある一つの問いに答えるために存在します：
 ```
 
 完全で順序づけられた手順が**生成プレイブック**です：
-[`orchestrator/generate.md`](../../../.eaao-core/orchestrator/generate.md)。
+[`orchestrator/generate.md`](../../../../.eaao-core/orchestrator/generate.md)。
 
 ---
 
@@ -165,12 +165,12 @@ EAAO は Enterprise Project Architect エージェントを通じて会話的に
 2. **作りたいものを伝える。** 例：*「新規プロジェクト：Rust のトークンバケット・レート
    リミッタ、library、GitHub owner `acme`、デフォルトブランチ `main`。」*
 3. **インタビューに答える。** アーキテクトは
-   [`orchestrator/interview.md`](../../../.eaao-core/orchestrator/interview.md) を辿り —— 言語、
+   [`orchestrator/interview.md`](../../../../.eaao-core/orchestrator/interview.md) を辿り —— 言語、
    フレームワーク、ツール、ガバナンス、機能仕様 —— 安全に既定値を採れない問いだけを尋ねます。
 4. **manifest を確認する。** アーキテクトは `orchestrator/project.yaml` を書き、何かを生成する
    前にあなたへ確認のため提示します。
 5. **生成する。** アーキテクトは
-   [`orchestrator/generate.md`](../../../.eaao-core/orchestrator/generate.md) に従って新リポジトリ
+   [`orchestrator/generate.md`](../../../../.eaao-core/orchestrator/generate.md) に従って新リポジトリ
    をレンダリングし、consistency lint を実行し、ブートストラップ PR を起草します。
 
 エンタープライズ規則を覚えておく必要はありません —— それらは template に符号化され lint で
@@ -189,19 +189,19 @@ cd ../my-new-repo && python tools/consistency_lint.py     # the generated repo's
 ```
 
 `render.py` は
-[`orchestrator/placeholders.md`](../../../.eaao-core/orchestrator/placeholders.md) の置換を
+[`orchestrator/placeholders.md`](../../../../.eaao-core/orchestrator/placeholders.md) の置換を
 厳密に実行し、`capabilities.*` ゲートを尊重し、GitHub Actions の `${{ … }}` はそのまま残し、
 **未解決の placeholder があれば中断**します。EAAO 自身の CI の render-smoke ジョブは、毎プッシュ
 時にこれを
-[`orchestrator/examples/reference.yaml`](../../../.eaao-core/orchestrator/examples/reference.yaml)
+[`orchestrator/examples/reference.yaml`](../../../../.eaao-core/orchestrator/examples/reference.yaml)
 に対して実行します。
 
 ### ツール
 
 | ツール | 役割 |
 |---|---|
-| [`tools/render.py`](../../../.eaao-core/tools/render.py) | manifest をリポジトリへレンダリング（決定的）。 |
-| [`tools/eaao_lint.py`](../../../.eaao-core/tools/eaao_lint.py) | 自己 lint：placeholder の整合性、profile の完全性、プレイブック参照。 |
+| [`tools/render.py`](../../../../.eaao-core/tools/render.py) | manifest をリポジトリへレンダリング（決定的）。 |
+| [`tools/eaao_lint.py`](../../../../.eaao-core/tools/eaao_lint.py) | 自己 lint：placeholder の整合性、profile の完全性、プレイブック参照。 |
 | `templates/tools/consistency_lint.py` | 各生成リポジトリへ同梱され、その成果物間の整合性を強制。 |
 
 ---
@@ -214,7 +214,7 @@ cd ../my-new-repo && python tools/consistency_lint.py     # the generated repo's
 - **あらゆる言語に開かれている。** EAAO は固定リストに縛られません —— 同梱の十九個の profile
   （C、C++、C#、VB.NET、Java、Kotlin、Scala、Python、Ruby、PHP、JavaScript、TypeScript、Go、
   Rust、Swift、Dart、Lua、COBOL、Pascal）は**種**です。新しい言語の対応とは
-  [`profiles/_template.yaml`](../../../.eaao-core/orchestrator/profiles/_template.yaml) を一つの
+  [`profiles/_template.yaml`](../../../../.eaao-core/orchestrator/profiles/_template.yaml) を一つの
   `profiles/<lang>.yaml` にコピーすることであり、template を編集することは決してありません。
   template は*役割*（build ツール、テストランナー、formatter）だけを知り、具体的なツールは
   知りません。「非対応の言語」は存在せず、あるのは「まだ profile 化していない」だけです。
@@ -232,14 +232,14 @@ cd ../my-new-repo && python tools/consistency_lint.py     # the generated repo's
 EAAO は **owner ガバナンス**です：コントリビューターは pull request で*提案*し、owner
 （`@danielPoloWork`）が*決定*し **squash-merge** します。誰も `main` へ直接 push しません。
 
-- まず [`CONTRIBUTING.md`](../../../CONTRIBUTING.md) から：fork → フィーチャーブランチ →
+- まず [`CONTRIBUTING.md`](../../../../CONTRIBUTING.md) から：fork → フィーチャーブランチ →
   Conventional Commits → ゲート実行（`eaao_lint`、render-smoke、`tools/tests/`）→ PR を開く。
 - `main` は **squash** マージ方式のみを受け付けます。完全なブランチ保護 ruleset（PR 必須、
   push できる者の制限）はリポジトリ公開後に有効になります。
-- セキュリティ問題は公開 issue に書きません —— [`SECURITY.md`](../../../SECURITY.md) を参照。
+- セキュリティ問題は公開 issue に書きません —— [`SECURITY.md`](../../../../SECURITY.md) を参照。
   質問やアイデアは GitHub Discussions へ。リリースは SemVer に従い
-  [`CHANGELOG.md`](../../../CHANGELOG.md) に記録されます。完全な契約は
-  [`AGENTS.md`](../../../AGENTS.md) です。
+  [`CHANGELOG.md`](../../../../CHANGELOG.md) に記録されます。完全な契約は
+  [`AGENTS.md`](../../../../AGENTS.md) です。
 
 ---
 
@@ -248,4 +248,4 @@ EAAO は **owner ガバナンス**です：コントリビューターは pull r
 EAAO は `pbr-cpp-memory-pool` からリバースエンジニアリングされています —— ここにあるすべての
 規則・template・ゲートは、そのプロジェクトの `AGENTS.md`、`docs/`、`.github/`、
 `tools/consistency_lint.py` に具体的な出自を持ちます。この一般化を形づくった決定については
-[`docs/adr/`](../../../.eaao-core/docs/adr/) を参照してください。
+[`docs/adr/`](../../../../.eaao-core/docs/adr/) を参照してください。

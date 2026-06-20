@@ -5,7 +5,7 @@ All notable changes to `pgs-eaao` (EAAO) are documented here, following
 [Semantic Versioning 2.0.0](https://semver.org/).
 
 Every PR that introduces a user- or maintainer-visible change adds a line to `[Unreleased]`
-in the same PR. Releases follow Semantic Versioning; the latest is **v1.1.0**.
+in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.0**.
 
 ## [Unreleased]
 
@@ -20,6 +20,31 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.1.0**.
 ### Fixed
 
 ### Security
+
+---
+
+## [1.2.0] - 2026-06-21
+
+### Added
+
+- **In-place generation** — `render.py --in-place` writes the generated project into the folder
+  that holds `.eaao-core/` (the bundle copied into your own repo, `<repo>/.eaao-core/`), so the
+  project files land in `<repo>/` next to it. The rendered `.gitignore` excludes `.eaao-core/`,
+  and a root `.eaao-dev` sentinel keeps the factory's own dev repo safe; `--out <dir>` still
+  renders a separate copy.
+- **Full roadmap up front** — the interview now elicits *all* milestones at generation, and
+  `ROADMAP.md` + the README milestone table render every one. New `spec.milestones`
+  (`number`/`title`/`goal`/`items`) plus a nested `{{#ITEMS}}` loop in the renderer.
+- **Releases auto-attach the factory bundle** — a `release.yml` workflow uploads the version-less
+  `pgs-eaao-bundle.tar.gz` / `.zip` on every published release.
+
+### Changed
+
+- **The distribution bundle is prefix-less** — `git archive` no longer wraps the bundle in a
+  `pgs-eaao/` folder, so extracting it at the root of your project repo drops `.eaao-core/` there
+  directly (not in a subfolder).
+- README getting-started reworked consumer-first (download the bundle, no clone), and the
+  copy-paste commands fixed to their `.eaao-core/` paths.
 
 ---
 

@@ -134,26 +134,45 @@ pgs-eaao/
 
 ### 前置要求
 
-EAAO 是一座 markdown/YAML 工厂 —— 没有东西需要编译，几乎没有东西需要安装：
+EAAO 是一座 markdown/YAML 工厂 —— 没有东西需要编译，几乎没有东西需要安装。具体需要什么，
+取决于你如何驱动它：
 
-- **git** 和一个能读取 `AGENTS.md` 的 **AI 编码智能体** —— Claude Code、Gemini Antigravity
-  或 ChatGPT Codex（通常你以此驱动它）；
-- **Python 3.12+** —— 仅用于内置工具（`tools/render.py`、`tools/eaao_lint.py` 以及生成的
-  `consistency_lint.py`）。三者均只依赖标准库；无需 `pip install`。
+- **以对话方式使用（推荐）** —— 一个能读取 `AGENTS.md` 的 **AI 编码智能体**：Claude Code、
+  Gemini Antigravity 或 ChatGPT Codex。
+- **以确定性方式使用（无需智能体）** —— 仅需 **Python 3.12+**，用于内置工具（`render.py`、
+  `eaao_lint.py` 以及生成的 `consistency_lint.py`）；只依赖标准库，无需 `pip install`。
+- **为 EAAO 做贡献** —— **git**，用于克隆并提交 pull request。仅仅下载并使用工厂**无需** git。
 
 ### 获取
 
+**下载 bundle —— 推荐，无需克隆。** 工厂的自包含副本（不含 CI、changelog 或 git 历史），随每次
+发布一并附带：
+
 ```bash
-git clone https://github.com/danielPoloWork/pgs-eaao.git
-cd pgs-eaao
-python .eaao-core/tools/eaao_lint.py   # optional: confirm the factory is internally congruent
+curl -L -o pgs-eaao-bundle.tar.gz \
+  https://github.com/danielPoloWork/pgs-eaao/releases/latest/download/pgs-eaao-bundle.tar.gz
+tar xzf pgs-eaao-bundle.tar.gz && cd pgs-eaao
+```
+
+想要 ZIP 或用浏览器？从[最新发布](https://github.com/danielPoloWork/pgs-eaao/releases/latest)下载任一资产。
+
+**克隆仓库 —— 为 EAAO 做贡献**（完整仓库：CI、changelog、历史）：
+
+```bash
+git clone https://github.com/danielPoloWork/pgs-eaao.git && cd pgs-eaao
+```
+
+无论哪种方式，都可以确认工厂内部一致：
+
+```bash
+python .eaao-core/tools/eaao_lint.py
 ```
 
 ## Quickstart
 
 你通过 Enterprise Project Architect 智能体以对话方式驱动 EAAO。
 
-1. **用你的 AI 编码智能体打开本仓库**（Claude Code、Gemini、Codex）。它会读取
+1. **用你的 AI 编码智能体打开该项目文件夹**（Claude Code、Gemini、Codex）。它会读取
    `AGENTS.md` 并采用元架构师人设。
 2. **说出你想构建什么。** 例如 *"新项目：一个 Rust 令牌桶限流器，library，GitHub owner
    `acme`，默认分支 `main`。"*

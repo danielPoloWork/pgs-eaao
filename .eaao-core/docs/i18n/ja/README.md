@@ -141,26 +141,46 @@ pgs-eaao/
 ### 必要要件
 
 EAAO は markdown/YAML のファクトリです —— コンパイルするものは何もなく、インストールも
-ほとんど不要です：
+ほとんど不要です。何が必要かは駆動方法によります：
 
-- **git** と `AGENTS.md` を読む **AI コーディングエージェント** —— Claude Code、
-  Gemini Antigravity、または ChatGPT Codex（通常これで駆動します）；
-- **Python 3.12+** —— 同梱ツール（`tools/render.py`、`tools/eaao_lint.py`、および生成される
-  `consistency_lint.py`）専用。三つとも標準ライブラリのみで `pip install` は不要です。
+- **会話的に使う（推奨）** —— `AGENTS.md` を読む **AI コーディングエージェント**：Claude Code、
+  Gemini Antigravity、または ChatGPT Codex。
+- **決定的に使う（エージェント不要）** —— 同梱ツール（`render.py`、`eaao_lint.py`、および生成される
+  `consistency_lint.py`）のための **Python 3.12+** のみ。標準ライブラリだけで `pip install` は不要です。
+- **EAAO に貢献する** —— クローンして pull request を開くための **git**。ファクトリをダウンロード
+  して使うだけなら git は**不要**です。
 
 ### 入手
 
+**バンドルをダウンロード —— 推奨、クローン不要。** ファクトリの自己完結コピー（CI・changelog・
+git 履歴なし）で、各リリースに添付されます：
+
 ```bash
-git clone https://github.com/danielPoloWork/pgs-eaao.git
-cd pgs-eaao
-python .eaao-core/tools/eaao_lint.py   # optional: confirm the factory is internally congruent
+curl -L -o pgs-eaao-bundle.tar.gz \
+  https://github.com/danielPoloWork/pgs-eaao/releases/latest/download/pgs-eaao-bundle.tar.gz
+tar xzf pgs-eaao-bundle.tar.gz && cd pgs-eaao
+```
+
+ZIP やブラウザがよいですか？[最新リリース](https://github.com/danielPoloWork/pgs-eaao/releases/latest)
+からいずれかのアセットをダウンロードできます。
+
+**リポジトリをクローン —— EAAO に貢献する場合**（CI・changelog・履歴を含む完全なリポジトリ）：
+
+```bash
+git clone https://github.com/danielPoloWork/pgs-eaao.git && cd pgs-eaao
+```
+
+どちらの方法でも、ファクトリが内部的に整合しているか確認できます：
+
+```bash
+python .eaao-core/tools/eaao_lint.py
 ```
 
 ## Quickstart
 
 EAAO は Enterprise Project Architect エージェントを通じて会話的に駆動します。
 
-1. **本リポジトリを AI コーディングエージェントで開く**（Claude Code、Gemini、Codex）。
+1. **プロジェクトフォルダを AI コーディングエージェントで開く**（Claude Code、Gemini、Codex）。
    エージェントは `AGENTS.md` を読み、メタアーキテクトのペルソナを採用します。
 2. **作りたいものを伝える。** 例：*「新規プロジェクト：Rust のトークンバケット・レート
    リミッタ、library、GitHub owner `acme`、デフォルトブランチ `main`。」*

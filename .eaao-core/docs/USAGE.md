@@ -130,20 +130,23 @@ EAAO to someone who only needs to *use* it.
 
 ### Get it (consumers) — no clone required
 
-Download the ready-made bundle from the **latest GitHub release** and unpack it:
+The bundle is **prefix-less**: extract it **at the root of your project's repo** and its contents
+(`.eaao-core/` plus the agent contract and `LICENSE`) land directly there — *not* in a subfolder —
+so you end up with `<your-repo>/.eaao-core/`.
 
 ```bash
-curl -L -o pgs-eaao-bundle.tar.gz \
+cd <your-repo>          # your project's repo root (new or existing)
+curl -L -o /tmp/pgs-eaao-bundle.tar.gz \
   https://github.com/danielPoloWork/pgs-eaao/releases/latest/download/pgs-eaao-bundle.tar.gz
-tar xzf pgs-eaao-bundle.tar.gz && cd pgs-eaao
-# or, with the GitHub CLI:
-#   gh release download --repo danielPoloWork/pgs-eaao --pattern 'pgs-eaao-bundle.tar.gz'
+tar xzf /tmp/pgs-eaao-bundle.tar.gz    # extracts .eaao-core/, AGENTS.md, … into the CWD
+ls .eaao-core                          # sanity: orchestrator/ templates/ tools/ …
+# ZIP alternative: unzip the .zip asset at the repo root (its contents at the top level).
+# GitHub CLI: gh release download --repo danielPoloWork/pgs-eaao --pattern 'pgs-eaao-bundle.*'
 ```
 
-Then read [`.eaao-core/README.md`](../README.md) and run the factory (open the folder with an AI
-agent, which auto-loads `AGENTS.md`, or call `render.py` directly). `git clone` is the *other*
-path: it gives you the full repository (CI, changelog, history) and is for **contributing to
-EAAO**, not for using it.
+Then read [`.eaao-core/README.md`](../README.md) and run the factory: open the repo with an AI
+agent (it auto-loads `AGENTS.md`), or render deterministically with `render.py --in-place` (§3).
+`git clone` is the *other* path — the full repository, for **contributing to EAAO**.
 
 ### What's in it
 
@@ -166,8 +169,8 @@ workflow runs on release and uploads `pgs-eaao-bundle.tar.gz` / `.zip` with vers
 clone:
 
 ```bash
-git archive --format=tar.gz --prefix=pgs-eaao/ -o pgs-eaao-bundle.tar.gz HEAD
-git archive HEAD | tar tf - | sort   # preview contents without writing a file
+git archive --format=tar.gz -o pgs-eaao-bundle.tar.gz HEAD   # prefix-less: extracts to the repo root
+git archive HEAD | tar tf - | sort                          # preview contents without writing a file
 ```
 
 ## 7. Go deeper

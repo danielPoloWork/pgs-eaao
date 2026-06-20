@@ -28,8 +28,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATES = os.path.join(ROOT, "templates")
 PROFILES = os.path.join(ROOT, "orchestrator", "profiles")
-# The actual git repository root is one level above .eaao-core/ — README.md, docs/i18n/, and
-# .github/ live there, not under the factory folder.
+# The actual git repository root is one level above .eaao-core/ — README.md and .github/
+# live there, not under the factory folder (the i18n docs moved under .eaao-core/docs/).
 REPO_ROOT = os.path.dirname(ROOT)
 failures = []  # (check, message)
 
@@ -266,7 +266,7 @@ def check_action_pins():
 
 
 # ---------------------------------------------------------------------------
-# 7. i18n freshness — every `translated` row in docs/i18n/translation-status.md pins the
+# 7. i18n freshness — every `translated` row in .eaao-core/docs/i18n/translation-status.md pins the
 #    SHA-256 content hash of the English source it was made from; the translation is STALE
 #    when the current source hashes differently. Content-based (not commit-based) so it is
 #    immune to squash-merges, which rewrite history and would orphan a recorded commit
@@ -280,10 +280,10 @@ def _source_hash(path):
 
 def check_i18n_freshness():
     name = "i18n-freshness"
-    manifest_path = os.path.join(REPO_ROOT, "docs", "i18n", "translation-status.md")
+    manifest_path = os.path.join(ROOT, "docs", "i18n", "translation-status.md")
     if not os.path.exists(manifest_path):
         return  # the factory ships no translations — nothing to check
-    i18n_dir = os.path.join(REPO_ROOT, "docs", "i18n")
+    i18n_dir = os.path.join(ROOT, "docs", "i18n")
     rows = 0
     for line in read(manifest_path).splitlines():
         # Data rows begin with a link cell `| [...](...)`; skips the legend + header rows.

@@ -4,7 +4,7 @@ Machine-checkable record of every translation's freshness. Each row pins the **S
 content hash** of the English source a translation was made from, so a translation is
 **stale** when its English source hashes differently now. `.eaao-core/tools/eaao_lint.py`
 (the `i18n-freshness` check) reads this file. Content-based (not commit-based) so it is
-immune to squash-merges — see [ADR-0010](../../.eaao-core/docs/adr/0010-content-hash-i18n-freshness.md).
+immune to squash-merges — see [ADR-0010](../../../.eaao-core/docs/adr/0010-content-hash-i18n-freshness.md).
 
 Status vocabulary:
 
@@ -21,10 +21,10 @@ time (`sha256sum <file>` / `hashlib.sha256`). It is `—` while a row is `missin
 
 | Source page | Source hash | Status | Reviewer |
 |-------------|:-----------:|:------:|----------|
-| [`README.md`](../../README.md) | `15d70afb0711` | `translated` | — |
+| [`README.md`](../../../README.md) | `000dc9473319` | `translated` | — |
 
 ## `ja` (Japanese)
 
 | Source page | Source hash | Status | Reviewer |
 |-------------|:-----------:|:------:|----------|
-| [`README.md`](../../README.md) | `15d70afb0711` | `translated` | — |
+| [`README.md`](../../../README.md) | `000dc9473319` | `translated` | — |

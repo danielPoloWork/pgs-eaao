@@ -23,6 +23,6 @@ decisions need an ADR under [`.eaao-core/docs/adr/`](../.eaao-core/docs/adr/).
 
 - [ ] `README.md` updated (if the maintainer-facing surface changed)
 - [ ] ADR added/updated (if a non-trivial design decision was made)
-- [ ] Translations refreshed + `docs/i18n/translation-status.md` bumped (if an English source with translations changed)
+- [ ] Translations refreshed + `.eaao-core/docs/i18n/translation-status.md` bumped (if an English source with translations changed)
 - [ ] `CHANGELOG.md` `[Unreleased]` updated
 - [ ] PR metadata set — assignee + one type label

@@ -1,0 +1,38 @@
+# Distribution-bundle control (consumed by `git archive`).
+#
+# `git archive` produces a consumer bundle of the EAAO factory. The bundle is the
+# factory you *operate*, not this repository's own identity, so the paths below are
+# stripped via `export-ignore`:
+#
+#   * repo-management plumbing — CI, issue/PR templates, Dependabot, CODEOWNERS
+#     (.github/), the portfolio card, .gitignore, this file, and CHANGELOG.md;
+#   * this repo's identity/governance docs — README.md, SECURITY.md, CONTRIBUTING.md,
+#     and the i18n translations under .eaao-core/docs/i18n/. The *generated* project
+#     renders its own README/SECURITY from the templates (templates/README.md.tmpl,
+#     templates/SECURITY.md.tmpl); CONTRIBUTING is EAAO-only governance, and the i18n
+#     set translates *this* repo's README (also stripped), so it is not needed to
+#     operate the factory — keeping it would also break `eaao_lint` in the bundle,
+#     since its freshness manifest points at the omitted root README.md.
+#
+# What SHIPS in the bundle:
+#   * .eaao-core/** — the factory (tools, templates, profiles, docs) incl.
+#     .eaao-core/README.md (the bundle's entry-point instructions);
+#   * the agent contract — AGENTS.md / CLAUDE.md / GEMINI.md (auto-loaded from root);
+#   * LICENSE — kept on purpose: render.py reads it as the source for every generated
+#     project's LICENSE, so removing it would yield license-less projects.
+#
+# Produce a bundle:  git archive --format=tar.gz --prefix=pgs-eaao/ -o pgs-eaao-bundle.tar.gz HEAD
+# See .eaao-core/docs/USAGE.md "Distribution bundle" for the full recipe.
+#
+# NOTE: patterns are anchored with a leading slash so they match only the intended
+# path — .eaao-core/README.md and the per-directory README.md files are NOT stripped.
+
+/.github                export-ignore
+/.portfolio.json        export-ignore
+/.gitignore             export-ignore
+/.gitattributes         export-ignore
+/CHANGELOG.md           export-ignore
+/README.md              export-ignore
+/SECURITY.md            export-ignore
+/CONTRIBUTING.md        export-ignore
+/.eaao-core/docs/i18n   export-ignore

@@ -151,28 +151,32 @@ depends on how you drive it:
 
 ### Get it
 
-**Download the bundle — recommended, no clone.** A self-contained copy of the factory (no CI,
-changelog, or git history), attached to every release:
+**Download the bundle into your project's repo — recommended, no clone.** The bundle is a
+self-contained, **prefix-less** copy of the factory (no CI, changelog, or git history). Extract it
+**at the root of your project's repo** so its contents — `.eaao-core/` plus the agent contract and
+`LICENSE` — land directly there, **not** inside a subfolder:
 
 ```bash
-curl -L -o pgs-eaao-bundle.tar.gz \
+cd my-project        # your project's repo root (new or existing)
+curl -L -o /tmp/pgs-eaao-bundle.tar.gz \
   https://github.com/danielPoloWork/pgs-eaao/releases/latest/download/pgs-eaao-bundle.tar.gz
-tar xzf pgs-eaao-bundle.tar.gz && cd pgs-eaao
+tar xzf /tmp/pgs-eaao-bundle.tar.gz   # extracts .eaao-core/, AGENTS.md, … into the current folder
 ```
 
-Prefer a ZIP or your browser? Download either asset from the
-[latest release](https://github.com/danielPoloWork/pgs-eaao/releases/latest).
+You should now have `my-project/.eaao-core/` (next to `AGENTS.md`). Prefer a ZIP or your browser?
+Download either asset from the [latest release](https://github.com/danielPoloWork/pgs-eaao/releases/latest)
+and unzip it **at the repo root** (its contents at the top level — no wrapping folder). Then
+confirm and generate as in [Quickstart](#quickstart):
+
+```bash
+ls .eaao-core                           # orchestrator/ templates/ tools/ …
+python .eaao-core/tools/eaao_lint.py    # optional: confirm the factory is internally congruent
+```
 
 **Clone the repository — to contribute to EAAO** (the full repo: CI, changelog, history):
 
 ```bash
 git clone https://github.com/danielPoloWork/pgs-eaao.git && cd pgs-eaao
-```
-
-Either way, you can confirm the factory is internally congruent:
-
-```bash
-python .eaao-core/tools/eaao_lint.py
 ```
 
 ## Quickstart
@@ -203,8 +207,8 @@ without an agent:
 ```bash
 cp .eaao-core/orchestrator/project.yaml.template .eaao-core/orchestrator/project.yaml
 # edit .eaao-core/orchestrator/project.yaml — see .eaao-core/orchestrator/examples/reference.yaml for a worked one
-python .eaao-core/tools/render.py .eaao-core/orchestrator/project.yaml --out ../my-new-repo
-cd ../my-new-repo && python tools/consistency_lint.py     # the generated repo's own gate
+python .eaao-core/tools/render.py .eaao-core/orchestrator/project.yaml --in-place
+python tools/consistency_lint.py     # the generated repo's own gate (now at the repo root)
 ```
 
 `render.py` performs exactly the substitutions in

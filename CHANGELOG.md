@@ -5,7 +5,7 @@ All notable changes to `pgs-eaao` (EAAO) are documented here, following
 [Semantic Versioning 2.0.0](https://semver.org/).
 
 Every PR that introduces a user- or maintainer-visible change adds a line to `[Unreleased]`
-in the same PR. Releases follow Semantic Versioning; the latest is **v1.0.0**.
+in the same PR. Releases follow Semantic Versioning; the latest is **v1.1.0**.
 
 ## [Unreleased]
 
@@ -20,6 +20,26 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.0.0**.
 ### Fixed
 
 ### Security
+
+---
+
+## [1.1.0] - 2026-06-20
+
+### Added
+
+- **Distribution bundle** — a `.gitattributes` `export-ignore` ruleset so `git archive` emits a
+  clean, factory-only consumer bundle (the factory + the `AGENTS.md` / `CLAUDE.md` / `GEMINI.md`
+  contract + `LICENSE`), stripping this repository's own governance and plumbing. Adds an
+  `.eaao-core/README.md` entry-point how-to and a "Distribution bundle" section in
+  `.eaao-core/docs/USAGE.md`.
+
+### Changed
+
+- Consolidated all factory machinery under `.eaao-core/`: the documentation i18n set moved from
+  the repo-root `docs/i18n/` to `.eaao-core/docs/i18n/`, with the `i18n-freshness` gate and every
+  reference updated to match.
+- `AGENTS.md`'s links to EAAO's own `CONTRIBUTING.md` and CI workflow are now absolute (canonical
+  repo URLs) so they resolve from a distributed bundle.
 
 ---
 

@@ -18,7 +18,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 |------|-------|
 | Rename EAAO → EADOS | ✅ merged (#33) |
 | Design package — RFC-0001 + OS specs + diagrams | ✅ merged (#35) |
-| **M1 — Foundation** | ⏳ not started |
+| **M1 — Foundation** | 🚧 in progress — M1-A (domain axis) drafted |
 | M2 · M3 · M4 · M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
@@ -30,11 +30,11 @@ Legend: ⏳ not started · 🚧 in progress · ✅ done.
 **Goal.** Lay the data foundation the whole pipeline reads from, and the entry command — without
 changing how generation behaves today.
 
-- [ ] 1.1 Add the **domain/target axis** as data: `orchestrator/domains/_schema.md` +
+- [x] 1.1 Add the **domain/target axis** as data: `orchestrator/domains/_schema.md` +
       `_template.yaml`, and seeds `software.yaml`, `game.yaml`, `mobile.yaml` (each declaring its
       roles, artifacts — GDD vs PRD, NFR axes — RAM/GPU/framerate for `game`, and milestone
       vocabulary — Alpha/Beta/RC vs SemVer).
-- [ ] 1.2 `eados_lint`: a **`domain-completeness`** gate (every `domains/<d>.yaml` defines every
+- [x] 1.2 `eados_lint`: a **`domain-completeness`** gate (every `domains/<d>.yaml` defines every
       schema key), mirroring `profile-completeness`.
 - [ ] 1.3 Interview: new **`Q0.4 — development target`** loads the domain profile; the manifest
       gains a `domain` field.

@@ -25,6 +25,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
 - **`docs/rfc/ROADMAP.md` — the delivery plan as a single source of truth.** The M1–M5 roadmap is
   now a living, checkbox-driven file; RFC-0001 §12 points to it instead of duplicating the table.
   Adds the `/eados <phase>` command surface to each milestone's deliverables.
+- **M1-A — the domain/target axis (roadmap 1.1–1.2).** A second axis of genericity parallel to the
+  language profiles: `orchestrator/domains/` with `_schema.md`, `_template.yaml`, a `README.md`,
+  and the seeds `software` / `game` / `mobile` (each declaring its roles, artifacts — PRD vs GDD,
+  NFR hard-budget axes — RAM/GPU/framerate for `game`, milestone vocabulary — SemVer vs
+  Alpha/Beta/RC, cross-discipline deps, and workflow overlay). Validated by a new
+  `domain-completeness` gate in `eados_lint.py`. Data only — no rendering or interview change yet
+  (that is M1-C).
 
 ### Changed
 

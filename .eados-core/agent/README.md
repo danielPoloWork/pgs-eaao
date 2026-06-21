@@ -15,6 +15,9 @@ boundary (draft/propose; the human opens, merges, publishes).
 | [`security-auditor`](security-auditor.md) | Threat-model and audit for vulnerabilities, unsafe deps, and secret leaks; draft advisories. |
 | [`release-manager`](release-manager.md) | Cut a SemVer release: bump, changelog, notes, tag, announcement draft. |
 | [`profile-author`](profile-author.md) | Add or refresh a language profile (toolchain knowledge as data). |
+| [`product-manager`](product-manager.md) | Own the "what"/"why": vision, priorities, the product spec (PRD/GDD). The Product pillar. |
+| [`tech-lead`](tech-lead.md) | Lead a team technically: author RFCs, map requirements to tasks, approve RFCs/code. |
+| [`producer`](producer.md) | Guard delivery: negotiate the milestone roadmap, manage scope and dependencies. The Delivery pillar. |
 
 ## How they compose
 
@@ -32,9 +35,23 @@ what it may *draft* / *approve* / *own* — lives separately, as data, in
 an artifact (the `reviewer` comments on an RFC; only the `tech-lead` approves it).
 
 The `authority-personas` self-lint enforces the pairing: every authority role has a persona here
-**or** is declared in `pending_personas`, and every persona maps to a role. The delivery roles
-**`product-manager`**, **`tech-lead`**, and **`producer`** are authority-declared but their
-personas are **pending** — they land with the `design`/`plan` phases in **M2**.
+**or** is declared in `pending_personas`, and every persona maps to a role. As of **M2**,
+`product-manager`, `tech-lead`, and `producer` have landed, so `pending_personas` is now empty.
+
+## Domain overlays
+
+A persona can be **specialized per domain** without forking the role's authority. The default
+persona is `agent/<role>.md`; an optional **overlay** at `agent/domains/<domain>/<role>.md` wins
+for that domain. The manifest's `domain` (interview `Q0.4`) selects it, and the visible label comes
+from the domain's `role_labels` — same authority role, domain-native behavior. So "Game Designer"
+is the `game` overlay of `product-manager`, **not** a separate role (RFC-0001 §4; OQ4).
+
+| Overlay | Specializes | Domain |
+|---|---|---|
+| [`domains/game/product-manager.md`](domains/game/product-manager.md) | `product-manager` → **Game Designer** (GDD, asset pipeline) | `game` |
+
+Resolution: use `agent/domains/<domain>/<role>.md` if it exists, else `agent/<role>.md`. "Not yet
+specialized" ≠ "unsupported" — add an overlay when a domain needs one.
 
 ## Customizing and adding roles
 

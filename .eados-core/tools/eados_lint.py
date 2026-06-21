@@ -202,11 +202,16 @@ def check_agent_registry():
     if not os.path.isdir(agent_dir) or not os.path.exists(index_path):
         return
     index = read(index_path)
-    for fn in sorted(os.listdir(agent_dir)):
-        if not fn.endswith(".md") or fn == "README.md":
-            continue
-        if f"({fn})" not in index:
-            fail(name, f"agent role '{fn}' is not listed in agent/README.md")
+    # Walk recursively so domain-overlay personas (agent/domains/<domain>/<role>.md) are indexed
+    # too, matched by their path RELATIVE to agent/ — not basename, since an overlay shares its
+    # basename with the default persona it specializes.
+    for cur, _dirs, files in os.walk(agent_dir):
+        for fn in sorted(files):
+            if not fn.endswith(".md") or fn == "README.md":
+                continue
+            rel = os.path.relpath(os.path.join(cur, fn), agent_dir).replace(os.sep, "/")
+            if f"({rel})" not in index:
+                fail(name, f"agent persona '{rel}' is not listed in agent/README.md")
 
 
 # ---------------------------------------------------------------------------
@@ -396,8 +401,13 @@ def check_authority_personas():
         return
     pend_m = re.search(r"pending_personas:\s*\[([^\]]*)\]", text)
     pending = {s.strip() for s in (pend_m.group(1).split(",") if pend_m else []) if s.strip()}
-    personas = {os.path.splitext(fn)[0] for fn in os.listdir(agent_dir)
-                if fn.endswith(".md") and fn != "README.md"}
+    # Persona role-ids, collected recursively: a default agent/<role>.md and a domain overlay
+    # agent/domains/<d>/<role>.md both map to the same role id (the filename stem).
+    personas = set()
+    for cur, _dirs, files in os.walk(agent_dir):
+        for fn in files:
+            if fn.endswith(".md") and fn != "README.md":
+                personas.add(os.path.splitext(fn)[0])
     for role in sorted(roles - personas - pending):
         fail(name, f"authority role '{role}' has no agent/{role}.md persona and is not in "
                    "pending_personas")

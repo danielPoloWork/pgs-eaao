@@ -235,5 +235,7 @@ projects receive.)
   it per-domain? (Resolve in M4.)
 - **OQ3 — committed SVG.** Keep Mermaid-only (GitHub-rendered) or add a CI Node step that commits
   generated SVGs? (Deferred; §9 leans Mermaid-only.)
-- **OQ4 — `product-manager` vs `game-designer`.** One role with a domain-varying persona, or two
-  roles selected by the domain profile? (Resolve in M2 with the domain axis.)
+- **OQ4 — `product-manager` vs `game-designer`.** ✅ **Resolved (M2-A):** one authority role
+  (`product-manager`) with a **domain-specialized persona overlay** —
+  `agent/domains/<domain>/<role>.md` (e.g. the `game` overlay is the Game Designer). The label
+  comes from the domain's `role_labels`; the authority stays unified. Not two role IDs.

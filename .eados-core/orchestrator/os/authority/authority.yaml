@@ -6,12 +6,12 @@ version: 1
 # The org chart as authority records, across the three pillars of the delivery guide.
 roles:
   # --- Product pillar (the "what" and "why") ---
-  - name: product-manager           # PM/PO (software) | game-designer (game). Persona: M2.
+  - name: product-manager           # PM/PO (software/mobile) | game-designer overlay (game).
     pillar: product
     phases: [design, plan]
-    may_draft: ["docs/prd/**", "docs/specs/**", "ROADMAP.md"]
-    may_approve: ["docs/prd/**"]
-    owns: ["docs/prd/**"]
+    may_draft: ["docs/prd/**", "docs/gdd/**", "docs/specs/**", "ROADMAP.md"]
+    may_approve: ["docs/prd/**", "docs/gdd/**"]
+    owns: ["docs/prd/**", "docs/gdd/**"]    # the product spec under either name (PRD or GDD)
 
   # --- Engineering pillar (the "how") ---
   - name: enterprise-architect      # Staff/Principal/Solution Architect | Technical Director.
@@ -62,12 +62,15 @@ roles:
 # Roles whose persona (agent/<role>.md) is intentionally not written yet — they arrive with the
 # phase that needs them (M2). The `authority-personas` lint allows these and rejects any OTHER gap
 # (an authority role with no persona and not listed here, or a persona with no role record).
-pending_personas: [product-manager, tech-lead, producer]
+pending_personas: []   # all authority roles now have a persona (M2 landed Product/Delivery)
 
 # Routing substrate: a changed path resolves to exactly one owning role + action. Generalizes
 # CODEOWNERS. The authority gate (M2) rejects a change touching a glob the actor does not own.
 ownership_map:
   - glob: "docs/prd/**"
+    role: product-manager
+    action: approve
+  - glob: "docs/gdd/**"
     role: product-manager
     action: approve
   - glob: "docs/rfc/**"

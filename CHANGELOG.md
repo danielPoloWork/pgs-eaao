@@ -5,7 +5,7 @@ All notable changes to `pgs-eaao` (EAAO) are documented here, following
 [Semantic Versioning 2.0.0](https://semver.org/).
 
 Every PR that introduces a user- or maintainer-visible change adds a line to `[Unreleased]`
-in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.0**.
+in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
 
 ## [Unreleased]
 
@@ -20,6 +20,19 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.0**.
 ### Fixed
 
 ### Security
+
+---
+
+## [1.2.1] - 2026-06-21
+
+### Fixed
+
+- **Generated projects carry their own owner, not EAAO's.** The renderer copied EAAO's root
+  `LICENSE` verbatim into every generated repo (`Copyright (c) 2026 Daniel Polo`) even though the
+  README rendered the maintainer's `{{AUTHOR}}`. A new `templates/LICENSE.tmpl`
+  (`Copyright (c) {{YEAR}} {{AUTHOR}}`) is rendered into the generated `LICENSE` instead; EAAO's
+  own `LICENSE` is untouched. The interview no longer defaults the reverse-domain group path to
+  the reference's `it/d4np` — it asks the maintainer's own.
 
 ---
 

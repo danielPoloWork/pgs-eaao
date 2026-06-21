@@ -6,7 +6,7 @@ name: release-bundle
 #
 # The bundle is `git archive` of the released commit, honoring the `export-ignore` rules in
 # .gitattributes (the factory + agent contract + LICENSE; none of this repo's own plumbing).
-# See .eaao-core/docs/USAGE.md "Distribution bundle".
+# See .eados-core/docs/USAGE.md "Distribution bundle".
 
 on:
   release:
@@ -29,16 +29,16 @@ jobs:
       - name: Build the factory bundle (prefix-less; export-ignore strips repo-management files)
         run: |
           # No --prefix: the archive's contents sit at the top level, so extracting it at the
-          # root of a user's project repo lands .eaao-core/ there directly (not in a subfolder).
-          git archive --format=tar.gz -o pgs-eaao-bundle.tar.gz HEAD
-          git archive --format=zip    -o pgs-eaao-bundle.zip    HEAD
+          # root of a user's project repo lands .eados-core/ there directly (not in a subfolder).
+          git archive --format=tar.gz -o pgs-eados-bundle.tar.gz HEAD
+          git archive --format=zip    -o pgs-eados-bundle.zip    HEAD
       - name: Sanity-check the archive contents
         run: |
           set -e
-          listing="$(tar tzf pgs-eaao-bundle.tar.gz)"
-          echo "$listing" | grep -q '^\.eaao-core/tools/render.py$' || { echo "bundle missing the factory"; exit 1; }
+          listing="$(tar tzf pgs-eados-bundle.tar.gz)"
+          echo "$listing" | grep -q '^\.eados-core/tools/render.py$' || { echo "bundle missing the factory"; exit 1; }
           echo "$listing" | grep -Eq '^(README|SECURITY|CONTRIBUTING|CHANGELOG)\.md$' && { echo "bundle leaked a stripped file"; exit 1; } || true
       - name: Attach to the release (version-less names → stable /latest/download link)
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" pgs-eaao-bundle.tar.gz pgs-eaao-bundle.zip --clobber
+        run: gh release upload "${{ github.event.release.tag_name }}" pgs-eados-bundle.tar.gz pgs-eados-bundle.zip --clobber

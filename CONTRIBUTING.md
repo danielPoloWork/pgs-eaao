@@ -1,6 +1,6 @@
-# Contributing to EAAO
+# Contributing to EADOS
 
-Thanks for your interest. EAAO is **owner-governed**: you are very welcome to *propose*
+Thanks for your interest. EADOS is **owner-governed**: you are very welcome to *propose*
 changes, but the owner (`@danielPoloWork`) is the sole maintainer who reviews and merges.
 This page is the short how-to; the full contract is [`AGENTS.md`](AGENTS.md) (it governs
 humans and AI agents alike).
@@ -22,10 +22,10 @@ humans and AI agents alike).
 5. **Run the gates locally** (dependency-free, Python 3.12+ stdlib):
 
    ```bash
-   python .eaao-core/tools/eaao_lint.py                                   # factory integrity
-   python .eaao-core/tools/render.py .eaao-core/orchestrator/examples/reference.yaml --out /tmp/r
+   python .eados-core/tools/eados_lint.py                                   # factory integrity
+   python .eados-core/tools/render.py .eados-core/orchestrator/examples/reference.yaml --out /tmp/r
    python /tmp/r/tools/consistency_lint.py                                # generated-repo gate
-   python .eaao-core/tools/tests/test_render_engine.py                    # + the other tools/tests/*
+   python .eados-core/tools/tests/test_render_engine.py                    # + the other tools/tests/*
    ```
 
 6. **Open a pull request.** Fill the [PR template](.github/PULL_REQUEST_TEMPLATE.md); update
@@ -36,7 +36,7 @@ humans and AI agents alike).
 
 ## Common contributions
 
-- **Teach EAAO a new language** — usually just a new `profiles/<lang>.yaml` (copy
+- **Teach EADOS a new language** — usually just a new `profiles/<lang>.yaml` (copy
   `profiles/_template.yaml`), an interview branch for its frameworks, an ADR, and a row in
   the README's supported-language note. Never edit templates to add a language (`AGENTS.md` §3, §7).
 - **Improve a template / the tooling** — keep `placeholders.md`, the profiles, and the
@@ -51,7 +51,7 @@ humans and AI agents alike).
 ## Language
 
 Every artifact that lands on disk or in Git is **English** (`AGENTS.md` §2). You may converse
-in any language; translated docs live only under `.eaao-core/docs/i18n/`.
+in any language; translated docs live only under `.eados-core/docs/i18n/`.
 
 By contributing, you agree your contributions are licensed under the repository's
 [MIT License](LICENSE).

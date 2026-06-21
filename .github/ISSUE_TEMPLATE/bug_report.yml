@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a reproducible defect in the EAAO factory (renderer, lint, a profile or template)
+description: Report a reproducible defect in the EADOS factory (renderer, lint, a profile or template)
 labels: ["bug"]
 assignees: ["danielPoloWork"]
 body:
@@ -29,7 +29,7 @@ body:
       label: Area
       options:
         - "render.py (renderer)"
-        - "eaao_lint.py (self-lint)"
+        - "eados_lint.py (self-lint)"
         - "a language profile"
         - "a template"
         - "the generated consistency_lint.py"

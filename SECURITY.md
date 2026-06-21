@@ -2,8 +2,8 @@
 
 ## Scope
 
-EAAO is a **markdown/YAML factory** with a small, dependency-free Python toolchain
-(`tools/render.py`, `tools/eaao_lint.py`, and the `consistency_lint.py` it ships into
+EADOS is a **markdown/YAML factory** with a small, dependency-free Python toolchain
+(`tools/render.py`, `tools/eados_lint.py`, and the `consistency_lint.py` it ships into
 generated repos). It has no runtime service and no third-party runtime dependencies, so its
 security surface is:
 
@@ -11,13 +11,13 @@ security surface is:
   output paths), or a code-execution vector in a tool;
 - **the supply chain** — the GitHub Actions it pins and the one third-party dev dependency
   (PyYAML, pinned + hashed for the CI-only differential gate), governed by
-  [ADR-0009](.eaao-core/docs/adr/0009-ci-supply-chain-pinning.md);
+  [ADR-0009](.eados-core/docs/adr/0009-ci-supply-chain-pinning.md);
 - **the generated output** — a template or profile that would render an insecure default into
   every downstream repository.
 
 ## Supported versions
 
-EAAO is pre-`v1.0.0`; only the latest `main` receives fixes.
+EADOS is pre-`v1.0.0`; only the latest `main` receives fixes.
 
 | Version | Supported |
 |---------|-----------|
@@ -27,7 +27,7 @@ EAAO is pre-`v1.0.0`; only the latest `main` receives fixes.
 ## Reporting a vulnerability
 
 **Do not open a public issue or PR for a security problem.** Report it privately via
-[GitHub private vulnerability reporting](https://github.com/danielPoloWork/pgs-eaao/security/advisories/new)
+[GitHub private vulnerability reporting](https://github.com/danielPoloWork/pgs-eados/security/advisories/new)
 (the repository's **Security** tab → *Report a vulnerability*), to `danielPoloWork`.
 
 Please include:

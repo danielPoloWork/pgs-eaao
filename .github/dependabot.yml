@@ -1,4 +1,4 @@
-# Dependabot for the EAAO factory itself. SHA-pinned actions and the pinned CI dependency are
+# Dependabot for the EADOS factory itself. SHA-pinned actions and the pinned CI dependency are
 # only safe to pin if something proposes bumps — that is this file. Each update opens a PR that
 # goes through the normal review/CI flow.
 version: 2
@@ -11,7 +11,7 @@ updates:
       prefix: "ci"
     labels: ["ci"]
   - package-ecosystem: "pip"
-    directory: "/.eaao-core/tools"
+    directory: "/.eados-core/tools"
     schedule:
       interval: "weekly"
     commit-message:

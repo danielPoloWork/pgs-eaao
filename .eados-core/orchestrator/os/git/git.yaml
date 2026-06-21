@@ -1,0 +1,36 @@
+# EADOS Git / PR / CI / release policy — reference instance.
+# Encodes AGENTS.md §6 as data so the workflow gates enforce it. Schema: ./_schema.md.
+# Design: ../../../docs/rfc/0001-eados-delivery-os.md.
+version: 1
+
+branch_naming:
+  pattern: "<type>/<short-kebab>"
+  types: [feat, fix, refactor, perf, docs, test, build, chore, ci]
+
+commit:
+  convention: conventional-commits
+  scopes: [interview, profiles, templates, lint, agent, docs, adr, ci, os, workflow, authority, git]
+  one_logical_change_per_pr: true
+  one_pr_at_a_time: true
+
+pr:
+  draft_by: implementing-role     # the agent role that owns the phase drafts the PR
+  opened_by: human                # the owner opens / marks ready
+  merged_by: human                # the owner squash-merges — never the agent
+  merge_method: squash            # the repository allows squash only
+  assignee: "@me"
+  one_type_label: true
+  required_crosslinks: [rfc, milestone]   # PR body must reference its RFC and milestone item
+  template: ".github/PULL_REQUEST_TEMPLATE.md"
+
+release:
+  scheme: semver
+  pre_1_0_milestone_driven: true
+  tag_flow: "annotated tag on the merge commit, post-merge"
+  merge_is_not_deploy: true       # merged -> tagged/released -> deployed are distinct states
+  publish_by: human               # the human publishes the release
+  delegation_flag: false          # owner may flip this to delegate the full lifecycle (cf. memory)
+
+traceability:
+  graph: "requirement(spec §) -> rfc -> milestone -> branch/pr -> commit -> release tag -> audit"
+  gate: traceability-lint         # built in M3/M4; derives the graph from the cross-links above

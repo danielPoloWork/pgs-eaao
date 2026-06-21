@@ -14,7 +14,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
 - **ADR-0011 — phase-based delivery operating system.** Records the owner-confirmed direction to
   evolve the factory into EADOS: an opt-in phase pipeline (`init → design → plan → scaffold →
   audit → refactor`) over the unchanged data-driven core, resident as a capability under each
-  generated repo's own `AGENTS.md`. The detailed design lands in the forthcoming RFC-0001.
+  generated repo's own `AGENTS.md`. The detailed design lands in RFC-0001.
+- **RFC-0001 + the machine-readable OS specs (the design package).** The full design for the
+  delivery-OS pivot: [`docs/rfc/0001-eados-delivery-os.md`](.eados-core/docs/rfc/0001-eados-delivery-os.md)
+  (phase state machine, role/authority model, ownership map, traceability graph, the enterprise
+  lens, and the roadmap M1–M5), plus the three **schema-first** specs under
+  `orchestrator/os/{workflow,authority,git}/` (each `_schema.md` + reference instance), validated
+  by a new `os-spec-completeness` gate in `eados_lint.py`. Diagrams are Mermaid (code) under
+  `docs/rfc/assets/`. No runtime behavior changes yet — this is design only; build starts at M1.
 
 ### Changed
 

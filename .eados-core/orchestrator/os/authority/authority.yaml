@@ -1,0 +1,91 @@
+# EADOS authority model — reference instance.
+# Persona lives in ../../../agent/*.md; AUTHORITY lives here (the separation is the point).
+# Schema: ./_schema.md. Design: ../../../docs/rfc/0001-eados-delivery-os.md.
+version: 1
+
+# The org chart as authority records, across the three pillars of the delivery guide.
+roles:
+  # --- Product pillar (the "what" and "why") ---
+  - name: product-manager           # PM/PO (software) | game-designer (game). Persona: M2.
+    pillar: product
+    phases: [design, plan]
+    may_draft: ["docs/prd/**", "docs/specs/**", "ROADMAP.md"]
+    may_approve: ["docs/prd/**"]
+    owns: ["docs/prd/**"]
+
+  # --- Engineering pillar (the "how") ---
+  - name: enterprise-architect      # Staff/Principal/Solution Architect | Technical Director.
+    pillar: engineering
+    phases: [init, scaffold, audit, refactor]
+    may_draft: ["**"]
+    may_approve: ["docs/adr/**", ".github/**", "tools/**"]
+    owns: ["AGENTS.md", "docs/adr/**", ".github/**", "tools/**", ".eados-core/**"]
+  - name: tech-lead                 # Tech/Engineering Lead | Lead Programmer. Authors RFCs.
+    pillar: engineering
+    phases: [design, plan, scaffold]
+    may_draft: ["docs/rfc/**", "docs/specs/**", "src/**"]
+    may_approve: ["docs/rfc/**", "src/**"]
+    owns: ["docs/rfc/**", "src/**"]
+  - name: reviewer                  # Senior peers — structured findings, no final authority.
+    pillar: engineering
+    phases: [scaffold, audit]
+    may_draft: []
+    may_approve: []
+    owns: []
+  - name: security-auditor          # Application-security specialist (defensive only).
+    pillar: engineering
+    phases: [audit]
+    may_draft: ["SECURITY.md", "docs/bugs/**"]
+    may_approve: []
+    owns: ["SECURITY.md"]
+
+  # --- Delivery pillar (the "when" and "who") ---
+  - name: producer                  # TPM / Agile Delivery Manager | Producer. Roadmap guardian.
+    pillar: delivery
+    phases: [plan]
+    may_draft: ["ROADMAP.md", "docs/releases/**"]
+    may_approve: ["ROADMAP.md"]
+    owns: ["ROADMAP.md", "docs/releases/**"]
+  - name: release-manager           # Cuts the SemVer release; drafts, human publishes.
+    pillar: delivery
+    phases: [audit]
+    may_draft: ["CHANGELOG.md", "docs/releases/**"]
+    may_approve: []
+    owns: ["CHANGELOG.md"]
+
+# Routing substrate: a changed path resolves to exactly one owning role + action. Generalizes
+# CODEOWNERS. The authority gate (M2) rejects a change touching a glob the actor does not own.
+ownership_map:
+  - glob: "docs/prd/**"
+    role: product-manager
+    action: approve
+  - glob: "docs/rfc/**"
+    role: tech-lead
+    action: approve
+  - glob: "docs/adr/**"
+    role: enterprise-architect
+    action: approve
+  - glob: "ROADMAP.md"
+    role: producer
+    action: approve
+  - glob: "src/**"
+    role: tech-lead
+    action: approve
+  - glob: ".github/**"
+    role: enterprise-architect
+    action: approve
+  - glob: "SECURITY.md"
+    role: security-auditor
+    action: review
+  - glob: "CHANGELOG.md"
+    role: release-manager
+    action: draft
+
+# Disagreement ladder. Terminates at the human owner — AGENTS.md §6, never removed.
+escalation:
+  - level: 1
+    decider: tech-lead
+  - level: 2
+    decider: enterprise-architect
+  - level: 3
+    decider: human-owner

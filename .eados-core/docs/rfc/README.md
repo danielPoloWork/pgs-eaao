@@ -11,6 +11,11 @@ record* that ratifies it. Numbering is sequential and never reused.
 |-----|-------|--------|-------------|
 | [0001](0001-eados-delivery-os.md) | EADOS — the agentic delivery operating system | Accepted | [ADR-0011](../adr/0011-eados-phase-based-delivery-operating-system.md) |
 
+## Roadmap
+
+The delivery plan (M1 → M5) is the **single source of truth** in [`ROADMAP.md`](ROADMAP.md) —
+living and checkbox-driven. RFC-0001 §12 points to it; it is not duplicated.
+
 ## Diagrams
 
 Diagrams are **code** (Mermaid) under [`assets/`](assets/README.md); GitHub renders the embedded

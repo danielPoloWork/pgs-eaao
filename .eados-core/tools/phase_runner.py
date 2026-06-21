@@ -68,12 +68,58 @@ def report(manifest_path, out=sys.stdout):
     return 0
 
 
+def propose_transition(workflow, from_phase, to_phase):
+    """The declared transition from_phase -> to_phase, or None if that move is not legal."""
+    for t in legal_transitions(workflow, from_phase):
+        if t.get("to") == to_phase:
+            return t
+    return None
+
+
+def emit_checkpoint(from_phase, transition):
+    """The delivery_state checkpoint the agent appends after a CONFIRMED transition. The runner
+    returns it; the agent writes it to the manifest and the human confirms human-gated moves —
+    the runner itself never writes state (reports, never advances)."""
+    return {"from": from_phase, "to": transition.get("to"),
+            "gates": transition.get("entry_gates") or []}
+
+
+def report_propose(manifest_path, to_phase, out=sys.stdout):
+    with open(manifest_path, encoding="utf-8") as handle:
+        manifest = render.load_yaml(handle.read())
+    workflow = load_workflow()
+    states = state_ids(workflow)
+    frm = current_phase(manifest)
+    print(f"proposed transition: {frm} -> {to_phase}", file=out)
+    if to_phase not in states:
+        print(f"  ILLEGAL: '{to_phase}' is not a declared workflow state {states}", file=out)
+        return 1
+    t = propose_transition(workflow, frm, to_phase)
+    if t is None:
+        legal = [x.get("to") for x in legal_transitions(workflow, frm)]
+        print(f"  ILLEGAL: not a declared transition from '{frm}' (legal: {legal or 'none'})",
+              file=out)
+        return 1
+    gates = ", ".join(t.get("entry_gates") or []) or "—"
+    print(f"  LEGAL — gates to satisfy: {gates}; "
+          f"human-gated: {'yes' if t.get('human_gate') else 'no'}", file=out)
+    cp = emit_checkpoint(frm, t)
+    print("  emit — append to delivery_state.checkpoints, then set delivery_state.phase:", file=out)
+    print(f"    - {{ from: {cp['from']}, to: {cp['to']}, gates: {cp['gates']} }}", file=out)
+    print(f"    phase: {to_phase}", file=out)
+    return 0
+
+
 def main(argv=None):
-    argv = sys.argv[1:] if argv is None else argv
-    if len(argv) != 1:
-        print("usage: phase_runner.py <manifest>", file=sys.stderr)
-        return 2
-    return report(argv[0])
+    import argparse
+    ap = argparse.ArgumentParser(description="EADOS phase runner — report or validate a transition.")
+    ap.add_argument("manifest", help="path to a project manifest (project.yaml)")
+    ap.add_argument("--propose", metavar="TO",
+                    help="validate a proposed transition to phase TO and emit its checkpoint")
+    args = ap.parse_args(argv)
+    if args.propose:
+        return report_propose(args.manifest, args.propose)
+    return report(args.manifest)
 
 
 if __name__ == "__main__":

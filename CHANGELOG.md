@@ -73,6 +73,11 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   record by the approver role (the human approves; the tool verifies the record). The `workflow.yaml`
   `rfc-approved` gate now runs `rfc_check`, and RFC-0001 carries an `## Approval` block (dogfooding).
   Covered by `tools/tests/test_rfc_check.py`, wired into CI.
+- **M2-C — the workflow checker validates a proposed transition (roadmap 2.3).** `phase_runner.py`
+  gains `--propose <to>`: it checks whether `current_phase → to` is a declared, legal transition,
+  reports its gates and human-gating, and **emits the `delivery_state` checkpoint** to write — it
+  does *not* write state (the agent writes it; the human confirms human-gated moves). New cases in
+  `tools/tests/test_phase_runner.py` cover legal/illegal proposals and the emitted checkpoint.
 
 ### Changed
 

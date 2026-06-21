@@ -61,6 +61,17 @@ def main():
         check(f"transition to '{t.get('to')}' is a declared state",
               t.get("to") in states, failures)
 
+    # --- propose_transition: legal vs illegal, and the emitted checkpoint (M2-C) ---
+    legal = pr.propose_transition(wf, "init", "design")
+    check("propose init->design is legal", legal is not None, failures)
+    check("propose init->scaffold is illegal (skips the pipeline)",
+          pr.propose_transition(wf, "init", "scaffold") is None, failures)
+    check("propose plan->design is legal (resumable)",
+          pr.propose_transition(wf, "plan", "design") is not None, failures)
+    cp = pr.emit_checkpoint("init", legal)
+    check("checkpoint records from/to", cp["from"] == "init" and cp["to"] == "design", failures)
+    check("checkpoint carries the entry gates", cp["gates"] == ["manifest-valid"], failures)
+
     if failures:
         print("test-phase-runner: FAIL\n")
         for f in failures:

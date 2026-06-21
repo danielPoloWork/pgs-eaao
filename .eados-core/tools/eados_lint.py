@@ -309,6 +309,43 @@ def check_i18n_freshness():
         fail(name, "translation-status.md exists but has no parseable `translated` rows")
 
 
+# ---------------------------------------------------------------------------
+# 8. OS-spec completeness — every orchestrator/os/<spec>/ ships a `_schema.md` (with a yaml
+#    block) and a `<spec>.yaml` instance that defines every top-level key the schema declares.
+#    The same data+schema contract as profile-completeness, applied to the machine-readable
+#    delivery-OS specs (ADR-0011). Opt-in: skipped until the os/ directory exists.
+# ---------------------------------------------------------------------------
+def check_os_specs():
+    name = "os-spec-completeness"
+    os_dir = os.path.join(ROOT, "orchestrator", "os")
+    if not os.path.isdir(os_dir):
+        return  # the OS specs are introduced with the delivery-OS pivot; absent before it
+    specs = sorted(d for d in os.listdir(os_dir)
+                   if os.path.isdir(os.path.join(os_dir, d)))
+    checked = 0
+    for spec in specs:
+        d = os.path.join(os_dir, spec)
+        schema_path = os.path.join(d, "_schema.md")
+        inst_path = os.path.join(d, f"{spec}.yaml")
+        if not os.path.exists(schema_path):
+            fail(name, f"orchestrator/os/{spec}/ has no _schema.md")
+            continue
+        if not os.path.exists(inst_path):
+            fail(name, f"orchestrator/os/{spec}/ has no {spec}.yaml instance")
+            continue
+        block = re.search(r"```yaml\n(.*?)```", read(schema_path), re.DOTALL)
+        if not block:
+            fail(name, f"orchestrator/os/{spec}/_schema.md has no yaml schema block")
+            continue
+        required = yaml_key_paths(block.group(1))
+        have = yaml_key_paths(read(inst_path))
+        for key in sorted(required - have):
+            fail(name, f"orchestrator/os/{spec}/{spec}.yaml: missing schema key '{key}'")
+        checked += 1
+    if specs and checked == 0:
+        fail(name, "orchestrator/os/ exists but holds no <spec>/_schema.md + <spec>.yaml pair")
+
+
 CHECKS = [
     check_placeholder_integrity,
     check_profile_completeness,
@@ -317,6 +354,7 @@ CHECKS = [
     check_lessons,
     check_action_pins,
     check_i18n_freshness,
+    check_os_specs,
 ]
 
 

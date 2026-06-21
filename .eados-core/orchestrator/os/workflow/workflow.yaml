@@ -1,0 +1,99 @@
+# EADOS delivery state machine — reference instance.
+# Knowledge as data: the workflow checker (M2) reads this; nothing here is hardcoded in a tool.
+# Schema: ./_schema.md. Design: ../../../docs/rfc/0001-eados-delivery-os.md.
+version: 1
+
+# The phases, in canonical order. `role` is the owner from ../authority/authority.yaml.
+states:
+  - id: init
+    role: enterprise-architect
+    produces: [manifest]
+  - id: design
+    role: tech-lead
+    produces: [rfc]
+  - id: plan
+    role: producer
+    produces: [roadmap]
+  - id: scaffold
+    role: enterprise-architect
+    produces: [repository]
+  - id: audit
+    role: security-auditor
+    produces: [risk-register]
+  - id: refactor
+    role: enterprise-architect
+    produces: [migration-prs]
+
+# Legal transitions. Every move is gated; every move that changes committed direction is
+# human-gated. There is no automatic advance across phases.
+transitions:
+  - from: init
+    to: design
+    entry_gates: [manifest-valid]
+    human_gate: true
+  - from: design
+    to: plan
+    entry_gates: [rfc-approved]
+    human_gate: true
+  - from: plan
+    to: scaffold
+    entry_gates: [roadmap-covers-rfcs]
+    human_gate: true
+  - from: scaffold
+    to: audit
+    entry_gates: [consistency-lint, self-review]
+    human_gate: false
+  - from: audit
+    to: refactor
+    entry_gates: [risk-register-present]
+    human_gate: true
+  # design is resumable: a new RFC can re-open planning without restarting the project.
+  - from: plan
+    to: design
+    entry_gates: [manifest-valid]
+    human_gate: false
+
+# The gate registry. lint/test/security/build/human/manual share one shape, so the checker
+# treats them uniformly. `runs` referencing future tooling is wired in the milestone that
+# builds it (see RFC §12); `manual:`/`human:` gates are human-confirmed.
+gates:
+  - id: manifest-valid
+    kind: lint
+    runs: "python .eados-core/tools/render.py <manifest> --check"
+    blocking: true
+    required_for: [design, scaffold]
+  - id: rfc-approved
+    kind: human
+    runs: "human:tech-lead"
+    blocking: true
+    required_for: [plan]
+  - id: roadmap-covers-rfcs
+    kind: manual
+    runs: "manual:every RFC maps to >=1 milestone item (traceability)"
+    blocking: true
+    required_for: [scaffold]
+  - id: consistency-lint
+    kind: lint
+    runs: "python tools/consistency_lint.py"
+    blocking: true
+    required_for: [audit]
+  - id: self-review
+    kind: lint
+    runs: "python .eados-core/tools/self_review.py <repo>"
+    blocking: true
+    required_for: [audit]
+  - id: risk-register-present
+    kind: security
+    runs: "manual:security-auditor produced a risk register"
+    blocking: true
+    required_for: [refactor]
+
+# Per-domain adaptations. Absent keys inherit the base machine. These encode the delivery
+# guide's domain specifics (e.g. a game's asset pipeline, a mobile store-compliance gate).
+domain_overlays:
+  software: {}
+  game:
+    insert_states: [asset-pipeline-review]   # Art / Animation / Sound cross-discipline deps
+    add_gates: [hardware-budget]             # RAM / GPU / framerate budget is a hard NFR
+  mobile:
+    add_gates: [store-compliance]            # App Store / Play Store review constraints

@@ -346,6 +346,37 @@ def check_os_specs():
         fail(name, "orchestrator/os/ exists but holds no <spec>/_schema.md + <spec>.yaml pair")
 
 
+# ---------------------------------------------------------------------------
+# 9. Domain-completeness — every orchestrator/domains/<domain>.yaml defines every key the domain
+#    schema (orchestrator/domains/_schema.md) declares. The second axis of genericity, held to the
+#    same data+schema contract as the language profiles (RFC-0001 §3-4). Underscore-prefixed files
+#    (_template.yaml) are scaffolds, not domains. Opt-in: skipped until the domains/ dir exists.
+# ---------------------------------------------------------------------------
+def check_domains():
+    name = "domain-completeness"
+    ddir = os.path.join(ROOT, "orchestrator", "domains")
+    if not os.path.isdir(ddir):
+        return  # the domain axis is introduced in M1; absent before it
+    schema_path = os.path.join(ddir, "_schema.md")
+    if not os.path.exists(schema_path):
+        fail(name, "orchestrator/domains/_schema.md is missing")
+        return
+    block = re.search(r"```yaml\n(.*?)```", read(schema_path), re.DOTALL)
+    if not block:
+        fail(name, "orchestrator/domains/_schema.md has no yaml schema block")
+        return
+    required = yaml_key_paths(block.group(1))
+    domains = sorted(p for p in glob.glob(os.path.join(ddir, "*.yaml"))
+                     if not os.path.basename(p).startswith("_"))
+    if not domains:
+        fail(name, "no orchestrator/domains/<domain>.yaml found")
+        return
+    for path in domains:
+        have = yaml_key_paths(read(path))
+        for key in sorted(required - have):
+            fail(name, f"domains/{os.path.basename(path)}: missing schema key '{key}'")
+
+
 CHECKS = [
     check_placeholder_integrity,
     check_profile_completeness,
@@ -355,6 +386,7 @@ CHECKS = [
     check_action_pins,
     check_i18n_freshness,
     check_os_specs,
+    check_domains,
 ]
 
 

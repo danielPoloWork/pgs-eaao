@@ -1,0 +1,23 @@
+# Domain profile — video game. Schema: ./_schema.md.
+# Hard hardware budgets, Alpha/Beta/RC vocabulary, GDD instead of PRD, and the asset pipeline
+# (Art/Animation/Sound) as a first-class cross-discipline dependency (delivery guide §5).
+domain: game
+display_name: "Video game"
+roles: [product-manager, enterprise-architect, tech-lead, reviewer, security-auditor, producer, release-manager]
+role_labels:
+  product-manager: game-designer        # the Game Designer owns the vision
+  enterprise-architect: technical-director
+  tech-lead: lead-programmer
+  producer: producer                    # the Producer is the roadmap guardian (final word on scope)
+artifacts:
+  product_spec: GDD                      # Game Design Document
+  design_doc: RFC                        # feature/tech spec (combat system, etc.)
+  test_strategy: required
+nfr_axes:
+  - { axis: framerate, hard_budget: true }   # e.g. 60 fps target — non-negotiable
+  - { axis: memory, hard_budget: true }      # RAM budget per console/platform
+  - { axis: gpu, hard_budget: true }         # GPU / draw-call budget
+  - { axis: load_time, hard_budget: true }
+milestone_vocabulary: alpha-beta-rc          # Alpha / Beta / Release Candidate / Gold
+cross_discipline_deps: [art, animation, sound]   # the asset pipeline
+workflow_overlay: game                       # inserts asset-pipeline-review + the hardware-budget gate

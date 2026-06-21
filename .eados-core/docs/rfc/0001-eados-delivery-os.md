@@ -219,16 +219,12 @@ concrete reason recorded above — not on taste.
 
 ## 12. Roadmap — M1 → M5
 
-The factory keeps working throughout; each milestone ships standalone value. (This is the EADOS
-*self* roadmap — distinct from the `ROADMAP.md` template generated projects receive.)
-
-| M | Goal | Key deliverables | Acceptance gate | Depends on |
-|---|------|------------------|-----------------|------------|
-| **M1** | Foundation: domain axis + persistent manifest + role authority block | `orchestrator/domains/{_schema,software,game,mobile}` · `project.yaml` `delivery_state` block + interview `Q0.4 target` · authority block wired to roles · `eados_lint` domain gate | lints green; render-smoke unchanged; a domain selects roles/artifacts/NFRs as data | RFC-0001 (this), `os/` specs |
-| **M2** | `design` phase + Product/Delivery personas + the workflow checker & authority gate | `agent/{product-manager,producer}.md` · RFC template + RFC-review protocol · deterministic workflow checker (legal-transition function) · authority gate (path→role enforcement) | a sample RFC passes the review gate; an out-of-authority edit is rejected | M1 |
-| **M3** | `plan` phase: roadmap from RFCs + build the traceability graph | roadmap negotiation protocol (PM wishlist → eng sizing → producer capacity) · graph builder over cross-links | every RFC maps to ≥1 milestone; graph builds from a sample project | M2 |
-| **M4** | `audit` phase: risk scoring + enforce `traceability-lint` | risk model (paths × size × security surface) generalizing reviewer/security-auditor · `traceability-lint` gate (fails on dangling edges) | a seeded dangling edge fails the lint; a risky change forces the security gate | M3 |
-| **M5** | `refactor` (brownfield) — **last, sandboxed** | read an existing repo, diff against the standard, propose incremental migration PRs within a write-contained sandbox | a fixture repo is migrated via gated PRs; no write escapes the sandbox | M4 |
+The roadmap is maintained as a living, checkbox-driven file — the **single source of truth**:
+**[`ROADMAP.md`](ROADMAP.md)**. It sequences `init → design → plan → scaffold → audit → refactor`
+across five milestones (M1 foundation → M5 brownfield refactor), each with deliverables, an
+acceptance gate, and dependencies. The factory keeps working throughout; every phase is opt-in.
+(This is the EADOS *self* roadmap — distinct from the `ROADMAP.md` template that generated
+projects receive.)
 
 ## 13. Open questions
 

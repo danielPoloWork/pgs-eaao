@@ -22,6 +22,9 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   `orchestrator/os/{workflow,authority,git}/` (each `_schema.md` + reference instance), validated
   by a new `os-spec-completeness` gate in `eados_lint.py`. Diagrams are Mermaid (code) under
   `docs/rfc/assets/`. No runtime behavior changes yet — this is design only; build starts at M1.
+- **`docs/rfc/ROADMAP.md` — the delivery plan as a single source of truth.** The M1–M5 roadmap is
+  now a living, checkbox-driven file; RFC-0001 §12 points to it instead of duplicating the table.
+  Adds the `/eados <phase>` command surface to each milestone's deliverables.
 
 ### Changed
 

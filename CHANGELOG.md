@@ -59,6 +59,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   and human-gating). It **reports; it never advances state**. Covered by
   `tools/tests/test_phase_runner.py` (legal transitions, the terminal phase, and workflow
   integrity), wired into CI. **Milestone 1 (foundation) is complete.**
+- **M2-A — Product/Delivery personas + the domain-overlay pattern (roadmap 2.1, resolves OQ4).**
+  Adds the personas `agent/{product-manager,tech-lead,producer}.md` and the domain-overlay
+  convention `agent/domains/<domain>/<role>.md` (shipping the `game` overlay — the Game Designer).
+  A domain specializes a role's *persona* without forking its *authority*: `pending_personas` is now
+  empty, `product-manager` owns the product spec under either name (`docs/prd/**` + `docs/gdd/**`),
+  and the `agent-registry` + `authority-personas` lints resolve overlays recursively. OQ4 resolved —
+  one authority role + a domain persona overlay, not two role IDs.
 
 ### Changed
 

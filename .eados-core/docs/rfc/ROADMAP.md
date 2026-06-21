@@ -18,8 +18,8 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 |------|-------|
 | Rename EAAO → EADOS | ✅ merged (#33) |
 | Design package — RFC-0001 + OS specs + diagrams | ✅ merged (#35) |
-| **M1 — Foundation** | 🚧 M1-A·B·C·D merged · M1-E (`/eados init` + phase-runner) drafted — closes M1 |
-| **M2 — design phase + roles** | ⏳ next |
+| **M1 — Foundation** | ✅ **done** — M1-A..E merged (#37–#41) |
+| **M2 — design phase + roles** | 🚧 in progress — M2-A (Product/Delivery personas + overlays) drafted |
 | M3 · M4 · M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
@@ -57,9 +57,10 @@ chosen domain selects roles/artifacts/NFRs/milestone-vocabulary purely as data.
 **Goal.** Make the first governance phase real: author/import RFCs under a review protocol, with
 the new org-chart roles and the deterministic engine that gates phase transitions.
 
-- [ ] 2.1 Add personas `agent/product-manager.md` and `agent/producer.md` (registered in
-      `agent/README.md`; the `agent-registry` lint enforces it). Decide one role with a
-      domain-varying persona vs two domain-selected roles (**resolves OQ4**).
+- [x] 2.1 Add personas `agent/{product-manager,tech-lead,producer}.md` + the **domain-overlay**
+      pattern (`agent/domains/<domain>/<role>.md`, e.g. the `game` `product-manager` = Game
+      Designer); recursive `agent-registry` + `authority-personas` lints. **OQ4 resolved:** one
+      authority role + a domain-specialized persona overlay (not two role IDs).
 - [ ] 2.2 RFC template + the **RFC-review protocol** (author = tech-lead/senior; reviewers =
       peers + architect; approver = tech-lead) as an `orchestrator/os/` doc.
 - [ ] 2.3 The **deterministic workflow checker**: a pure function over `workflow.yaml` + the
@@ -147,6 +148,6 @@ PR passes the standard's gates.
 | OQ | Question | Resolved in |
 |----|----------|-------------|
 | OQ1 | Manifest schema-versioning mechanics | ✅ M1-B (item 1.4) — embedded `schema_version` |
-| OQ4 | `product-manager` vs `game-designer` role shape | M2 (item 2.1) |
+| OQ4 | product-manager vs game-designer role shape | ✅ M2-A (item 2.1) — one authority role + domain persona overlay |
 | OQ2 | Risk-score thresholds (per-domain?) | M4 (item 4.4) |
 | OQ3 | Committed, CI-generated SVG vs Mermaid-only | Deferred (RFC §9 leans Mermaid-only) |

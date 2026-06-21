@@ -52,6 +52,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   their personas land in M2). A new `authority-personas` gate in `eados_lint.py` enforces the
   bidirectional pairing: every role has a persona **or** is pending, every persona maps to a role,
   and a pending role must not already have a persona. `agent/README.md` documents the split.
+- **M1-E — `/eados init` command surface + the deterministic phase runner (roadmap 1.6, closes M1).**
+  A portable command surface under `orchestrator/commands/` (`README.md` + `init.md`) and
+  `tools/phase_runner.py` — a state-driven, dependency-free checker that reads a manifest's
+  `delivery_state.phase` + `workflow.yaml` and prints the legal next transitions (with their gates
+  and human-gating). It **reports; it never advances state**. Covered by
+  `tools/tests/test_phase_runner.py` (legal transitions, the terminal phase, and workflow
+  integrity), wired into CI. **Milestone 1 (foundation) is complete.**
 
 ### Changed
 

@@ -18,8 +18,9 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 |------|-------|
 | Rename EAAO → EADOS | ✅ merged (#33) |
 | Design package — RFC-0001 + OS specs + diagrams | ✅ merged (#35) |
-| **M1 — Foundation** | 🚧 in progress — M1-A·B·C merged · M1-D (authority↔persona) drafted |
-| M2 · M3 · M4 · M5 | ⏳ not started |
+| **M1 — Foundation** | 🚧 M1-A·B·C·D merged · M1-E (`/eados init` + phase-runner) drafted — closes M1 |
+| **M2 — design phase + roles** | ⏳ next |
+| M3 · M4 · M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -42,7 +43,7 @@ changing how generation behaves today.
       (current phase, checkpoints, cross-link ids) with a `schema_version` (**resolves OQ1**).
 - [x] 1.5 Wire the **authority block** to the existing roles (persona in `agent/*.md` ↔ authority
       in `authority.yaml`), making the persona≠authority separation real.
-- [ ] 1.6 Ship the **`/eados init`** command surface (entry skill) + a thin state-driven
+- [x] 1.6 Ship the **`/eados init`** command surface (entry skill) + a thin state-driven
       phase-runner skeleton that reads `workflow.yaml` and reports the legal next transitions.
 
 **Acceptance gate.** All lints green (incl. `domain-completeness`); render-smoke unchanged; a

@@ -19,7 +19,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | Rename EAAO → EADOS | ✅ merged (#33) |
 | Design package — RFC-0001 + OS specs + diagrams | ✅ merged (#35) |
 | **M1 — Foundation** | ✅ **done** — M1-A..E merged (#37–#41) |
-| **M2 — design phase + roles** | 🚧 in progress — M2-A (Product/Delivery personas + overlays) drafted |
+| **M2 — design phase + roles** | 🚧 in progress — M2-A merged (#42) · M2-B (RFC protocol) drafted |
 | M3 · M4 · M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
@@ -61,8 +61,9 @@ the new org-chart roles and the deterministic engine that gates phase transition
       pattern (`agent/domains/<domain>/<role>.md`, e.g. the `game` `product-manager` = Game
       Designer); recursive `agent-registry` + `authority-personas` lints. **OQ4 resolved:** one
       authority role + a domain-specialized persona overlay (not two role IDs).
-- [ ] 2.2 RFC template + the **RFC-review protocol** (author = tech-lead/senior; reviewers =
-      peers + architect; approver = tech-lead) as an `orchestrator/os/` doc.
+- [x] 2.2 RFC template + the **RFC-review protocol** under `orchestrator/os/rfc/` (schema +
+      config + template + protocol), and `tools/rfc_check.py` enforcing the **`rfc-approved`** gate
+      (required sections + a `tech-lead` approval record).
 - [ ] 2.3 The **deterministic workflow checker**: a pure function over `workflow.yaml` + the
       manifest state that returns the legal transitions (agent proposes, human confirms H-gates).
 - [ ] 2.4 The **authority gate**: enforce the `authority.yaml` ownership map — a change touching a

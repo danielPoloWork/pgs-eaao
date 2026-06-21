@@ -63,8 +63,8 @@ gates:
     blocking: true
     required_for: [design, scaffold]
   - id: rfc-approved
-    kind: human
-    runs: "human:tech-lead"
+    kind: lint
+    runs: "python .eados-core/tools/rfc_check.py <rfc>"   # verifies the tech-lead approval record
     blocking: true
     required_for: [plan]
   - id: roadmap-covers-rfcs

@@ -1,6 +1,6 @@
 # EADOS — machine-readable OS specs
 
-The four data artifacts that turn EADOS's delivery governance from prose conventions into
+The machine-readable specs that turn EADOS's delivery governance from prose conventions into
 **declarative, gate-enforced contracts**. Each spec is *data*, validated by
 [`eados_lint`](../../tools/eados_lint.py) (the `os-spec-completeness` check) and elaborated in
 [`docs/rfc/0001-eados-delivery-os.md`](../../docs/rfc/0001-eados-delivery-os.md).
@@ -14,10 +14,12 @@ validates against a schema — never a special case in a tool.
 | **workflow** | The phase state machine: states, gated transitions, the gate registry, per-domain overlays | [`workflow/_schema.md`](workflow/_schema.md) · [`workflow/workflow.yaml`](workflow/workflow.yaml) |
 | **authority** | Roles (separate from persona), the path→role ownership map, the escalation ladder | [`authority/_schema.md`](authority/_schema.md) · [`authority/authority.yaml`](authority/authority.yaml) |
 | **git** | Branch/commit/PR/release policy and the PR↔RFC↔milestone cross-link requirement | [`git/_schema.md`](git/_schema.md) · [`git/git.yaml`](git/git.yaml) |
+| **rfc** | The RFC review protocol: required sections, author/reviewer/approver roles, the `rfc-approved` gate | [`rfc/_schema.md`](rfc/_schema.md) · [`rfc/rfc.yaml`](rfc/rfc.yaml) (+ [`template.md`](rfc/template.md) · [`review-protocol.md`](rfc/review-protocol.md)) |
 
-The fourth artifact — the **traceability graph** (requirement → RFC → milestone → PR → commit
-→ release) and its lint — is *described* here and in the RFC but is **built in M3/M4**; it is
-derived from the cross-links the `git` spec mandates, not stored as a separate file.
+The **traceability graph** (requirement → RFC → milestone → PR → commit → release) and its lint
+are *described* here and in the RFC but are **built in M3/M4** — derived from the cross-links the
+`git` spec mandates, not stored as a separate file. The `rfc` protocol is enforced by
+[`../../tools/rfc_check.py`](../../tools/rfc_check.py).
 
 > **Status:** these are the **reference instances** that encode the design (RFC-0001). Their
 > runtime wiring lands across milestones M2–M4 (see RFC §12). A reference to a role persona or

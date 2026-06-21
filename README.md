@@ -1,20 +1,20 @@
-# Enterprise Agentic Architecture Orchestrator (EAAO)
+# Enterprise Agentic Delivery Operating System (EADOS)
 
-[![CI](https://github.com/danielPoloWork/pgs-eaao/actions/workflows/ci.yml/badge.svg)](https://github.com/danielPoloWork/pgs-eaao/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/badge/release-v1.2.1-blue.svg)](https://github.com/danielPoloWork/pgs-eaao/releases)
+[![CI](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml/badge.svg)](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/badge/release-v1.2.1-blue.svg)](https://github.com/danielPoloWork/pgs-eados/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
-[![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](.eaao-core/orchestrator/profiles/)
+[![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](.eados-core/orchestrator/profiles/)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196.svg)](https://www.conventionalcommits.org/)
 
-> **🌐 Translations:** [简体中文](.eaao-core/docs/i18n/zh-Hans/README.md) · [日本語](.eaao-core/docs/i18n/ja/README.md) — derived from this English source. Policy & freshness: [`.eaao-core/docs/i18n/`](.eaao-core/docs/i18n/README.md).
+> **🌐 Translations:** [简体中文](.eados-core/docs/i18n/zh-Hans/README.md) · [日本語](.eados-core/docs/i18n/ja/README.md) — derived from this English source. Policy & freshness: [`.eados-core/docs/i18n/`](.eados-core/docs/i18n/README.md).
 
 > A language-agnostic meta-project that reproduces the **enterprise agent system** of
 > `pbr-cpp-memory-pool` for *any* new project, in *any* language, with *any* toolchain —
 > by interviewing the maintainer, recording the answers in a single manifest, and
 > rendering a complete, governed repository from parameterized templates.
 
-EAAO is not the product. EAAO is the **factory** that stamps out products that all
+EADOS is not the product. EADOS is the **factory** that stamps out products that all
 share the same technical-enterprise structure, the same GitHub workflow, the same
 quality gates, and the same AI-agent contract — regardless of programming language,
 framework, or tooling.
@@ -25,11 +25,11 @@ It exists to answer one question:
 > consistency lint, SemVer governance. How do we get the **same** rigor on the next
 > project, which is in Rust / Python / TypeScript / Go / Java / …?"*
 
-The answer: point the **Enterprise Project Architect** agent at EAAO, run the
+The answer: point the **Enterprise Project Architect** agent at EADOS, run the
 **intake interview**, and let it generate the new repository.
 
-> **New here?** Read [`.eaao-core/docs/USAGE.md`](.eaao-core/docs/USAGE.md) — the full map of
-> what EAAO can do, how it works, and what is fixed vs. what you can customize.
+> **New here?** Read [`.eados-core/docs/USAGE.md`](.eados-core/docs/USAGE.md) — the full map of
+> what EADOS can do, how it works, and what is fixed vs. what you can customize.
 
 ---
 
@@ -91,20 +91,20 @@ Every one of these is a **parameterized copy** of what already works in
 ```
 
 The full, ordered procedure is the **generation playbook**:
-[`orchestrator/generate.md`](.eaao-core/orchestrator/generate.md).
+[`orchestrator/generate.md`](.eados-core/orchestrator/generate.md).
 
 ---
 
 ## Repository layout
 
 ```text
-pgs-eaao/
+pgs-eados/
 ├── README.md                          # this file
-├── AGENTS.md                          # agent contract for EAAO itself (+ the meta-architect persona)
+├── AGENTS.md                          # agent contract for EADOS itself (+ the meta-architect persona)
 ├── CLAUDE.md / GEMINI.md              # tool adapters → defer to AGENTS.md
 ├── LICENSE
-├── .github/workflows/ci.yml           # EAAO's own CI (self-lint + render smoke)
-└── .eaao-core/                        # ALL the factory machinery — one ignorable folder
+├── .github/workflows/ci.yml           # EADOS's own CI (self-lint + render smoke)
+└── .eados-core/                        # ALL the factory machinery — one ignorable folder
     ├── agent/                         # enterprise-architect + composable roles + registry
     │   ├── README.md                  # the agent registry/index
     │   ├── enterprise-architect.md    # the orchestrating "senior project architect"
@@ -121,7 +121,7 @@ pgs-eaao/
     │   ├── .github/**                 # PR + issue templates, CODEOWNERS, dependabot, ci.yml + release.yml
     │   └── tools/consistency_lint.py  # generic, profile-driven congruence checker
     ├── tools/                         # the factory's own tooling
-    │   ├── eaao_lint.py               # self-lint: placeholder/profile/playbook integrity
+    │   ├── eados_lint.py               # self-lint: placeholder/profile/playbook integrity
     │   ├── render.py                  # deterministic Mustache-subset renderer
     │   ├── autotune.py                # proposes default changes from accumulated run records
     │   └── self_review.py             # structural quality review of a generated repo
@@ -129,7 +129,7 @@ pgs-eaao/
     ├── learning/                      # lessons ledger + run records (memory / auto-tuning input)
     ├── eval/rubric.md                 # the self-evaluation rubric
     ├── maintenance/stay-current.md    # the profile-refresh routine (+ cron recipe)
-    └── docs/adr/                      # ADRs governing EAAO's own design decisions
+    └── docs/adr/                      # ADRs governing EADOS's own design decisions
 ```
 
 ---
@@ -138,62 +138,62 @@ pgs-eaao/
 
 ### Requirements
 
-EAAO is a markdown/YAML factory — nothing to compile, almost nothing to install. What you need
+EADOS is a markdown/YAML factory — nothing to compile, almost nothing to install. What you need
 depends on how you drive it:
 
 - **To use it conversationally (recommended)** — an **AI coding agent** that reads `AGENTS.md`:
   Claude Code, Gemini Antigravity, or ChatGPT Codex.
 - **To use it deterministically (no agent)** — **Python 3.12+** only, for the bundled tooling
-  (`render.py`, `eaao_lint.py`, and the generated `consistency_lint.py`); standard-library only,
+  (`render.py`, `eados_lint.py`, and the generated `consistency_lint.py`); standard-library only,
   no `pip install`.
-- **To contribute to EAAO** — **git**, to clone and open pull requests. You do **not** need git
+- **To contribute to EADOS** — **git**, to clone and open pull requests. You do **not** need git
   just to download and use the factory.
 
 ### Get it
 
 **Download the bundle into your project's repo — recommended, no clone.** The bundle is a
 self-contained, **prefix-less** copy of the factory (no CI, changelog, or git history). Extract it
-**at the root of your project's repo** so its contents — `.eaao-core/` plus the agent contract and
+**at the root of your project's repo** so its contents — `.eados-core/` plus the agent contract and
 `LICENSE` — land directly there, **not** inside a subfolder:
 
 ```bash
 cd my-project        # your project's repo root (new or existing)
-curl -L -o /tmp/pgs-eaao-bundle.tar.gz \
-  https://github.com/danielPoloWork/pgs-eaao/releases/latest/download/pgs-eaao-bundle.tar.gz
-tar xzf /tmp/pgs-eaao-bundle.tar.gz   # extracts .eaao-core/, AGENTS.md, … into the current folder
+curl -L -o /tmp/pgs-eados-bundle.tar.gz \
+  https://github.com/danielPoloWork/pgs-eados/releases/latest/download/pgs-eados-bundle.tar.gz
+tar xzf /tmp/pgs-eados-bundle.tar.gz   # extracts .eados-core/, AGENTS.md, … into the current folder
 ```
 
-You should now have `my-project/.eaao-core/` (next to `AGENTS.md`). Prefer a ZIP or your browser?
-Download either asset from the [latest release](https://github.com/danielPoloWork/pgs-eaao/releases/latest)
+You should now have `my-project/.eados-core/` (next to `AGENTS.md`). Prefer a ZIP or your browser?
+Download either asset from the [latest release](https://github.com/danielPoloWork/pgs-eados/releases/latest)
 and unzip it **at the repo root** (its contents at the top level — no wrapping folder). Then
 confirm and generate as in [Quickstart](#quickstart):
 
 ```bash
-ls .eaao-core                           # orchestrator/ templates/ tools/ …
-python .eaao-core/tools/eaao_lint.py    # optional: confirm the factory is internally congruent
+ls .eados-core                           # orchestrator/ templates/ tools/ …
+python .eados-core/tools/eados_lint.py    # optional: confirm the factory is internally congruent
 ```
 
-**Clone the repository — to contribute to EAAO** (the full repo: CI, changelog, history):
+**Clone the repository — to contribute to EADOS** (the full repo: CI, changelog, history):
 
 ```bash
-git clone https://github.com/danielPoloWork/pgs-eaao.git && cd pgs-eaao
+git clone https://github.com/danielPoloWork/pgs-eados.git && cd pgs-eados
 ```
 
 ## Quickstart
 
-You drive EAAO conversationally through the Enterprise Project Architect agent.
+You drive EADOS conversationally through the Enterprise Project Architect agent.
 
 1. **Open the project folder with your AI coding agent** (Claude Code, Gemini, Codex). It reads
    `AGENTS.md` and adopts the meta-architect persona.
 2. **Say what you want to build.** e.g. *"New project: a Rust token-bucket rate limiter,
    library, GitHub owner `acme`, default branch `main`."*
 3. **Answer the interview.** The architect walks
-   [`orchestrator/interview.md`](.eaao-core/orchestrator/interview.md) — language(s), frameworks,
+   [`orchestrator/interview.md`](.eados-core/orchestrator/interview.md) — language(s), frameworks,
    tools, governance, and the functional spec — asking only the questions whose answers
    it cannot safely default.
 4. **Review the manifest.** The architect writes `orchestrator/project.yaml` and shows it
    to you for confirmation before generating anything.
-5. **Generate.** The architect follows [`orchestrator/generate.md`](.eaao-core/orchestrator/generate.md)
+5. **Generate.** The architect follows [`orchestrator/generate.md`](.eados-core/orchestrator/generate.md)
    to render the new repository, runs the consistency lint, and drafts the bootstrap PR.
 
 You never have to remember the enterprise rules — they are encoded in the templates and
@@ -205,24 +205,24 @@ The interview's only output is a filled manifest, so you can also fill it by han
 without an agent:
 
 ```bash
-cp .eaao-core/orchestrator/project.yaml.template .eaao-core/orchestrator/project.yaml
-# edit .eaao-core/orchestrator/project.yaml — see .eaao-core/orchestrator/examples/reference.yaml for a worked one
-python .eaao-core/tools/render.py .eaao-core/orchestrator/project.yaml --in-place
+cp .eados-core/orchestrator/project.yaml.template .eados-core/orchestrator/project.yaml
+# edit .eados-core/orchestrator/project.yaml — see .eados-core/orchestrator/examples/reference.yaml for a worked one
+python .eados-core/tools/render.py .eados-core/orchestrator/project.yaml --in-place
 python tools/consistency_lint.py     # the generated repo's own gate (now at the repo root)
 ```
 
 `render.py` performs exactly the substitutions in
-[`orchestrator/placeholders.md`](.eaao-core/orchestrator/placeholders.md), honors the `capabilities.*`
+[`orchestrator/placeholders.md`](.eados-core/orchestrator/placeholders.md), honors the `capabilities.*`
 gates, leaves GitHub Actions `${{ … }}` untouched, and **aborts on any unresolved
-placeholder**. The render-smoke job in EAAO's own CI runs this against
-[`orchestrator/examples/reference.yaml`](.eaao-core/orchestrator/examples/reference.yaml) on every push.
+placeholder**. The render-smoke job in EADOS's own CI runs this against
+[`orchestrator/examples/reference.yaml`](.eados-core/orchestrator/examples/reference.yaml) on every push.
 
 ### The tools
 
 | Tool | What it does |
 |---|---|
-| [`tools/render.py`](.eaao-core/tools/render.py) | Renders a manifest into a repository (deterministic). |
-| [`tools/eaao_lint.py`](.eaao-core/tools/eaao_lint.py) | Self-lint: placeholder integrity, profile completeness, playbook references. |
+| [`tools/render.py`](.eados-core/tools/render.py) | Renders a manifest into a repository (deterministic). |
+| [`tools/eados_lint.py`](.eados-core/tools/eados_lint.py) | Self-lint: placeholder integrity, profile completeness, playbook references. |
 | `templates/tools/consistency_lint.py` | Shipped *into* each generated repo; enforces its cross-artifact congruence. |
 
 ---
@@ -232,31 +232,31 @@ placeholder**. The render-smoke job in EAAO's own CI runs this against
 - **One source of truth per fact.** A project fact (name, language, owner, namespace)
   is captured once in `project.yaml` and flows to every artifact via placeholders.
   This is the same anti-drift discipline the generated `consistency_lint.py` enforces.
-- **Open to any language.** EAAO is not limited to a fixed list — the nineteen shipped profiles
+- **Open to any language.** EADOS is not limited to a fixed list — the nineteen shipped profiles
   (C, C++, C#, VB.NET, Java, Kotlin, Scala, Python, Ruby, PHP, JavaScript, TypeScript, Go, Rust,
   Swift, Dart, Lua, COBOL, Pascal) are **seeds**. Supporting a new language means
-  copying [`profiles/_template.yaml`](.eaao-core/orchestrator/profiles/_template.yaml) to one
+  copying [`profiles/_template.yaml`](.eados-core/orchestrator/profiles/_template.yaml) to one
   `profiles/<lang>.yaml` — never editing templates, which only know about *roles* (build tool,
   test runner, formatter), never specific tools. There is no "unsupported language", only
   "not yet profiled".
-- **The generated repo governs itself.** EAAO's job ends at generation. The new repo
+- **The generated repo governs itself.** EADOS's job ends at generation. The new repo
   ships with its own `AGENTS.md`, CI, and lint, so it is self-sufficient and is *not*
-  coupled back to EAAO.
+  coupled back to EADOS.
 - **English on disk, any language in chat.** Like the reference project, every
   generated artifact is English; the interview itself may be conducted in the
   maintainer's language.
 - **Human owns the irreversible steps.** The agent drafts branches, commits, and PRs;
-  the human opens, reviews, and merges. EAAO reproduces that boundary verbatim.
+  the human opens, reviews, and merges. EADOS reproduces that boundary verbatim.
 
 ---
 
 ## Contributing & governance
 
-EAAO is **owner-governed**: contributors *suggest* via pull requests, the owner
+EADOS is **owner-governed**: contributors *suggest* via pull requests, the owner
 (`@danielPoloWork`) *decides* and **squash-merges**. Nobody pushes to `main` directly.
 
 - Start with [`CONTRIBUTING.md`](CONTRIBUTING.md): fork → feature branch → Conventional
-  Commits → run the gates (`eaao_lint`, render-smoke, `tools/tests/`) → open a PR.
+  Commits → run the gates (`eados_lint`, render-smoke, `tools/tests/`) → open a PR.
 - `main` accepts the **squash** merge method only; the full branch-protection ruleset
   (require-PR, restrict who can push) is active once the repo is public.
 - Security issues never go in a public issue — see [`SECURITY.md`](SECURITY.md). Questions and
@@ -267,7 +267,7 @@ EAAO is **owner-governed**: contributors *suggest* via pull requests, the owner
 
 ## Provenance
 
-EAAO is reverse-engineered from `pbr-cpp-memory-pool` — every rule, template, and gate
+EADOS is reverse-engineered from `pbr-cpp-memory-pool` — every rule, template, and gate
 here has a concrete origin in that project's `AGENTS.md`, `docs/`, `.github/`, and
-`tools/consistency_lint.py`. See [`docs/adr/`](.eaao-core/docs/adr/) for the decisions that shaped
+`tools/consistency_lint.py`. See [`docs/adr/`](.eados-core/docs/adr/) for the decisions that shaped
 the generalization.

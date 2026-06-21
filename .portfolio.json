@@ -1,5 +1,5 @@
 {
-  "title": "Enterprise Agentic Architecture Orchestrator (EAAO)",
+  "title": "Enterprise Agentic Delivery Operating System (EADOS)",
   "tags": ["agentic-os", "project-scaffolding", "code-generation", "enterprise-governance", "language-agnostic", "ci-cd", "semver", "ai-agents"],
   "order": 1,
   "description": {

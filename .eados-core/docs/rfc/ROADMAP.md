@@ -18,7 +18,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 |------|-------|
 | Rename EAAO → EADOS | ✅ merged (#33) |
 | Design package — RFC-0001 + OS specs + diagrams | ✅ merged (#35) |
-| **M1 — Foundation** | 🚧 in progress — M1-A (#37) · M1-B (#38) merged · M1-C (interview) drafted |
+| **M1 — Foundation** | 🚧 in progress — M1-A·B·C merged · M1-D (authority↔persona) drafted |
 | M2 · M3 · M4 · M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
@@ -40,7 +40,7 @@ changing how generation behaves today.
       gains a `domain` field.
 - [x] 1.4 Promote the manifest to a **persistent, reference-based `delivery_state`** block
       (current phase, checkpoints, cross-link ids) with a `schema_version` (**resolves OQ1**).
-- [ ] 1.5 Wire the **authority block** to the existing roles (persona in `agent/*.md` ↔ authority
+- [x] 1.5 Wire the **authority block** to the existing roles (persona in `agent/*.md` ↔ authority
       in `authority.yaml`), making the persona≠authority separation real.
 - [ ] 1.6 Ship the **`/eados init`** command surface (entry skill) + a thin state-driven
       phase-runner skeleton that reads `workflow.yaml` and reports the legal next transitions.

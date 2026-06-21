@@ -377,6 +377,37 @@ def check_domains():
             fail(name, f"domains/{os.path.basename(path)}: missing schema key '{key}'")
 
 
+# ---------------------------------------------------------------------------
+# 10. Authority-personas — the persona <-> authority pairing (RFC-0001 §4 / roadmap 1.5). Every
+#     role in orchestrator/os/authority/authority.yaml has an agent/<role>.md persona OR is listed
+#     in `pending_personas`; every agent/<role>.md persona maps to a declared role; a pending role
+#     must not already have a persona. Opt-in: skipped until the authority spec exists.
+# ---------------------------------------------------------------------------
+def check_authority_personas():
+    name = "authority-personas"
+    auth = os.path.join(ROOT, "orchestrator", "os", "authority", "authority.yaml")
+    agent_dir = os.path.join(ROOT, "agent")
+    if not os.path.exists(auth) or not os.path.isdir(agent_dir):
+        return
+    text = read(auth)
+    roles = set(re.findall(r"(?m)^\s*-\s*name:\s*([A-Za-z][\w-]*)", text))
+    if not roles:
+        fail(name, "could not parse any role names from authority.yaml")
+        return
+    pend_m = re.search(r"pending_personas:\s*\[([^\]]*)\]", text)
+    pending = {s.strip() for s in (pend_m.group(1).split(",") if pend_m else []) if s.strip()}
+    personas = {os.path.splitext(fn)[0] for fn in os.listdir(agent_dir)
+                if fn.endswith(".md") and fn != "README.md"}
+    for role in sorted(roles - personas - pending):
+        fail(name, f"authority role '{role}' has no agent/{role}.md persona and is not in "
+                   "pending_personas")
+    for persona in sorted(personas - roles):
+        fail(name, f"persona agent/{persona}.md has no role record in authority.yaml")
+    for role in sorted(pending & personas):
+        fail(name, f"role '{role}' is in pending_personas but agent/{role}.md exists — "
+                   "remove it from pending_personas")
+
+
 CHECKS = [
     check_placeholder_integrity,
     check_profile_completeness,
@@ -387,6 +418,7 @@ CHECKS = [
     check_i18n_freshness,
     check_os_specs,
     check_domains,
+    check_authority_personas,
 ]
 
 

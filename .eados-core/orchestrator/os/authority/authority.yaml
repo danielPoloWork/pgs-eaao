@@ -38,6 +38,12 @@ roles:
     may_draft: ["SECURITY.md", "docs/bugs/**"]
     may_approve: []
     owns: ["SECURITY.md"]
+  - name: profile-author            # Adds/refreshes language profiles (factory maintenance).
+    pillar: engineering
+    phases: []                      # not a delivery-pipeline phase role; invoked ad-hoc
+    may_draft: ["orchestrator/profiles/**", "docs/adr/**"]
+    may_approve: []
+    owns: ["orchestrator/profiles/**"]
 
   # --- Delivery pillar (the "when" and "who") ---
   - name: producer                  # TPM / Agile Delivery Manager | Producer. Roadmap guardian.
@@ -52,6 +58,11 @@ roles:
     may_draft: ["CHANGELOG.md", "docs/releases/**"]
     may_approve: []
     owns: ["CHANGELOG.md"]
+
+# Roles whose persona (agent/<role>.md) is intentionally not written yet — they arrive with the
+# phase that needs them (M2). The `authority-personas` lint allows these and rejects any OTHER gap
+# (an authority role with no persona and not listed here, or a persona with no role record).
+pending_personas: [product-manager, tech-lead, producer]
 
 # Routing substrate: a changed path resolves to exactly one owning role + action. Generalizes
 # CODEOWNERS. The authority gate (M2) rejects a change touching a glob the actor does not own.

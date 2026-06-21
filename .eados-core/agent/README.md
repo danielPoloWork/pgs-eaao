@@ -23,6 +23,19 @@ A generation run is the **architect**; before the bootstrap PR it invokes the **
 a language is the **profile-author**. They share one contract, so handing off between them does
 not change the rules — only the focus.
 
+## Persona vs. authority (the separation is the point)
+
+A role file here is the **persona** — behavior, procedure, boundary. A role's **authority** —
+what it may *draft* / *approve* / *own* — lives separately, as data, in
+[`../orchestrator/os/authority/authority.yaml`](../orchestrator/os/authority/authority.yaml)
+(RFC-0001 §4). Keeping them apart is what lets a role act without holding approval authority over
+an artifact (the `reviewer` comments on an RFC; only the `tech-lead` approves it).
+
+The `authority-personas` self-lint enforces the pairing: every authority role has a persona here
+**or** is declared in `pending_personas`, and every persona maps to a role. The delivery roles
+**`product-manager`**, **`tech-lead`**, and **`producer`** are authority-declared but their
+personas are **pending** — they land with the `design`/`plan` phases in **M2**.
+
 ## Customizing and adding roles
 
 - **Override** a shipped role or **add** your own under

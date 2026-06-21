@@ -16,6 +16,7 @@ instance to define every top-level key below.
 ```yaml
 version:            # integer schema version
 roles:              # the org-chart as authority records (persona is elsewhere)
+pending_personas:   # authority roles whose agent/<role>.md persona is intentionally not written yet
 ownership_map:      # path glob -> owning role + permitted action; the routing substrate
 escalation:         # the decision ladder for reviewer disagreement, ending at the human owner
 ```
@@ -32,11 +33,15 @@ escalation:         # the decision ladder for reviewer disagreement, ending at t
   acting role does not own is rejected by the authority gate (built M2).
 - **`escalation[]`** — an ordered ladder `{ level, decider }`. The terminal decider is always
   `human-owner` — `AGENTS.md` §6: the owner is the sole decider.
+- **`pending_personas`** — a list of role names whose `agent/<role>.md` persona has not been
+  written yet (they arrive with the phase that needs them). The `authority-personas` lint
+  (`eados_lint`) enforces the persona↔authority pairing: every role has a persona **or** is listed
+  here, every persona maps to a role, and a `pending` role must not already have a persona.
 
 ## Invariants
 
 - Every `roles[].name` referenced by `workflow.yaml` `states[].role` exists here.
 - Every `ownership_map[].role` is a declared role `name`.
 - The last `escalation[]` entry's `decider` is `human-owner` (the boundary is never removed).
-- Roles new to EADOS (`product-manager`, `producer`) gain their `agent/*.md` persona in **M2**;
-  until then their authority is declared here and the persona is the generic architect.
+- Every role has an `agent/<role>.md` persona **or** appears in `pending_personas`; the new roles
+  `product-manager`, `tech-lead`, `producer` are pending until their persona lands in **M2**.

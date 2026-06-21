@@ -46,6 +46,12 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   (with a `domain_profile_exists` validation, mirroring the language `profile_exists` rule). The
   domain still informs only itself for now — the roles/artifacts/NFRs it selects are consumed by
   the `design`/`plan` phases in M2+.
+- **M1-D — persona↔authority wiring (roadmap 1.5).** Makes the persona≠authority separation
+  enforceable. `authority.yaml` gains the `profile-author` role (so every existing persona has an
+  authority record) and a `pending_personas` list (`product-manager`, `tech-lead`, `producer` —
+  their personas land in M2). A new `authority-personas` gate in `eados_lint.py` enforces the
+  bidirectional pairing: every role has a persona **or** is pending, every persona maps to a role,
+  and a pending role must not already have a persona. `agent/README.md` documents the split.
 
 ### Changed
 

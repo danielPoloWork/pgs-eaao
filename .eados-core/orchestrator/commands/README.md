@@ -34,3 +34,10 @@ current phase: init
 legal next transitions:
   -> design   (gates: manifest-valid)  [human-gated — the owner confirms]
 ```
+
+`--propose <to>` validates a *proposed* transition and **emits** the `delivery_state` checkpoint to
+write — it does **not** write state (the agent does, after the human confirms a human-gated move):
+
+```bash
+python .eados-core/tools/phase_runner.py <manifest> --propose design
+```

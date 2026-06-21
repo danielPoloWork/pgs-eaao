@@ -239,3 +239,13 @@ projects receive.)
   (`product-manager`) with a **domain-specialized persona overlay** —
   `agent/domains/<domain>/<role>.md` (e.g. the `game` overlay is the Game Designer). The label
   comes from the domain's `role_labels`; the authority stays unified. Not two role IDs.
+
+## Approval
+
+Ratified by [ADR-0011](../adr/0011-eados-phase-based-delivery-operating-system.md) and accepted by
+the owner on merge. Recorded in the M2 RFC-protocol format (dogfooding `rfc_check`):
+
+```
+approved-by: tech-lead (2026-06-21)
+```
+

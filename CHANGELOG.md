@@ -66,6 +66,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   empty, `product-manager` owns the product spec under either name (`docs/prd/**` + `docs/gdd/**`),
   and the `agent-registry` + `authority-personas` lints resolve overlays recursively. OQ4 resolved —
   one authority role + a domain persona overlay, not two role IDs.
+- **M2-B — RFC review protocol + the `rfc-approved` gate (roadmap 2.2).** A new `rfc` OS spec under
+  `orchestrator/os/rfc/` (`_schema.md` + `rfc.yaml` config + `template.md` + `review-protocol.md`)
+  defines the author→reviewer→approver flow and the required RFC sections. `tools/rfc_check.py`
+  enforces the gate mechanically — an RFC must have every required section and a well-formed approval
+  record by the approver role (the human approves; the tool verifies the record). The `workflow.yaml`
+  `rfc-approved` gate now runs `rfc_check`, and RFC-0001 carries an `## Approval` block (dogfooding).
+  Covered by `tools/tests/test_rfc_check.py`, wired into CI.
 
 ### Changed
 

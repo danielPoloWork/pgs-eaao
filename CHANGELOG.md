@@ -109,6 +109,12 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   `delivery_state.refs.milestones` → `phase_runner --propose scaffold` (the agent writes the
   checkpoint; the human confirms). The command surface README marks `/eados plan` available.
   **Milestone 3 (the plan phase + traceability) is complete.**
+- **M4-A — the audit risk model (roadmap 4.1, resolves OQ2).** A new `risk` OS spec
+  (`orchestrator/os/risk/_schema.md` + `risk.yaml`) and `tools/risk_score.py`: a change's risk is a
+  deterministic f(security surface × change size × blast radius) → `low/medium/high/critical`. At or
+  above a `mandatory_gate_level` (default `high`, **per-domain configurable** — `mobile` is stricter
+  at `medium`) the `security-auditor` gate is required. Generalizes the `reviewer` + `security-auditor`
+  roles into a standing audit. Covered by `tools/tests/test_risk_score.py`, wired into CI.
 
 ### Changed
 

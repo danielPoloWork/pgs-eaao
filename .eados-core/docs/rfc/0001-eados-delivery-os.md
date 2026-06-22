@@ -231,8 +231,10 @@ projects receive.)
 - **OQ1 — manifest schema versioning mechanics.** ✅ **Resolved (M1-B):** an embedded top-level
   `schema_version` (currently `1`); schema migrations are recorded as CHANGELOG notes, not a
   separate ledger.
-- **OQ2 — risk-score thresholds.** What concrete score forces the mandatory security gate, and is
-  it per-domain? (Resolve in M4.)
+- **OQ2 — risk-score thresholds.** ✅ **Resolved (M4-A):** the score f(security surface × size ×
+  blast radius) maps to `low/medium/high/critical`; at/above a `mandatory_gate_level` (default
+  `high`) the `security-auditor` gate is required, **per-domain configurable** in `risk.yaml`
+  (e.g. `mobile` is stricter at `medium`). Yes — per-domain.
 - **OQ3 — committed SVG.** Keep Mermaid-only (GitHub-rendered) or add a CI Node step that commits
   generated SVGs? (Deferred; §9 leans Mermaid-only.)
 - **OQ4 — `product-manager` vs `game-designer`.** ✅ **Resolved (M2-A):** one authority role

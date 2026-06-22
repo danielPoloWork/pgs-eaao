@@ -96,6 +96,12 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   `plan → scaffold` gate; generalizes the spec-coverage-map). The Git-side edges
   (`PR → commit → release`) land in M4. The `workflow.yaml` `roadmap-covers-rfcs` gate now runs it.
   Covered by `tools/tests/test_traceability.py`, wired into CI.
+- **M3-B — the roadmap-negotiation protocol (roadmap 3.1).** A new `plan` OS spec under
+  `orchestrator/os/plan/` (`_schema.md` + `plan.yaml` config + `negotiation-protocol.md`) makes the
+  roadmap a collaborative artifact: `product-manager` proposes priorities → `tech-lead` gives the
+  T-shirt sizing → `producer` reconciles capacity into milestones, every step anchored to a concrete
+  artifact (no theatre). Validated by `os-spec-completeness`; the output is gated by the M3-A
+  `roadmap-covers-rfcs` check.
 
 ### Changed
 

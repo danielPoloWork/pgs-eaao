@@ -15,6 +15,7 @@ validates against a schema — never a special case in a tool.
 | **authority** | Roles (separate from persona), the path→role ownership map, the escalation ladder | [`authority/_schema.md`](authority/_schema.md) · [`authority/authority.yaml`](authority/authority.yaml) |
 | **git** | Branch/commit/PR/release policy and the PR↔RFC↔milestone cross-link requirement | [`git/_schema.md`](git/_schema.md) · [`git/git.yaml`](git/git.yaml) |
 | **rfc** | The RFC review protocol: required sections, author/reviewer/approver roles, the `rfc-approved` gate | [`rfc/_schema.md`](rfc/_schema.md) · [`rfc/rfc.yaml`](rfc/rfc.yaml) (+ [`template.md`](rfc/template.md) · [`review-protocol.md`](rfc/review-protocol.md)) |
+| **plan** | The roadmap-negotiation protocol: who proposes/sizes/reconciles, the T-shirt sizing scale, the `roadmap-covers-rfcs` gate | [`plan/_schema.md`](plan/_schema.md) · [`plan/plan.yaml`](plan/plan.yaml) (+ [`negotiation-protocol.md`](plan/negotiation-protocol.md)) |
 
 The **traceability graph** (requirement → RFC → milestone → PR → commit → release) and its lint
 are *described* here and in the RFC but are **built in M3/M4** — derived from the cross-links the

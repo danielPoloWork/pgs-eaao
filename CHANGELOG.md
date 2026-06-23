@@ -121,6 +121,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   edge** — an RFC with no PR, a PR missing its RFC/milestone, or a release not tracing to a PR +
   commit. The M3-A coverage mode is unchanged (backward compatible). New cases in
   `tools/tests/test_traceability.py`.
+- **M4-C — `/eados audit` command surface (roadmap 4.2, closes M4).** A portable procedure
+  (`orchestrator/commands/audit.md`) composing the audit phase: `traceability.py --links` (no
+  dangling edge) + `risk_score.py` (the per-domain mandatory-gate decision) → when REQUIRED, the
+  `security-auditor` runs the deep audit and the `reviewer` returns structured findings → emit a
+  **risk register** (score + traceability status + findings with severity/impact/mitigation) →
+  propose the human-gated `audit → refactor`. Assessment-only; the human publishes any advisory. The
+  command surface README marks `/eados audit` available. **Milestone 4 (audit + risk) is complete.**
 
 ### Changed
 

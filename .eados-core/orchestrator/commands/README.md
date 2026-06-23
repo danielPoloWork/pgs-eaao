@@ -12,7 +12,7 @@ a transition; the human **confirms** every human-gated one (`AGENTS.md` §6).
 | `/eados design` | design | **available** (M2) | [`design.md`](design.md) |
 | `/eados plan` | plan | **available** (M3) | [`plan.md`](plan.md) |
 | `/eados scaffold` | scaffold | **available** (today's factory) | [`../generate.md`](../generate.md) |
-| `/eados audit` | audit | M4 | _(lands with M4)_ |
+| `/eados audit` | audit | **available** (M4) | [`audit.md`](audit.md) |
 | `/eados refactor` | refactor | M5 | _(lands with M5)_ |
 
 **Portable.** The canonical procedure is the markdown here; a host wraps it with its own skill

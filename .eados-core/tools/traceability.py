@@ -32,8 +32,13 @@ def parse_milestones(text):
 
 
 def covering_milestones(text, rfc_id):
-    """The milestone numbers whose section mentions `rfc_id` (the RFC → milestone edges)."""
-    return [num for num, _title, body in parse_milestones(text) if rfc_id in body]
+    """The milestone numbers whose section mentions `rfc_id` (the RFC → milestone edges).
+
+    Matched on a word boundary, NOT as a raw substring: a longer id (`RFC-00021`) must not
+    falsely satisfy a shorter one (`RFC-0002`), or `roadmap-covers-rfcs` would report false
+    coverage and pass when it should fail."""
+    pattern = re.compile(rf"\b{re.escape(rfc_id)}\b")
+    return [num for num, _title, body in parse_milestones(text) if pattern.search(body)]
 
 
 def uncovered_rfcs(text, rfc_ids):

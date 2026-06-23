@@ -146,14 +146,18 @@ PR passes the standard's gates.
 
 ---
 
-## Cross-cutting (every milestone)
+## Cross-cutting invariants (every PR, every milestone)
 
-- [ ] English on disk; agent drafts / human merges & publishes; Conventional Commits;
-      one logical change per PR; one PR at a time.
-- [ ] Each new spec/role/domain ships `_schema`-validated and lint-gated — never a special case
-      in code (anti-fragmentation).
-- [ ] Each milestone keeps RFC-0001, this roadmap, the affected specs, and the CHANGELOG in sync
-      in the same PR.
+These are **not tasks to complete** but **invariants upheld in every PR** — held across M1–M5 and
+binding on all future work (the v2.0.0 release included). They are deliberately not checkboxes.
+
+- **English on disk; agent drafts / human merges & publishes; Conventional Commits; one logical
+  change per PR; one PR at a time.**
+- **Each new spec / role / domain ships `_schema`-validated and lint-gated** — never a special case
+  in code (anti-fragmentation), enforced by `eados_lint`'s `os-spec-completeness`,
+  `domain-completeness`, `authority-personas`, and `agent-registry` gates.
+- **Each milestone keeps RFC-0001, this roadmap, the affected specs, and the `CHANGELOG` in sync in
+  the same PR.**
 
 ## Open questions (each resolved within its milestone)
 

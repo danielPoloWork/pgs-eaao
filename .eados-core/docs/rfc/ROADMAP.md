@@ -21,7 +21,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M1 — Foundation** | ✅ **done** — M1-A..E merged (#37–#41) |
 | **M2 — design phase + roles** | ✅ **done** — M2-A..E merged (#42–#46) |
 | **M3 — plan phase + traceability** | 🚧 M3-A·B merged (#47, #48) · M3-C (`/eados plan`) drafted — closes M3 |
-| **M4 — audit phase + risk** | ⏳ next |
+| **M4 — audit phase + risk** | 🚧 in progress — M4-A (risk model) drafted |
 | M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
@@ -109,13 +109,13 @@ cross-links.
 **Goal.** Stand up continuous audit with a real risk model, and turn the traceability graph into
 a blocking gate.
 
-- [ ] 4.1 A **risk model**: score = f(owned paths touched × change size × security surface),
-      generalizing the `reviewer` + `security-auditor` roles into a standing audit.
+- [x] 4.1 A **risk model** — `tools/risk_score.py` + the `risk` OS spec: score = f(security surface
+      × change size × blast radius), generalizing the `reviewer` + `security-auditor` roles.
 - [ ] 4.2 Ship the **`/eados audit`** command surface; emit a risk register.
 - [ ] 4.3 The **`traceability-lint`** gate: fail on a dangling edge (RFC without milestone,
       milestone at release without PR, …).
-- [ ] 4.4 Risk-threshold → **mandatory `security-auditor` gate** above the threshold; decide
-      whether the threshold is per-domain (**resolves OQ2**).
+- [x] 4.4 Risk-threshold → **mandatory `security-auditor` gate** at/above the level; the threshold
+      is **per-domain configurable** in `risk.yaml` (**OQ2 resolved**: a global default + domain override).
 
 **Acceptance gate.** A seeded dangling edge fails `traceability-lint`; a change above the risk
 threshold forces the security gate.
@@ -158,5 +158,5 @@ PR passes the standard's gates.
 |----|----------|-------------|
 | OQ1 | Manifest schema-versioning mechanics | ✅ M1-B (item 1.4) — embedded `schema_version` |
 | OQ4 | product-manager vs game-designer role shape | ✅ M2-A (item 2.1) — one authority role + domain persona overlay |
-| OQ2 | Risk-score thresholds (per-domain?) | M4 (item 4.4) |
+| OQ2 | Risk-score thresholds (per-domain?) | ✅ M4-A (item 4.4) — global default + per-domain override in risk.yaml |
 | OQ3 | Committed, CI-generated SVG vs Mermaid-only | Deferred (RFC §9 leans Mermaid-only) |

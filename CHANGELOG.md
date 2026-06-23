@@ -5,9 +5,30 @@ All notable changes to `pgs-eados` (EADOS) are documented here, following
 [Semantic Versioning 2.0.0](https://semver.org/).
 
 Every PR that introduces a user- or maintainer-visible change adds a line to `[Unreleased]`
-in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
+in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+---
+
+## [2.0.0] - 2026-06-23
+
+The EAAO → EADOS pivot: the language-agnostic factory becomes a phase-based **delivery operating
+system** (`init → design → plan → scaffold → audit → refactor`), with the classic factory as the
+`scaffold` phase. A breaking, consumer-visible release (repository, factory folder, bundle, and
+command surface all renamed) — hence the MAJOR bump.
 
 ### Added
 
@@ -156,6 +177,16 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   human-merged; `refactor` is the terminal phase. The command surface README marks `/eados refactor`
   available. **Milestone 5 (brownfield refactor) is complete — the full pipeline `init → design →
   plan → scaffold → audit → refactor` is built.**
+- **`cross-spec-consistency` gate — referential integrity across the OS specs (#62).** A new
+  `eados_lint` check (#11) validates the cross-references *between* the delivery-OS specs, not just
+  each spec's own keys: a role named in `workflow`/`plan`/`rfc`/a domain must exist in `authority`;
+  a gate named in a workflow transition / `plan` / `rfc` must exist in the workflow gate registry
+  (including overlay-defined `add_gates`); transition `from`/`to` and `required_for` states must
+  exist; a domain's `workflow_overlay` must exist; risk levels and per-domain overrides must
+  resolve. This stops the OS from silently fragmenting as the specs evolve. The logic is a pure
+  `cross_spec_problems()` (unit-tested with `tools/tests/test_cross_spec.py`), wired into CI. The
+  git spec's cross-cutting `traceability-lint` gate is intentionally outside this phase-gate
+  registry check (deferred to M6).
 
 ### Changed
 
@@ -188,7 +219,18 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
 
 ### Fixed
 
+- **B1 — traceability coverage matched RFC ids by raw substring (#60).** `roadmap-covers-rfcs`
+  tested `rfc_id in body`, so a milestone citing a longer id (`RFC-00021`) falsely "covered" a
+  shorter one (`RFC-0002`) and the gate could pass when it should fail. Now matched on a word
+  boundary; regression test added.
+
 ### Security
+
+- **B2 — the refactor sandbox rejected `.git` only at the top level (#61).** `safe_write` checked
+  only the first path segment, so a nested or submodule `.git/` (e.g. `vendor/lib/.git/config`)
+  could be written into — corrupting VCS metadata, the very thing the guard exists to prevent. Now
+  `.git` is refused at **any** depth (a `.gitignore` file or a `foo.git/` directory is still
+  allowed); the negative tests were extended.
 
 ---
 

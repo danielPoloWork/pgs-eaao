@@ -166,6 +166,11 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   bundle must update their `.eados-core/` path and re-download from the new asset name. The GitHub
   repository is renamed `pgs-eaao` → `pgs-eados` (old URLs auto-redirect). Under SemVer this is a
   breaking, consumer-visible change — the next release should bump accordingly.
+- **Roadmap cross-cutting section reframed as invariants (not checkboxes).** The English-on-disk /
+  agent-drafts-human-merges / Conventional-Commits / one-PR-at-a-time / schema-validated-&-lint-gated
+  / docs-in-sync rules are continuous **invariants** (upheld across M1–M5, binding on future work),
+  now presented as such rather than as completable tasks. No behavior change — `docs/rfc/ROADMAP.md`
+  only.
 
 ### Deprecated
 

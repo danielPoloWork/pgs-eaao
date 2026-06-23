@@ -22,7 +22,9 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M2 — design phase + roles** | ✅ **done** — M2-A..E merged (#42–#46) |
 | **M3 — plan phase + traceability** | ✅ **done** — M3-A..C merged (#47–#49) |
 | **M4 — audit phase + risk** | ✅ **done** — M4-A..C merged (#50–#52) |
-| **M5 — refactor (brownfield)** | 🚧 M5-A..C merged (#53–#55) · M5-D (`/eados refactor`) drafted — closes M5 |
+| **M5 — refactor (brownfield)** | ✅ **done** — M5-A..D merged (#53–#56) |
+| **v2.0.0 release** | ✅ tagged on #70's merge — GitHub Release drafted, awaiting human publish |
+| **M6 — hardening & UX** | ⏳ planned — items 6.1–6.8 (issues #63–#69, #72) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -146,10 +148,45 @@ PR passes the standard's gates.
 
 ---
 
+## Milestone 6 — hardening & UX (post-v2.0.0)
+
+**Goal.** Close the automation/completeness gaps (G2–G4) and feature suggestions (F1–F4) surfaced
+by the v2.0.0 enterprise review, plus the one cross-spec scope deferred from #62 — **without
+changing the shipped pipeline's behavior**. Each item is one logical change (one PR), tracked as a
+GitHub issue under the `M6 — hardening & UX` milestone (#6).
+
+- [ ] 6.1 (G4, #65) **End-to-end phase smoke test** — a fixture that runs a complete *phase flow*
+      (e.g. `plan` → `roadmap-covers-rfcs`, or `audit` → risk register) to catch tool-integration
+      bugs the per-tool unit tests miss.
+- [ ] 6.2 (F3, #68) **Risk-model weights as data** — move the weights hardcoded in `risk_score.py`
+      into `risk.yaml`, so a domain can tune them (as it already tunes `mandatory_gate_level`); full
+      consistency with "knowledge as data".
+- [ ] 6.3 (G2, #63) **Single-artifact render for `refactor`** — render one template with the
+      manifest context and place it via `sandbox.safe_write` (the "render the missing artifact →
+      sandbox" step `refactor.md` describes but no tool yet performs).
+- [ ] 6.4 (F1, #66) **`/eados status` (doctor)** — current phase + legal transitions + gate status
+      + traceability coverage at a glance.
+- [ ] 6.5 (G3, #64) **Thin CLI phase orchestrator** — `eados.py <phase> <manifest>` runs a phase's
+      tool chain deterministically (today `/eados <phase>` is a markdown procedure an agent reads).
+- [ ] 6.6 (F2, #67) **Auto-derive traceability links from PR bodies** (via `gh`) — replace the
+      hand-written `links.yaml`, feeding `traceability-lint` real `PR → commit → release` edges.
+- [ ] 6.7 (F4, #69) **Version-lockstep dogfooding** — apply the generated repos' `version-lockstep`
+      gate to EADOS's own README release badge (the factory held to the bar it imposes downstream).
+- [ ] 6.8 (#72) **Cross-spec gate → cross-cutting gates** — extend `cross-spec-consistency` to
+      validate cross-cutting (non-phase) gate references too; `git.yaml`'s `traceability-lint` was
+      intentionally left out of the phase-gate registry check in #62.
+
+**Acceptance gate.** Each item lands as a gated PR with tests; no regression to the v2.0.0 pipeline;
+any new data/spec is `_schema`-validated and lint-gated (no special-casing in code — the
+anti-fragmentation invariant below).
+**Depends on:** v2.0.0 (post-release); incremental — items are independent.
+
+---
+
 ## Cross-cutting invariants (every PR, every milestone)
 
 These are **not tasks to complete** but **invariants upheld in every PR** — held across M1–M5 and
-binding on all future work (the v2.0.0 release included). They are deliberately not checkboxes.
+the v2.0.0 release, and binding on all future work (M6 included). They are deliberately not checkboxes.
 
 - **English on disk; agent drafts / human merges & publishes; Conventional Commits; one logical
   change per PR; one PR at a time.**

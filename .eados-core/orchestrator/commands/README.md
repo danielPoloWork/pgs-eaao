@@ -13,7 +13,7 @@ a transition; the human **confirms** every human-gated one (`AGENTS.md` §6).
 | `/eados plan` | plan | **available** (M3) | [`plan.md`](plan.md) |
 | `/eados scaffold` | scaffold | **available** (today's factory) | [`../generate.md`](../generate.md) |
 | `/eados audit` | audit | **available** (M4) | [`audit.md`](audit.md) |
-| `/eados refactor` | refactor | M5 | _(lands with M5)_ |
+| `/eados refactor` | refactor | **available** (M5) | [`refactor.md`](refactor.md) |
 
 **Portable.** The canonical procedure is the markdown here; a host wraps it with its own skill
 mechanism (Claude Code `.claude/skills/`, a Codex/Gemini agent registry). The adapter is thin — it

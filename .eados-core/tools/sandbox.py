@@ -8,7 +8,8 @@ through here. Defense-in-depth, on the same principle as the renderer's write gu
   * a write may only land **inside the target repo root** (path-traversal is refused via
     realpath + commonpath — symlinks are resolved, so a symlink that points outside is caught);
   * absolute / drive-qualified destinations are refused outright;
-  * writes into `.git/` are refused (never corrupt VCS metadata);
+  * writes into a `.git/` at **any** depth are refused — a nested or submodule `.git/` is VCS
+    metadata too (never corrupt it);
   * **additive by default** — refusing to overwrite an existing file unless `overwrite=True` is
     passed explicitly (a migration *adds* missing artifacts; clobbering user code is a human call).
 
@@ -42,8 +43,11 @@ def resolve(root, rel):
     dest = os.path.realpath(os.path.join(root_real, rel.replace("/", os.sep)))
     if not _contained(root_real, dest):
         raise SandboxError(f"path escapes the sandbox root: {rel!r}")
-    first = os.path.relpath(dest, root_real).replace(os.sep, "/").split("/")[0]
-    if first == ".git":
+    # `.git` is off-limits at ANY depth, not just the top level: a nested or submodule `.git/`
+    # (e.g. vendor/lib/.git/) is VCS metadata too, and corrupting it is just as harmful. An
+    # exact segment match — a `.gitignore` file or a `foo.git/` directory is NOT rejected.
+    parts = os.path.relpath(dest, root_real).replace(os.sep, "/").split("/")
+    if ".git" in parts:
         raise SandboxError(f"refusing to write into .git: {rel!r}")
     return dest
 

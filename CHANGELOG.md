@@ -115,6 +115,12 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   above a `mandatory_gate_level` (default `high`, **per-domain configurable** — `mobile` is stricter
   at `medium`) the `security-auditor` gate is required. Generalizes the `reviewer` + `security-auditor`
   roles into a standing audit. Covered by `tools/tests/test_risk_score.py`, wired into CI.
+- **M4-B — the `traceability-lint` gate (roadmap 4.3).** `tools/traceability.py` gains `--links`:
+  given the Git-side cross-link edges (`{pr, rfc, milestone, commit, release}` records, from the
+  `git` spec), it extends the graph to `milestone → PR → commit → release` and fails on a **dangling
+  edge** — an RFC with no PR, a PR missing its RFC/milestone, or a release not tracing to a PR +
+  commit. The M3-A coverage mode is unchanged (backward compatible). New cases in
+  `tools/tests/test_traceability.py`.
 
 ### Changed
 

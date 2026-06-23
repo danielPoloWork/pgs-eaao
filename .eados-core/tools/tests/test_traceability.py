@@ -49,6 +49,26 @@ def main():
     check("an uncovered RFC is reported",
           tr.uncovered_rfcs(ROADMAP, ["RFC-0002", "RFC-0099"]) == ["RFC-0099"], failures)
 
+    # --- traceability_lint: dangling-edge detection (M4-B) ---
+    whole = [{"pr": 12, "rfc": "RFC-0002", "milestone": "2", "commit": "abc123",
+              "release": "v0.2.0"}]
+    check("a whole graph has no dangling edges",
+          tr.traceability_lint(ROADMAP, ["RFC-0002"], whole) == [], failures)
+
+    def kinds(rfcs, links):
+        return [k for k, _ in tr.traceability_lint(ROADMAP, rfcs, links)]
+
+    check("an uncovered RFC -> rfc-no-milestone",
+          "rfc-no-milestone" in kinds(["RFC-0099"], []), failures)
+    check("an RFC with no PR -> rfc-no-pr",
+          "rfc-no-pr" in kinds(["RFC-0002"], []), failures)
+    check("a PR missing its RFC -> pr-no-rfc",
+          "pr-no-rfc" in kinds([], [{"pr": 14, "milestone": "2"}]), failures)
+    check("a release with no commit -> release-no-pr-commit",
+          "release-no-pr-commit" in
+          kinds([], [{"pr": 15, "rfc": "RFC-0002", "milestone": "2", "release": "v1.0.0"}]),
+          failures)
+
     if failures:
         print("test-traceability: FAIL\n")
         for f in failures:

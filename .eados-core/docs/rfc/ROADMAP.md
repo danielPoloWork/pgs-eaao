@@ -21,7 +21,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M1 — Foundation** | ✅ **done** — M1-A..E merged (#37–#41) |
 | **M2 — design phase + roles** | ✅ **done** — M2-A..E merged (#42–#46) |
 | **M3 — plan phase + traceability** | 🚧 M3-A·B merged (#47, #48) · M3-C (`/eados plan`) drafted — closes M3 |
-| **M4 — audit phase + risk** | 🚧 in progress — M4-A (risk model) drafted |
+| **M4 — audit phase + risk** | 🚧 in progress — M4-A merged (#50) · M4-B (traceability-lint) drafted |
 | M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
@@ -112,8 +112,9 @@ a blocking gate.
 - [x] 4.1 A **risk model** — `tools/risk_score.py` + the `risk` OS spec: score = f(security surface
       × change size × blast radius), generalizing the `reviewer` + `security-auditor` roles.
 - [ ] 4.2 Ship the **`/eados audit`** command surface; emit a risk register.
-- [ ] 4.3 The **`traceability-lint`** gate: fail on a dangling edge (RFC without milestone,
-      milestone at release without PR, …).
+- [x] 4.3 The **`traceability-lint`** gate — `traceability.py --links` extends the graph to the
+      Git-side edges (`milestone → PR → commit → release`) and fails on a dangling edge (an RFC with
+      no PR, a PR missing its RFC/milestone, a release not tracing to a PR + commit).
 - [x] 4.4 Risk-threshold → **mandatory `security-auditor` gate** at/above the level; the threshold
       is **per-domain configurable** in `risk.yaml` (**OQ2 resolved**: a global default + domain override).
 

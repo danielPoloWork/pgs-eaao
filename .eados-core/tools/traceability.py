@@ -1,17 +1,23 @@
 #!/usr/bin/env python3
-"""EADOS traceability — the design-time lineage and the `roadmap-covers-rfcs` gate (roadmap 3.3 /
-3.4; RFC-0001 §7).
+"""EADOS traceability — the lineage graph and the `roadmap-covers-rfcs` + `traceability-lint` gates
+(roadmap 3.3 / 3.4 / 4.3; RFC-0001 §7).
 
-Builds the `RFC → milestone` edges of the traceability graph from a roadmap, and enforces that
-**every RFC is addressed by at least one milestone** (the `plan → scaffold` gate). The Git-side
-edges (milestone → PR → commit → release) are added in M4, derived from the cross-links the `git`
-spec mandates. Dependency-free (Python standard library only).
+Builds the `RFC → milestone` edges from a roadmap (`roadmap-covers-rfcs`: every RFC is addressed by
+a milestone), and — given the Git-side cross-link edges (`milestone → PR → commit → release`, from
+the `git` spec) — detects **dangling edges** (`traceability-lint`: an RFC with no PR, a PR missing
+its RFC/milestone, a release not tracing to a PR + commit). Dependency-free.
 
     python .eados-core/tools/traceability.py <roadmap.md> <RFC-id> [<RFC-id> ...]
+    python .eados-core/tools/traceability.py <roadmap.md> <RFC-id> ... --links links.yaml
 """
 
+import os
 import re
 import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import render  # noqa: E402  — the hand-rolled YAML loader (for the --links edge file)
 
 
 def parse_milestones(text):
@@ -35,27 +41,71 @@ def uncovered_rfcs(text, rfc_ids):
     return [r for r in rfc_ids if not covering_milestones(text, r)]
 
 
-def main(argv=None):
-    argv = sys.argv[1:] if argv is None else argv
-    if len(argv) < 1:
-        print("usage: traceability.py <roadmap.md> <RFC-id> [<RFC-id> ...]", file=sys.stderr)
-        return 2
-    roadmap_path, rfc_ids = argv[0], argv[1:]
-    with open(roadmap_path, encoding="utf-8") as handle:
-        text = handle.read()
-    milestones = parse_milestones(text)
-    print(f"roadmap: {len(milestones)} milestone(s); RFCs to cover: {len(rfc_ids)}")
+def traceability_lint(roadmap_text, rfc_ids, links):
+    """Detect dangling edges in the `RFC → milestone → PR → commit → release` graph. `links` is a
+    list of `{pr, rfc, milestone, commit, release}` edge records (from the PR cross-links the
+    `git` spec mandates). Returns a list of `(kind, detail)` problems — empty means the graph is
+    whole."""
+    problems = []
+    for rfc in uncovered_rfcs(roadmap_text, rfc_ids):
+        problems.append(("rfc-no-milestone", rfc))
+    linked_rfcs = {l.get("rfc") for l in links if isinstance(l, dict) and l.get("rfc")}
     for rfc in rfc_ids:
+        if rfc not in linked_rfcs:
+            problems.append(("rfc-no-pr", rfc))
+    for l in links:
+        if not isinstance(l, dict):
+            continue
+        pr = l.get("pr")
+        if not l.get("rfc"):
+            problems.append(("pr-no-rfc", f"PR {pr}"))
+        if not l.get("milestone"):
+            problems.append(("pr-no-milestone", f"PR {pr}"))
+        if l.get("release") and not (l.get("pr") and l.get("commit")):
+            problems.append(("release-no-pr-commit", str(l.get("release"))))
+    return problems
+
+
+def _load_links(path):
+    """Read the edge file — a mapping with a top-level `links:` list of edge records."""
+    with open(path, encoding="utf-8") as handle:
+        data = render.load_yaml(handle.read())
+    return (data or {}).get("links") or []
+
+
+def main(argv=None):
+    import argparse
+    ap = argparse.ArgumentParser(description="EADOS traceability — coverage + dangling-edge lint.")
+    ap.add_argument("roadmap", help="path to ROADMAP.md")
+    ap.add_argument("rfcs", nargs="*", help="the RFC ids to trace")
+    ap.add_argument("--links", help="YAML edge file: {links: [{pr,rfc,milestone,commit,release}]}")
+    args = ap.parse_args(argv)
+    with open(args.roadmap, encoding="utf-8") as handle:
+        text = handle.read()
+
+    if args.links:
+        problems = traceability_lint(text, args.rfcs, _load_links(args.links))
+        if problems:
+            print("traceability-lint: FAIL — dangling edges:")
+            for kind, detail in problems:
+                print(f"  [{kind}] {detail}")
+            return 1
+        print("traceability-lint: OK -- the RFC->milestone->PR->commit->release graph is whole.")
+        return 0
+
+    milestones = parse_milestones(text)
+    print(f"roadmap: {len(milestones)} milestone(s); RFCs to cover: {len(args.rfcs)}")
+    for rfc in args.rfcs:
         cov = covering_milestones(text, rfc)
         where = ", ".join(f"M{n}" for n in cov) if cov else "—"
         print(f"  {rfc} -> {where}")
-    missing = uncovered_rfcs(text, rfc_ids)
+    missing = uncovered_rfcs(text, args.rfcs)
     if missing:
         print("roadmap-covers-rfcs: FAIL — no milestone addresses:")
         for r in missing:
             print(f"  {r}")
         return 1
-    if rfc_ids:
+    if args.rfcs:
         print("roadmap-covers-rfcs: OK — every RFC is addressed by a milestone.")
     return 0
 

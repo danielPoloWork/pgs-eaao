@@ -24,6 +24,14 @@ ROADMAP = (
     "- [ ] 3.1 implement search per RFC-0003\n"
 )
 
+# A roadmap whose only RFC citation is the longer RFC-00021 — used to prove that coverage
+# matching is on a word boundary, not a raw substring (the B1 regression).
+COLLIDE = (
+    "# Roadmap — substring collision\n"
+    "## Milestone 1 — Indexing\n"
+    "- [ ] 1.1 implement indexing per RFC-00021\n"
+)
+
 
 def check(label, cond, failures):
     if not cond:
@@ -43,6 +51,14 @@ def main():
           failures)
     check("an unreferenced RFC is covered by nothing",
           tr.covering_milestones(ROADMAP, "RFC-0099") == [], failures)
+
+    # --- B1 regression: word-boundary match, not substring (RFC-00021 ⊅ RFC-0002) ---
+    check("RFC-0002 is NOT covered by a milestone that only cites RFC-00021",
+          tr.covering_milestones(COLLIDE, "RFC-0002") == [], failures)
+    check("the real longer id RFC-00021 still matches its milestone",
+          tr.covering_milestones(COLLIDE, "RFC-00021") == ["1"], failures)
+    check("a roadmap citing only RFC-00021 leaves RFC-0002 uncovered",
+          tr.uncovered_rfcs(COLLIDE, ["RFC-0002"]) == ["RFC-0002"], failures)
 
     check("all-covered roadmap has no violations",
           tr.uncovered_rfcs(ROADMAP, ["RFC-0002", "RFC-0003"]) == [], failures)

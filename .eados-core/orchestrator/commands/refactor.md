@@ -1,0 +1,45 @@
+# `/eados refactor` — bring an existing repo up to the standard
+
+The `refactor` (brownfield) phase migrates an **existing** repository toward the EADOS standard via
+**incremental, gated, sandboxed** PRs. It is the only phase that edits real user code, so it is
+sequenced **last** and every write is write-contained. Owned by the **enterprise-architect**.
+
+> **Safety first.** Every write goes through [`tools/sandbox.py`](../../tools/sandbox.py)
+> `safe_write` (no escape, no `.git`, additive by default), each step is **one reviewable, gated
+> PR** the human merges, and the agent never clobbers user code.
+
+## Preconditions
+
+- A target repository to migrate, and the `audit` phase's risk register
+  (`audit → refactor` is human-gated on `risk-register-present`).
+
+## Procedure
+
+1. **Read (read-only)** — map the repo against the standard:
+   ```bash
+   python .eados-core/tools/brownfield.py <repo>
+   ```
+2. **Plan (read-only)** — order the gaps into incremental steps, one logical change each:
+   ```bash
+   python .eados-core/tools/migration_planner.py <repo>
+   ```
+3. **Migrate — one step = one PR**, in plan order (lowest-risk first). For each step:
+   1. **authority** — `authority_check.py enterprise-architect <paths>` (the role may write them).
+   2. **render** the missing artifact from the EADOS templates (e.g. `AGENTS.md` from
+      `templates/AGENTS.md.tmpl`) — never hand-write what a template produces.
+   3. **write** it via the **sandbox** — `sandbox.safe_write(<repo>, <rel>, <content>)`: contained,
+      not `.git`, **additive** (a pre-existing file is a conflict the human resolves, not a clobber).
+   4. **risk** — `risk_score.py <paths> --domain <domain>`; if **REQUIRED**, run
+      [`/eados audit`](audit.md) (the `security-auditor` gate) before proposing.
+   5. **draft the PR** — one logical change, with the `git` cross-links (RFC/milestone); the human
+      reviews and merges.
+   6. **confirm** — re-run `brownfield.py <repo>`: the step's gap is closed. Proceed to the next.
+4. **Done** — when `brownfield.py` reports no gaps, the repo meets the EADOS standard. `refactor`
+   is the terminal phase; from here the repo governs itself under its rendered `AGENTS.md`.
+
+## Boundary
+
+The agent **reads**, **plans**, **renders**, **writes inside the sandbox**, and **drafts** each PR;
+the human **merges** every step and resolves any conflict. No write escapes the target repo, touches
+`.git`, or overwrites user code; no migration runs unattended (`AGENTS.md` §6). Assessment and
+additive migration only — never a destructive rewrite.

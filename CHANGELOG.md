@@ -148,6 +148,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v1.2.1**.
   and it is **additive by default** (no clobbering a file without explicit `overwrite=True`). Builds
   on the renderer's ADR-0007 write guard. Covered by `tools/tests/test_sandbox.py` — strong negative
   tests (traversal, absolute, `.git`, clobber, symlink-escape), wired into CI.
+- **M5-D — `/eados refactor` command surface (roadmap 5.4, closes M5 and the delivery OS).** A
+  portable procedure (`orchestrator/commands/refactor.md`) composing the brownfield phase: read
+  (`brownfield.py`) → plan (`migration_planner.py`) → migrate **one step = one PR** (authority_check
+  → render from the templates → `sandbox.safe_write` → `risk_score` / `/eados audit` → draft the
+  gated PR → re-read to confirm the gap closed). Every write is sandboxed, additive, and
+  human-merged; `refactor` is the terminal phase. The command surface README marks `/eados refactor`
+  available. **Milestone 5 (brownfield refactor) is complete — the full pipeline `init → design →
+  plan → scaffold → audit → refactor` is built.**
 
 ### Changed
 

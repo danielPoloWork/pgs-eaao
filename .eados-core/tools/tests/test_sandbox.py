@@ -55,9 +55,15 @@ def main():
         check("a drive-qualified path raises",
               raises(lambda: sb.safe_write(root, "C:\\windows\\x", "x")), failures)
 
-        # --- .git is off-limits ---
-        check("writing into .git raises",
+        # --- .git is off-limits, at the top level AND nested (submodule / embedded repo) ---
+        check("writing into top-level .git raises",
               raises(lambda: sb.safe_write(root, ".git/config", "x")), failures)
+        check("writing into a nested .git raises",
+              raises(lambda: sb.safe_write(root, "vendor/lib/.git/config", "x")), failures)
+        check("the nested .git target was not created",
+              not os.path.exists(os.path.join(root, "vendor", "lib", ".git", "config")), failures)
+        check("a .gitignore file (not a .git dir) is still allowed",
+              os.path.isfile(sb.safe_write(root, "pkg/.gitignore", "*.log")), failures)
 
         # --- additive by default; explicit overwrite allowed ---
         check("overwriting an existing file raises by default",

@@ -20,8 +20,8 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | Design package — RFC-0001 + OS specs + diagrams | ✅ merged (#35) |
 | **M1 — Foundation** | ✅ **done** — M1-A..E merged (#37–#41) |
 | **M2 — design phase + roles** | ✅ **done** — M2-A..E merged (#42–#46) |
-| **M3 — plan phase + traceability** | 🚧 M3-A·B merged (#47, #48) · M3-C (`/eados plan`) drafted — closes M3 |
-| **M4 — audit phase + risk** | 🚧 in progress — M4-A merged (#50) · M4-B (traceability-lint) drafted |
+| **M3 — plan phase + traceability** | ✅ **done** — M3-A..C merged (#47–#49) |
+| **M4 — audit phase + risk** | 🚧 M4-A·B merged (#50, #51) · M4-C (`/eados audit`) drafted — closes M4 |
 | M5 | ⏳ not started |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
@@ -111,7 +111,8 @@ a blocking gate.
 
 - [x] 4.1 A **risk model** — `tools/risk_score.py` + the `risk` OS spec: score = f(security surface
       × change size × blast radius), generalizing the `reviewer` + `security-auditor` roles.
-- [ ] 4.2 Ship the **`/eados audit`** command surface; emit a risk register.
+- [x] 4.2 Ship the **`/eados audit`** command surface (`commands/audit.md` — `traceability-lint` +
+      `risk_score` → the `security-auditor` gate above threshold → a risk register).
 - [x] 4.3 The **`traceability-lint`** gate — `traceability.py --links` extends the graph to the
       Git-side edges (`milestone → PR → commit → release`) and fails on a dangling edge (an RFC with
       no PR, a PR missing its RFC/milestone, a release not tracing to a PR + commit).

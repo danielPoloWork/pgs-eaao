@@ -28,6 +28,8 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **v2.1.0 release** | ✅ published 2026-06-27 — M6 hardening & UX (bundles attached; Latest) |
 | **M7 — onboarding & docs** | ✅ **done** — items 7.1–7.5 (#97–#101) |
 | **M8 — inbound contribution review** | ✅ **done** — items 8.1–8.6 (#105–#110) |
+| **v2.2.0 release** | ✅ published 2026-06-28 — M7 onboarding + contributor-safety hardening + M8 inbound review (bundles attached; Latest) |
+| **M9 — guided installer** | ⏳ planned — items 9.1–9.6 (cross-platform `install.sh`/`.command`/`.ps1`) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -298,6 +300,50 @@ the contributor. Provenance stays 100% in-house. It is encoded as data the gates
 an external PR touching an owned path is flagged for maintainer escalation; the human boundary (no
 agent merge) is preserved; self-lint (incl. the gate-coverage trilogy) + render-smoke stay green.
 **Depends on:** M7 (post-merge); ships to consumers in the bundle → a likely **v2.2.0** release.
+
+---
+
+## Milestone 9 — guided cross-platform installer (onboarding)
+
+**Goal.** Let a newcomer **install EADOS into a repo by running a script and answering a few prompts**
+— no copy-pasting the USAGE §6 `curl`/`tar` snippets. A guided, cross-platform installer (Linux/macOS
+`install.sh` + a double-clickable macOS `.command`, and a Windows `install.ps1` with a `.bat` shim)
+downloads the latest release bundle and places it at a target repo root. **Scope:** "install" = the
+**bundle download + placement only** (the consumer step of USAGE §6) — *not* the agentic-OS init
+(interview/generate). The interactivity is about *where* to install: **new repo vs existing repo**, and
+always the **path + repo name**. Each item is one PR, tracked under the `M9 — guided installer`
+milestone.
+
+This milestone **re-implements and elevates @AlexMnrs's PR #96** ("Add Windows PowerShell setup
+examples", opened then closed by the author) — the `contribution-reviewer`'s `re-implement-in-house`
+path made real: we build it our way and **co-author @AlexMnrs** (credited in the CHANGELOG).
+
+- [ ] 9.1 **Installer core (POSIX) — `install.sh`** — a non-interactive engine: download
+      `pgs-eados-bundle.tar.gz` from the latest release, **verify its SHA256**, and extract it
+      **additively** at a target repo root (refuse to clobber an existing file). Scripting flags
+      (`--path`, `--repo-name`, `--mode new|existing`, `--ref`); a pure, testable core that degrades
+      cleanly offline (the `derive_links.py` pattern).
+- [ ] 9.2 **Interactive layer (POSIX)** — the Q&A wrapper around 9.1: prompt for new-vs-existing repo,
+      path, and repo name; on **new** run `git init` at `<path>/<name>` (offer `gh repo create` when
+      `gh` is present); confirm before writing; clear success / next-steps output (point at `AGENTS.md`
+      / the deterministic path). A double-clickable macOS `.command` entry.
+- [ ] 9.3 **PowerShell installer — `install.ps1`** (+ a `.bat`/`.cmd` shim for true double-click) — the
+      Windows-native equivalent: same prompts + checksum verify + additive extract, mirroring 9.1/9.2
+      (the 7.2 PowerShell-parity principle).
+- [ ] 9.4 **Release publishes integrity + the installers** — `release.yml` attaches `SHA256SUMS` and
+      the install scripts as assets, so the installer can verify the bundle and
+      `releases/latest/download/install.{sh,ps1}` are stable links.
+- [ ] 9.5 **Gate the new script file-class** — a self-lint / CI check for the installers (shellcheck for
+      `*.sh`, PSScriptAnalyzer or a parse check for `*.ps1`) + a smoke test of the core
+      download / verify / extract logic, honoring the gate-EVERY-file-class mandate.
+- [ ] 9.6 **Docs + dogfood + credit** — README/USAGE "Get it" gains the one-step installer path beside
+      the manual snippets; **credit @AlexMnrs** (co-author + CHANGELOG); RFC-0001, this roadmap, the
+      affected specs, and the CHANGELOG kept in lockstep.
+
+**Acceptance gate.** A newcomer installs the bundle into a new or existing repo from prompts on Linux,
+macOS, and Windows; the SHA256 is verified and no existing file is clobbered; self-lint (incl. the new
+script-file gate) + render-smoke stay green. **No agentic-OS init in scope.**
+**Depends on:** M8 / v2.2.0 (post-release); ships to consumers in the bundle → a later release.
 
 ---
 

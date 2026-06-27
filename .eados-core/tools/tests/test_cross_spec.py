@@ -123,6 +123,16 @@ def main():
     check("git is optional — a None git yields no problems",
           el.cross_spec_problems(*clean(), None) == [], failures)
 
+    # M8 8.5: the cross-cutting contribution-review gate referenced from git.pr.review_gate resolves.
+    a, w, p, r, rk, d = clean()
+    w["gates"].append({"id": "contribution-review", "required_for": []})
+    check("a resolved git.pr.review_gate is accepted",
+          el.cross_spec_problems(a, w, p, r, rk, d, {"pr": {"review_gate": "contribution-review"}})
+          == [], failures)
+    check("a typo'd git.pr.review_gate is caught",
+          any("review_gate" in prob for prob in el.cross_spec_problems(
+              a, w, p, r, rk, d, {"pr": {"review_gate": "contribution-revue"}})), failures)
+
     # M8 8.1: the inbound-contribution policy's escalation decider resolves to a role / the human
     # terminal, and its escalation disposition is one the policy itself declares.
     def contrib(decider="human-owner", disposition="needs-maintainer"):

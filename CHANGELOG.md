@@ -11,6 +11,15 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.1.0**.
 
 ### Added
 
+- **M8 / 8.5 — `contribution-review` wired as a cross-cutting gate.** Registered the
+  `contribution-review` gate in `workflow.yaml` (`required_for: []`, advisory/`blocking: false` —
+  like `traceability-lint`, it is **not** a phase-transition gate), referenced from a new
+  `git.yaml` `pr.review_gate` field (+ `git/_schema.md`), and extended `cross-spec-consistency` to
+  resolve that reference (a typo'd review-gate id now fails the self-lint; `test_cross_spec.py`
+  extended). **No change to the shipped phase pipeline.** The optional rendered CI template for
+  generated repos is deferred — it would need a `pull_request_target` workflow, i.e. a deliberate
+  `workflow-safety` allow-list entry.
+
 - **M8 / 8.4 — `/eados review <PR#>` command surface.** New
   [`orchestrator/commands/review.md`](.eados-core/orchestrator/commands/review.md) + a
   `commands/README.md` row: runs `pr_review.py`, deepens with the `security-auditor` + `reviewer` on

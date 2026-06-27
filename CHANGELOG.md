@@ -11,6 +11,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.1.0**.
 
 ### Added
 
+- **Hardening — gate-coverage meta-gate + a data-file floor (contributor safety).** Two new
+  self-lint checks make it structurally impossible for a factory file to ship ungated — the class of
+  gap the #90/#94 episode exposed. **`data-file-validity`** (`eados_lint.py` #14) parses every
+  `.eados-core/**/*.yaml`, closing the previously-unchecked `questionnaire.yaml` and
+  `config/defaults.yaml`. **`gate-coverage`** (#15) asserts every tracked file is either covered by a
+  named gate or consciously allow-listed as reviewed prose (with a reason), and **fails CI if a new
+  file class slips in ungated** (it also flags stale registry patterns). `tests/test_gate_coverage.py`
+  + CI registration.
 - **M7 / 7.3 — `project.yaml` documented field-by-field + a guard for it (#90).** The manifest
   template (`orchestrator/project.yaml.template`) now carries a concise, self-documenting comment on
   every field (purpose + example + `-> {{PLACEHOLDER}}`), so a manifest can be hand-filled without

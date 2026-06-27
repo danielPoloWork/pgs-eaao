@@ -566,6 +566,55 @@ def check_cross_spec_consistency():
         fail(name, problem)
 
 
+# ---------------------------------------------------------------------------
+# 12. Version lockstep — EADOS dogfoods the `version-lockstep` gate it ships to generated repos
+#     (roadmap 6.7 / F4): every README release badge (EN + i18n) and the CHANGELOG's "latest is"
+#     prose must match the CHANGELOG's latest released `## [X.Y.Z]`. The factory is held to the bar
+#     it imposes downstream — a release bump now moves every badge + the prose in lockstep or fails.
+# ---------------------------------------------------------------------------
+RELEASE_BADGE_RE = re.compile(r"release-v(\d+\.\d+\.\d+)")
+
+
+def version_lockstep_problems(changelog_text, readmes):
+    """Pure check: every (label, text) README's `release-vX.Y.Z` badge — and the CHANGELOG's
+    'the latest is **vX.Y.Z**' prose — must equal the CHANGELOG's latest released `## [X.Y.Z]`
+    heading. Returns a list of problem strings (empty == in lockstep)."""
+    releases = re.findall(r"(?m)^##\s*\[(\d+\.\d+\.\d+)\]", changelog_text)
+    if not releases:
+        return ["CHANGELOG.md has no released `## [X.Y.Z]` heading to lock the badges to"]
+    latest = releases[0]   # CHANGELOG is newest-first; `[Unreleased]` is not an X.Y.Z, so skipped
+    problems = []
+    prose = re.search(r"the latest is \*\*v(\d+\.\d+\.\d+)\*\*", changelog_text)
+    if prose and prose.group(1) != latest:
+        problems.append(f"CHANGELOG 'the latest is v{prose.group(1)}' != latest release v{latest}")
+    for label, text in readmes:
+        badge = RELEASE_BADGE_RE.search(text)
+        if badge is None:
+            problems.append(f"{label}: no `release-vX.Y.Z` badge found")
+        elif badge.group(1) != latest:
+            problems.append(f"{label}: release badge v{badge.group(1)} != latest release v{latest}")
+    return problems
+
+
+def check_version_lockstep():
+    name = "version-lockstep"
+    changelog_path = os.path.join(REPO_ROOT, "CHANGELOG.md")
+    if not os.path.exists(changelog_path):
+        return  # a partial checkout without the changelog — nothing to lock to
+    readmes = []
+    en = os.path.join(REPO_ROOT, "README.md")
+    if os.path.exists(en):
+        readmes.append(("README.md", read(en)))
+    i18n_dir = os.path.join(ROOT, "docs", "i18n")
+    if os.path.isdir(i18n_dir):
+        for sub in sorted(os.listdir(i18n_dir)):
+            readme = os.path.join(i18n_dir, sub, "README.md")
+            if os.path.isfile(readme):
+                readmes.append((f"docs/i18n/{sub}/README.md", read(readme)))
+    for problem in version_lockstep_problems(read(changelog_path), readmes):
+        fail(name, problem)
+
+
 CHECKS = [
     check_placeholder_integrity,
     check_profile_completeness,
@@ -578,6 +627,7 @@ CHECKS = [
     check_domains,
     check_authority_personas,
     check_cross_spec_consistency,
+    check_version_lockstep,
 ]
 
 

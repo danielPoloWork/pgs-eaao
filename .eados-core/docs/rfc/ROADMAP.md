@@ -24,7 +24,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M4 — audit phase + risk** | ✅ **done** — M4-A..C merged (#50–#52) |
 | **M5 — refactor (brownfield)** | ✅ **done** — M5-A..D merged (#53–#56) |
 | **v2.0.0 release** | ✅ tagged on #70's merge — GitHub Release drafted, awaiting human publish |
-| **M6 — hardening & UX** | 🚧 in progress — 6.1–6.6 + 6.9 done (#63, #64, #65, #66, #67, #68, #76); 6.7–6.8 planned (#69, #72) |
+| **M6 — hardening & UX** | 🚧 in progress — 6.1–6.7 + 6.9 done (#63, #64, #65, #66, #67, #68, #69, #76); 6.8 planned (#72) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -180,8 +180,10 @@ GitHub issue under the `M6 — hardening & UX` milestone (#6).
       `tools/derive_links.py` builds the `{pr, rfc, milestone, commit, release}` edges from merged
       PRs (pure parser + a thin `gh` shell that degrades cleanly offline), emitting a `links.yaml`
       `traceability-lint` consumes — no more hand-writing it.
-- [ ] 6.7 (F4, #69) **Version-lockstep dogfooding** — apply the generated repos' `version-lockstep`
-      gate to EADOS's own README release badge (the factory held to the bar it imposes downstream).
+- [x] 6.7 (F4, #69) **Version-lockstep dogfooding** — a new `version-lockstep` gate in `eados_lint`
+      asserts every EADOS README release badge (EN + i18n) and the CHANGELOG's "latest is" prose
+      match the CHANGELOG's latest released `## [X.Y.Z]` — the factory held to the bar it imposes
+      downstream.
 - [ ] 6.8 (#72) **Cross-spec gate → cross-cutting gates** — extend `cross-spec-consistency` to
       validate cross-cutting (non-phase) gate references too; `git.yaml`'s `traceability-lint` was
       intentionally left out of the phase-gate registry check in #62.

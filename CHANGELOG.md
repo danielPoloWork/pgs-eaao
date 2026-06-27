@@ -11,6 +11,12 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
 
 ### Added
 
+- **M6 / 6.7 — version-lockstep dogfooding (F4, #69).** EADOS now dogfoods the `version-lockstep`
+  gate it ships to generated repos: a new `eados_lint` check asserts every README release badge
+  (EN + `docs/i18n/*`) and the CHANGELOG's "the latest is **vX.Y.Z**" prose match the CHANGELOG's
+  latest released `## [X.Y.Z]` heading — so a release bump must move all of them in lockstep or the
+  self-lint fails. Pure `version_lockstep_problems()`; covered by
+  `tools/tests/test_version_lockstep.py`. No pipeline behavior change.
 - **M6 / 6.6 — auto-derive traceability links from PR bodies (F2, #67).** A new
   `tools/derive_links.py` builds the `{pr, rfc, milestone, commit, release}` traceability edges from
   merged PRs — `pr`/`commit`/`milestone` from `gh` metadata, `rfc` parsed from the body, `release`

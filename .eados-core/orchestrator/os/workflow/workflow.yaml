@@ -87,6 +87,15 @@ gates:
     runs: "manual:security-auditor produced a risk register"
     blocking: true
     required_for: [refactor]
+  # Cross-cutting CI gate (NOT a phase-transition gate): it runs on every PR / in `audit`, not as a
+  # precondition for one transition — hence `required_for: []`. Registered here so it is the single
+  # source of gate ids; referenced by git.yaml's `traceability.gate` and validated by eados_lint's
+  # cross-spec gate (roadmap 6.8).
+  - id: traceability-lint
+    kind: lint
+    runs: "python .eados-core/tools/traceability.py <roadmap> <rfc-ids> --links <links>"
+    blocking: true
+    required_for: []
 
 # Per-domain adaptations. Absent keys inherit the base machine. These encode the delivery
 # guide's domain specifics (e.g. a game's asset pipeline, a mobile store-compliance gate).

@@ -218,7 +218,7 @@ inline comments, and at most an optional tool hint). Each item is one PR, tracke
 - [x] 7.2 (#88) **Windows/PowerShell install & render variants** — a PowerShell equivalent beside
       every Unix snippet in README/USAGE (download, extract, render), using `$env:TEMP` not `/tmp`,
       so a Windows user reaches `<repo>/.eados-core/` without translation.
-- [ ] 7.3 (#90) **`project.yaml` documented field-by-field** — inline comments in the template and/or
+- [x] 7.3 (#90) **`project.yaml` documented field-by-field** — inline comments in the template and/or
       a required-fields table (field → meaning → required? → source → placeholder), so a manifest can
       be hand-filled without reverse-engineering `reference.yaml`; `render.py` succeeds on it.
 - [x] 7.4 (#87) **End-to-end phase walkthrough** — a narrated `init → design → plan → scaffold →

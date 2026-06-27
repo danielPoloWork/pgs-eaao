@@ -11,6 +11,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.1.0**.
 
 ### Added
 
+- **M7 / 7.3 — `project.yaml` documented field-by-field + a guard for it (#90).** The manifest
+  template (`orchestrator/project.yaml.template`) now carries a concise, self-documenting comment on
+  every field (purpose + example + `-> {{PLACEHOLDER}}`), so a manifest can be hand-filled without
+  reverse-engineering `reference.yaml` (the values are unchanged — render output is byte-identical).
+  A new **`manifest-template`** self-lint check (`eados_lint.py` #13 +
+  `tests/test_manifest_template.py`) keeps that file valid YAML, structurally complete, and free of
+  dangling `-> {{…}}` annotations — closing a gap where this consumer-facing file was gated by
+  nothing. Co-authored with @gxuxhxm, whose PR #94 prompted the field docs.
 - **M7 / 7.5 — `rfc_check` scope documented (#91).** A new **Scope** section in
   [`orchestrator/os/rfc/review-protocol.md`](.eados-core/orchestrator/os/rfc/review-protocol.md)
   (and the `rfc_check.py` header) states that the `rfc-approved` gate targets *generated-project*

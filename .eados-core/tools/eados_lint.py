@@ -621,6 +621,54 @@ def check_version_lockstep():
         fail(name, problem)
 
 
+# ---------------------------------------------------------------------------
+# 13. Manifest-template integrity — orchestrator/project.yaml.template is the one factory file a
+#     consumer copies and hand-fills, yet nothing validated it: it is not under templates/** (so
+#     placeholder-integrity skips it) and render-smoke renders reference.yaml instead. A broken
+#     hand-edit here (invalid YAML, a dropped section, a typo'd `-> {{MARKER}}`) would ship
+#     silently. This gate keeps it valid, complete, and well-annotated — the safety net the
+#     issue-#90 episode showed was missing for a file external contributors can touch.
+# ---------------------------------------------------------------------------
+MANIFEST_TEMPLATE = os.path.join(ROOT, "orchestrator", "project.yaml.template")
+MANIFEST_SECTIONS = ["schema_version", "domain", "identity", "ownership", "language",
+                     "toolchain", "ci", "governance", "i18n", "announce", "spec"]
+# A `-> {{MARKER}}` annotation points a field at the placeholder it resolves; capture the optional
+# section sigil (#/^//) so both scalars ({{X}}) and sections ({{#EACH_X}}) are validated.
+ANNOTATION_RE = re.compile(r"->\s*\{\{\s*([#^/]?)\s*([^{}]*?)\s*\}\}")
+
+
+def manifest_template_problems(text, scalars, sections):
+    """Pure check of the manifest template: (a) parses as a YAML mapping, (b) keeps every expected
+    top-level section, (c) every `-> {{MARKER}}` annotation names a placeholder defined in
+    placeholders.md. Returns a list of problem strings (empty == clean)."""
+    try:
+        data = render.load_yaml(text)
+    except Exception as exc:                       # a hand-edit that breaks YAML must be caught
+        return [f"does not parse as YAML: {exc!r}"]
+    if not isinstance(data, dict):
+        return ["does not parse to a top-level mapping"]
+    problems = [f"missing required top-level section '{s}'" for s in MANIFEST_SECTIONS
+                if s not in data]
+    known = scalars | sections
+    for sigil, name in ANNOTATION_RE.findall(text):
+        name = name.strip()
+        if not name or name.endswith("_*"):
+            continue                               # an illustrative wildcard, not a real placeholder
+        if name not in known:
+            marker = "{{" + sigil + name + "}}"
+            problems.append(f"annotation '-> {marker}' names an undefined placeholder")
+    return problems
+
+
+def check_manifest_template():
+    name = "manifest-template"
+    if not os.path.exists(MANIFEST_TEMPLATE):
+        return  # a partial checkout without the template — nothing to validate
+    scalars, sections = known_placeholders()
+    for problem in manifest_template_problems(read(MANIFEST_TEMPLATE), scalars, sections):
+        fail(name, problem)
+
+
 CHECKS = [
     check_placeholder_integrity,
     check_profile_completeness,
@@ -634,6 +682,7 @@ CHECKS = [
     check_authority_personas,
     check_cross_spec_consistency,
     check_version_lockstep,
+    check_manifest_template,
 ]
 
 

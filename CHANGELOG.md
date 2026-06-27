@@ -11,13 +11,31 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.1.0**.
 
 ### Added
 
+- **M8 / 8.3 — `tools/pr_review.py`, the inbound-PR evaluator.** Runs the `contribution-reviewer`
+  procedure as a tool: classifies the author's trust tier, runs the contribution-policy
+  `required_checks`, composes the **authority** (owned-path escalation) and **risk** (security/size/
+  blast) lenses, and recommends a disposition — honoring the policy: **no auto-accept** and **never
+  merge a non-owner's commits**, so a non-owner change is recommended for adoption via
+  `re-implement-in-house` (its co-author/rationale/thank ritual), with `close-with-thanks` as the
+  decline alternative, or `needs-maintainer` when an owned path / security gate is hit; it always
+  thanks. Pure evaluator core (fixture-tested via `test_pr_review.py`) + a thin `gh` shell that
+  degrades cleanly offline (the `derive_links.py` pattern). It reports and recommends — never merges
+  or closes.
+
 - **M8 / 8.2 — the `contribution-reviewer` role.** New portable persona
   `agent/contribution-reviewer.md` — the inbound-PR steward: composes `reviewer` + `security-auditor`,
   adds trust-tier classification + the contribution-policy checks + triage, and recommends a
   disposition (it judges the change, not the person; it never merges or closes). Plus an
   `authority.yaml` record (engineering pillar, `phases: []`, empty `owns`/`may_approve` like
   `reviewer`) and an `agent/README.md` registry row. Enforced by `agent-registry` +
-  `authority-personas`.
+  `authority-personas`. The role enforces the **full inbound-contribution protocol** the owner
+  applies by hand (the #94 episode), now encoded in `contribution.yaml`: **we never merge a
+  non-owner's commits** (`courtesy.merge_nonowner_commits: false`) — a good idea is **adopted via**
+  `re-implement-in-house` (the B2 ritual: `reimplement-ourselves` + `co-author-credit` +
+  `rationale-comment` on the contributor's PR + `thank-then-close`), declined via `close-with-thanks`,
+  or escalated via `needs-maintainer`; plus a `courtesy` block (`always_thank`;
+  `acceptance_requires_reasoning` — **never auto-accept**). Provenance stays 100% in-house. Schema +
+  invariants updated to match.
 
 - **M8 / 8.1 — inbound-contribution policy as data.** New OS spec
   `orchestrator/os/contribution/{_schema.md, contribution.yaml}`: the owner-identity source

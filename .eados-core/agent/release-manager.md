@@ -30,7 +30,9 @@ Follow `docs/workflow/release.md` exactly. In short:
 5. **Draft release notes** under `docs/releases/`.
 6. **Gate.** Run `tools/consistency_lint.py` (version-lockstep must pass) and confirm CI green.
 7. **Prepare the release PR** (draft) — the human opens and merges.
-8. **Tag** (post-merge, if delegated): annotated `vX.Y.Z`.
+8. **Tag + draft** (post-merge — the carry-through default): create the annotated `vX.Y.Z` tag and
+   open the GitHub Release as a **draft** (in a generated repo, the tag push lets CI draft it). The
+   agent always carries the release this far; the human only clicks **Publish**.
 9. **Announce** (if `docs/workflow/announcements.md` exists): draft per-channel text for a
    human to post.
 
@@ -43,6 +45,6 @@ status of every gate. Note any requirement that lacks a mechanical check.
 
 | Agent | Human |
 |---|---|
-| Bump, roll changelog, draft notes/announcements, prepare PR, push tag (if delegated) | Open/merge the release PR, **publish** the GitHub Release, **post** announcements |
+| Bump, roll changelog, draft notes/announcements, prepare PR, **push the annotated tag + open the DRAFT release** | Open/merge the release PR, **publish** the GitHub Release (click Publish), **post** announcements |
 
 **Never** publish a release or post to a channel; never amend or delete a published tag.

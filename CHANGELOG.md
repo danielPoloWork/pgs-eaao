@@ -11,6 +11,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.2.0**.
 
 ### Added
 
+- **Carry-through release default.** The release boundary is now explicit policy: the agent always
+  takes a release up to a **draft** — it creates + pushes the annotated tag and opens the GitHub
+  Release as a draft (CI drafts it on tag-push in generated repos) — and the human only clicks
+  **Publish** (`publish_by: human`; `delegation_flag: true` delegates the publish too). Encoded in
+  `git.yaml`'s `release` (`tag_by` / `draft_release_by` / `publish_by`) + `git/_schema.md`, the
+  `release-manager` role, both agent contracts (this repo's `AGENTS.md` + `templates/AGENTS.md.tmpl`),
+  and the generated `release.md.tmpl` playbook — so every project EADOS builds inherits it.
+
 ### Changed
 
 ### Deprecated

@@ -29,8 +29,11 @@ release:
   pre_1_0_milestone_driven: true
   tag_flow: "annotated tag on the merge commit, post-merge"
   merge_is_not_deploy: true       # merged -> tagged/released -> deployed are distinct states
-  publish_by: human               # the human publishes the release
-  delegation_flag: false          # owner may flip this to delegate the full lifecycle (cf. memory)
+  # Carry-through: the agent always takes a release up to a DRAFT — the human only clicks Publish.
+  tag_by: agent                   # the agent creates + pushes the annotated tag, post-merge
+  draft_release_by: agent         # ...and opens the GitHub Release as a DRAFT (CI drafts it on tag-push in generated repos)
+  publish_by: human               # the human reviews the draft and publishes — the deliberate checkpoint
+  delegation_flag: false          # owner may flip this to delegate the publish step too (then the agent publishes)
 
 traceability:
   graph: "requirement(spec §) -> rfc -> milestone -> branch/pr -> commit -> release tag -> audit"

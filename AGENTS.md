@@ -136,6 +136,8 @@ changes, but only the owner decides what lands on `main`.
 | Draft / open a pull request (title + body) | Agent / contributor |
 | Review, request changes, **decide** | **Owner (`@danielPoloWork`)** |
 | **Squash-merge to `main`** | **Owner only** |
+| Tag + draft the GitHub Release (carry-through) | Agent |
+| **Publish the release** | **Owner only** |
 
 - **Contributors only suggest.** Collaborators and agents never push to `main`, never merge,
   and never force-push. Work happens on a feature branch (external contributors fork) and

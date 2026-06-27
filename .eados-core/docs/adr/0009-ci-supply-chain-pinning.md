@@ -87,5 +87,6 @@ the same action — the inverse of the `action-pins` gate, reusing the gate's re
 disagree — turning a hand-edit into one deterministic command (documented in
 [`maintenance/stay-current.md`](../../maintenance/stay-current.md); covered by
 `tools/tests/test_sync_action_pins.py`). It only copies a SHA the factory CI already trusts; it never
-resolves a tag itself. Hands-off CI auto-remediation on Dependabot PRs (true zero-touch) is the next
-step, tracked in #76 — it touches `.github/**` (a supply-chain surface) and gets its own reviewed PR.
+resolves a tag itself. Hands-off CI auto-remediation on Dependabot PRs (true zero-touch) shipped
+alongside the tool as [ADR-0013](0013-dependabot-action-pin-auto-remediation.md)
+(`.github/workflows/dependabot-pin-sync.yml`).

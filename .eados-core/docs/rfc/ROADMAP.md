@@ -180,7 +180,8 @@ GitHub issue under the `M6 — hardening & UX` milestone (#6).
 - [x] 6.9 (#76) **Auto-sync shared action pins into templates** — `tools/sync_action_pins.py`
       (`--check` / `--fix`) rewrites the rendered workflow templates' action pins to the factory CI's,
       so a Dependabot `github-actions` bump needs no manual companion edit to pass the `action-pins`
-      lockstep gate (ADR-0009). Hands-off CI auto-remediation on Dependabot PRs is the follow-up in #76.
+      lockstep gate (ADR-0009) — and the `dependabot-pin-sync` workflow (`workflow_run`, not
+      `pull_request_target`; ADR-0013) applies it automatically on a Dependabot PR (true zero-touch).
 
 **Acceptance gate.** Each item lands as a gated PR with tests; no regression to the v2.0.0 pipeline;
 any new data/spec is `_schema`-validated and lint-gated (no special-casing in code — the

@@ -26,15 +26,20 @@ Also refresh shared bits: the `templates/.github/workflows/*` action pins and th
 
 Dependabot's `github-actions` ecosystem updates only the real workflow files
 (`.github/workflows/*.yml`) — never the rendered `*.tmpl` templates (ADR-0009) — so a bump drifts
-the templates and the `action-pins` lockstep gate blocks the PR. Re-sync in one deterministic step,
-no hand-editing the SHA: on the Dependabot branch run
+the templates and the `action-pins` lockstep gate blocks the PR. This is now **auto-remediated**:
+the `dependabot-pin-sync` workflow ([ADR-0013](../docs/adr/0013-dependabot-action-pin-auto-remediation.md))
+re-syncs the templates and commits the fix back onto the Dependabot PR. (With the default
+`GITHUB_TOKEN` the fix lands but the check re-runs on the next event / a manual re-run; set a
+`DEPENDABOT_SYNC_TOKEN` repo secret — a PAT or GitHub App token — for green-by-itself.)
+
+To do it by hand (locally, or for any non-Dependabot drift), run the same fixer the workflow uses:
 
 ```bash
 python .eados-core/tools/sync_action_pins.py --fix   # rewrite the template pins to match the factory CI
 ```
 
-then commit. The default (`--check`) reports drift without writing. This is the same lockstep the
-`action-pins` gate enforces, applied as a fix.
+`--check` (the default) reports drift without writing. Same lockstep the `action-pins` gate
+enforces, applied as a fix.
 
 ## How to run it
 

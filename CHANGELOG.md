@@ -24,9 +24,11 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
   (`templates/.github/workflows/*.tmpl`) action pins to the factory CI's pin for each shared action
   — reusing `eados_lint`'s pin regex so the fixer and the `action-pins` gate can never disagree. A
   weekly Dependabot `github-actions` bump now needs **no manual template edit** to pass the lockstep
-  gate: run `--fix`, commit (documented in the stay-current routine; ADR-0009 addendum).
-  Deterministic and dependency-free; covered by `tools/tests/test_sync_action_pins.py`. Hands-off CI
-  auto-remediation on Dependabot PRs is the follow-up in #76. No pipeline behavior change.
+  gate. The new `dependabot-pin-sync` workflow (`workflow_run`, **not** `pull_request_target`;
+  ADR-0013) applies the fix automatically on a Dependabot PR — true zero-touch — gated to genuine
+  in-repo Dependabot PRs; the same `--fix` is the manual/local fallback (stay-current routine).
+  Deterministic and dependency-free; covered by `tools/tests/test_sync_action_pins.py`. Factory-only
+  (generated repos render no templates). No pipeline behavior change.
 
 ### Changed
 

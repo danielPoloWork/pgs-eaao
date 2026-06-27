@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""Tests for eados — the thin phase orchestrator (roadmap 6.5 / G3). Dependency-free.
+
+    python .eados-core/tools/tests/test_eados.py
+"""
+
+import os
+import subprocess
+import sys
+import tempfile
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+TOOLS = os.path.dirname(HERE)
+sys.path.insert(0, TOOLS)
+import eados  # noqa: E402  (the module under test)
+import phase_runner  # noqa: E402
+
+ROADMAP = (
+    "# Roadmap — fixture\n"
+    "## Milestone 1 — Bootstrap\n"
+    "- [ ] 1.1 implement the sample feature per RFC-0001\n"
+)
+RFC_OK = (
+    "# RFC-0001\n\n## Context\nx\n\n## Decision\ny\n\n## Alternatives\nz\n\n"
+    "## Consequences\nw\n\n## Approval\napproved-by: tech-lead (2026-06-27)\n"
+)
+# A minimal manifest that passes validate_manifest (so manifest-valid is OK).
+MANIFEST_YAML = (
+    "identity:\n  project_name: Demo\n  project_slug: demo\n  project_kind: library\n"
+    "ownership:\n  owner: me\n  license_id: MIT\n  default_branch: main\n"
+    "language:\n  lang: cpp\n  group_path: it/x\n"
+    "delivery_state:\n  phase: plan\n  refs:\n    rfcs:\n      - RFC-0001\n    milestones:\n      - \"1\"\n"
+)
+
+
+def manifest_at(phase, rfcs=("RFC-0001",)):
+    return {
+        "identity": {"project_name": "Demo", "project_slug": "demo", "project_kind": "library"},
+        "ownership": {"owner": "me", "license_id": "MIT", "default_branch": "main"},
+        "language": {"lang": "cpp", "group_path": "it/x"},
+        "delivery_state": {"phase": phase, "refs": {"rfcs": list(rfcs), "milestones": ["1"]}},
+    }
+
+
+def check(label, cond, failures):
+    if not cond:
+        failures.append(label)
+
+
+def has(lines, needle):
+    return any(needle in ln for ln in lines)
+
+
+def main():
+    failures = []
+    wf = phase_runner.load_workflow()
+
+    # --- plan: gates are data-driven from workflow (manifest-valid + roadmap-covers-rfcs) ---
+    lines, ok = eados.run_phase("plan", manifest_at("plan"), wf, ROADMAP)
+    check("plan runs manifest-valid (from plan->design)", has(lines, "[OK] manifest-valid"), failures)
+    check("plan runs roadmap-covers-rfcs (from plan->scaffold)",
+          has(lines, "[OK] roadmap-covers-rfcs"), failures)
+    check("plan lists the legal moves", has(lines, "-> scaffold") and has(lines, "-> design"),
+          failures)
+    check("plan points at its procedure", has(lines, "commands/plan.md"), failures)
+    check("a covered, valid plan is ok", ok, failures)
+
+    # --- an uncovered RFC fails the gate ---
+    lines, ok = eados.run_phase("plan", manifest_at("plan", rfcs=("RFC-9999",)), wf, ROADMAP)
+    check("an uncovered RFC FAILs roadmap-covers-rfcs", has(lines, "[FAIL] roadmap-covers-rfcs"),
+          failures)
+    check("a failed gate makes the phase not ok", not ok, failures)
+
+    # --- design: rfc-approved is evaluable only with --rfc ---
+    lines, ok = eados.run_phase("design", manifest_at("design"), wf, None, RFC_OK)
+    check("design with an approved RFC passes rfc-approved", has(lines, "[OK] rfc-approved"), failures)
+    check("design with a good RFC is ok", ok, failures)
+    lines, ok = eados.run_phase("design", manifest_at("design"), wf, None, None)
+    check("design without --rfc skips rfc-approved", has(lines, "[skipped] rfc-approved"), failures)
+    check("a skipped gate does not fail the phase", ok, failures)
+
+    # --- scaffold: its gates need a rendered repo -> [manual], nothing fails ---
+    lines, ok = eados.run_phase("scaffold", manifest_at("scaffold"), wf)
+    check("scaffold's render-time gates are manual",
+          has(lines, "[manual] consistency-lint") and has(lines, "[manual] self-review"), failures)
+    check("scaffold is ok (nothing auto-failed)", ok, failures)
+
+    # --- init: manifest-valid OK; an invalid manifest FAILs it ---
+    lines, ok = eados.run_phase("init", manifest_at("init"), wf)
+    check("init runs manifest-valid OK", has(lines, "[OK] manifest-valid") and ok, failures)
+    lines, ok = eados.run_phase("init", {"identity": {"project_name": "x"}}, wf)
+    check("an invalid manifest FAILs manifest-valid", has(lines, "[FAIL] manifest-valid") and not ok,
+          failures)
+
+    # --- an undeclared phase errors ---
+    lines, ok = eados.run_phase("bogus", manifest_at("init"), wf)
+    check("an undeclared phase is rejected", has(lines, "not a declared workflow state") and not ok,
+          failures)
+
+    # --- CLI smoke: a phase and `status` over real files, with exit codes ---
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1"}
+    with tempfile.TemporaryDirectory() as d:
+        with open(os.path.join(d, "project.yaml"), "w", encoding="utf-8") as h:
+            h.write(MANIFEST_YAML)
+        with open(os.path.join(d, "ROADMAP.md"), "w", encoding="utf-8") as h:
+            h.write(ROADMAP)
+        eados_py = os.path.join(TOOLS, "eados.py")
+        manifest = os.path.join(d, "project.yaml")
+
+        def run(*a):
+            p = subprocess.run([sys.executable, eados_py, *a], capture_output=True, text=True,
+                               encoding="utf-8", env=env)
+            return p.returncode, (p.stdout or "") + (p.stderr or "")
+
+        rc, out = run("plan", manifest)
+        check("CLI `eados.py plan` exits 0 on a covered project", rc == 0, failures)
+        check("CLI plan reports roadmap-covers-rfcs OK", "roadmap-covers-rfcs" in out, failures)
+        rc, out = run("status", manifest)
+        check("CLI `eados.py status` runs the doctor (exit 0)",
+              rc == 0 and "phase: plan" in out, failures)
+
+    if failures:
+        print("test-eados: FAIL\n")
+        for f in failures:
+            print(f"  {f}")
+        print(f"\n{len(failures)} expectation(s) failed.")
+        return 1
+    print("test-eados: OK -- phase gates run data-driven from workflow; failures gate; status "
+          "delegates to the doctor.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

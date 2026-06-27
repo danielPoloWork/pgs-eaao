@@ -11,6 +11,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
 
 ### Added
 
+- **M6 / 6.5 — thin CLI phase orchestrator (G3, #64).** A new `tools/eados.py <phase> <manifest>`
+  runs a phase's **deterministic outgoing gates** — read from `workflow.yaml` (no hardcoded chain) —
+  evaluating the ones it can (`manifest-valid`, `rfc-approved`, `roadmap-covers-rfcs`) via the
+  sibling tools and marking render-time / human gates `[manual]`, then prints the legal next
+  transitions and points at the procedure; `eados.py status` delegates to the doctor (6.4). It is
+  the executable spine beneath the markdown `/eados <phase>` procedures — it reports and gates,
+  never authoring or advancing state. Covered by `tools/tests/test_eados.py`. No pipeline behavior
+  change.
 - **M6 / 6.4 — `/eados status` doctor (F1, #66).** A new read-only `tools/doctor.py` (the
   `/eados status` surface, `commands/status.md`) reports a project's delivery health at a glance:
   current phase (+ its owning role and what it produces), the legal next transitions (+ gates and

@@ -45,3 +45,16 @@ write — it does **not** write state (the agent does, after the human confirms 
 ```bash
 python .eados-core/tools/phase_runner.py <manifest> --propose design
 ```
+
+## The phase orchestrator
+
+```bash
+python .eados-core/tools/eados.py <phase> <manifest>     # or: eados.py status <manifest>
+```
+
+runs a phase's **deterministic outgoing gates** — read from `workflow.yaml` (no hardcoded chain) —
+evaluating the ones it can (`manifest-valid`, `rfc-approved`, `roadmap-covers-rfcs`) via the sibling
+tools and marking render-time / human gates `[manual]`, then prints the legal next transitions and
+points at the procedure above for the authoring + human-gated steps. It is the **executable spine**
+beneath the markdown procedures; like `phase_runner`, it **reports and gates — it never authors,
+advances state, or writes**. `eados.py status` is the read-only doctor ([`status.md`](status.md)).

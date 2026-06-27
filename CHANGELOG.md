@@ -11,6 +11,15 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
 
 ### Added
 
+- **M6 / 6.1 — end-to-end phase-flow smoke (G4, #65).** A new `tools/tests/test_phase_smoke.py`
+  threads one coherent fixture project (manifest + RFC + ROADMAP + links) through `design → plan →
+  audit` by invoking the real phase tool CLIs (`rfc_check`, `traceability`, `risk_score`,
+  `phase_runner`) the way an agent runs a phase. It asserts each gate **passes** on the good
+  fixture and **fails** on a deliberately broken one, that `phase_runner --propose` reports every
+  transition declared in `workflow.yaml` LEGAL (and rejects an undeclared one), and that each entry
+  gate's backing tool exists on disk — catching tool-integration (seam) bugs the per-tool unit
+  tests cannot. Wired into the CI self-lint job. No pipeline behavior change.
+
 ### Changed
 
 ### Deprecated

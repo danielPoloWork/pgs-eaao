@@ -24,7 +24,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M4 — audit phase + risk** | ✅ **done** — M4-A..C merged (#50–#52) |
 | **M5 — refactor (brownfield)** | ✅ **done** — M5-A..D merged (#53–#56) |
 | **v2.0.0 release** | ✅ tagged on #70's merge — GitHub Release drafted, awaiting human publish |
-| **M6 — hardening & UX** | ⏳ planned — items 6.1–6.8 (issues #63–#69, #72) |
+| **M6 — hardening & UX** | 🚧 in progress — 6.1 done (#65); 6.2–6.8 planned (#63–#69, #72) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -155,9 +155,11 @@ by the v2.0.0 enterprise review, plus the one cross-spec scope deferred from #62
 changing the shipped pipeline's behavior**. Each item is one logical change (one PR), tracked as a
 GitHub issue under the `M6 — hardening & UX` milestone (#6).
 
-- [ ] 6.1 (G4, #65) **End-to-end phase smoke test** — a fixture that runs a complete *phase flow*
-      (e.g. `plan` → `roadmap-covers-rfcs`, or `audit` → risk register) to catch tool-integration
-      bugs the per-tool unit tests miss.
+- [x] 6.1 (G4, #65) **End-to-end phase smoke test** — a fixture that runs a complete *phase flow*
+      (`design → plan → audit`) over the real tool CLIs to catch tool-integration bugs the per-tool
+      unit tests miss: each gate passes on a coherent fixture and fails on a broken one, and
+      `phase_runner --propose` matches every transition declared in `workflow.yaml`
+      (`tools/tests/test_phase_smoke.py`).
 - [ ] 6.2 (F3, #68) **Risk-model weights as data** — move the weights hardcoded in `risk_score.py`
       into `risk.yaml`, so a domain can tune them (as it already tunes `mandatory_gate_level`); full
       consistency with "knowledge as data".

@@ -26,7 +26,8 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **v2.0.0 release** | ✅ published 2026-06-23 |
 | **M6 — hardening & UX** | ✅ **done** — items 6.1–6.9 (#63–#69, #72, #76) |
 | **v2.1.0 release** | ✅ published 2026-06-27 — M6 hardening & UX (bundles attached; Latest) |
-| **M7 — onboarding & docs** | ⏳ planned — items 7.1–7.5 (issues #87–#91) |
+| **M7 — onboarding & docs** | ✅ **done** — items 7.1–7.5 (#97–#101) |
+| **M8 — inbound contribution review** | ⏳ planned — items 8.1–8.6 (`/eados review` + `contribution-reviewer`) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -232,6 +233,68 @@ inline comments, and at most an optional tool hint). Each item is one PR, tracke
 agent prerequisite (or take the no-agent path), hand-fill a valid manifest, and follow a full phase
 run. **No tool behavior change**; self-lint + render-smoke stay green.
 **Depends on:** v2.1.0 (post-release); incremental — items are independent.
+
+---
+
+## Milestone 8 — inbound contribution review: `/eados review` + the `contribution-reviewer` role
+
+**Goal.** Give EADOS (and every generated repo) a governed way to **triage and review pull requests
+opened by non-owners** — the inbound-contribution funnel the existing *internal* `reviewer` /
+`security-auditor` roles do not cover (those are author-agnostic peer review of a diff). A new
+`contribution-reviewer` role **composes** those two and adds the dimensions specific to an untrusted,
+non-owner contribution: **provenance / trust tier** (owner · collaborator · external-fork),
+**contribution-policy compliance** (sign-off, Conventional Commits, the `git.yaml` PR↔RFC↔milestone
+cross-links, one-logical-change), **untrusted-code security posture** (a fork can't reach CI secrets;
+a workflow-file change is a poisoned-pipeline surface; new deps are supply-chain), **authority /
+scope** (a non-owner holds no authority role, so a touch on an owned path escalates to the
+maintainer), and **triage / disposition** (label, route to the owning internal role, recommend
+approve-with-nits / request-changes / needs-maintainer / re-implement-in-house / close-with-thanks).
+It **recommends and drafts; it never merges** — the `pr.merged_by: human` boundary is untouched.
+`/eados review` is **cross-cutting** (usable in any phase, like `/eados status`), not a new state in
+the workflow machine. Each item is one PR, tracked under the `M8 — inbound contribution review`
+milestone.
+
+This milestone **automates the policy the owner already applies by hand** to external PRs (verify the
+change, not the person; honor a good idea via co-author + an in-house re-implementation; the owner
+posts the close — the #94 episode), encoding it as data the gates validate.
+
+- [ ] 8.1 **Contribution policy as data** — `orchestrator/os/contribution/{_schema.md,
+      contribution.yaml}`: the owner-identity source (CODEOWNERS / manifest), the trust tiers
+      (owner · collaborator · external-fork), the required inbound checks, the disposition + label
+      vocabulary, and the "external touches an owned path → escalate" rule. Auto-validated by
+      `os-spec-completeness` and the `data-file-validity` / `gate-coverage` gates; its role/gate
+      cross-refs validated by `cross-spec-consistency` (anti-fragmentation — no special case in code).
+- [ ] 8.2 **The `contribution-reviewer` role** — persona `agent/contribution-reviewer.md` (the
+      enterprise contribution steward: composes `reviewer` + `security-auditor`, adds
+      provenance / policy / triage, never merges) + an `authority.yaml` record (engineering pillar,
+      `phases: []`, empty `owns` / `may_approve` like `reviewer`) + a registry row. Enforced by
+      `agent-registry` + `authority-personas`.
+- [ ] 8.3 **`tools/pr_review.py` — the inbound-PR evaluator** — given a PR number, via `gh` and
+      degrading cleanly offline (the `derive_links.py` pattern): fetch author + fork status + files +
+      commits + check status → **classify non-owner authorship** → run the 8.1 policy checks →
+      compose `authority_check.py` (owned-path escalation) + `risk_score.py` (security / size /
+      blast) → emit a structured **review report + recommended disposition**. Pure parser + a thin
+      `gh` shell, fixture-tested.
+- [ ] 8.4 **`/eados review <PR#>` command surface** — `commands/review.md` + a `commands/README.md`
+      row: run `pr_review.py` → on an owned-path touch or a REQUIRED risk score, invoke the
+      `security-auditor` + `reviewer` → **draft** the review comment + labels via `gh` → recommend a
+      disposition. Cross-cutting like `/eados status` (not a phase transition). Boundary: drafts only;
+      the human requests-changes / approves / merges.
+- [ ] 8.5 **Wire the inbound checks as a cross-cutting gate** — a `contribution-review` gate in
+      `workflow.yaml` (`required_for: []`, like `traceability-lint`), referenced from a new `git.yaml`
+      `pr` field + its `_schema.md`, validated by `cross-spec-consistency`. **No change to the shipped
+      phase pipeline.** Optional: a rendered CI template `pr-contribution-review.yml` (comment-only —
+      never approve / merge) for generated repos.
+- [ ] 8.6 **Dogfood + docs** — an ADR for the inbound-contribution-trust model, a `/eados review`
+      walkthrough in USAGE/README, and the evaluator run against the **#94** external-contribution
+      episode (the canonical case) as the worked example — plus the currently-open non-owner PR #96
+      as a live secondary case; RFC-0001, this roadmap, the affected specs, and the CHANGELOG kept in
+      lockstep (the cross-cutting invariant).
+
+**Acceptance gate.** A PR from a non-owner produces a structured report + a recommended disposition;
+an external PR touching an owned path is flagged for maintainer escalation; the human boundary (no
+agent merge) is preserved; self-lint (incl. the gate-coverage trilogy) + render-smoke stay green.
+**Depends on:** M7 (post-merge); ships to consumers in the bundle → a likely **v2.2.0** release.
 
 ---
 

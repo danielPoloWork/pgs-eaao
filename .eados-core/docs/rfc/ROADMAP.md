@@ -24,7 +24,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M4 — audit phase + risk** | ✅ **done** — M4-A..C merged (#50–#52) |
 | **M5 — refactor (brownfield)** | ✅ **done** — M5-A..D merged (#53–#56) |
 | **v2.0.0 release** | ✅ tagged on #70's merge — GitHub Release drafted, awaiting human publish |
-| **M6 — hardening & UX** | 🚧 in progress — 6.1 + 6.9 done (#65, #76); 6.2–6.8 planned (#63–#69, #72) |
+| **M6 — hardening & UX** | 🚧 in progress — 6.1, 6.2, 6.9 done (#65, #68, #76); 6.3–6.8 planned (#63, #64, #66, #67, #69, #72) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -160,9 +160,10 @@ GitHub issue under the `M6 — hardening & UX` milestone (#6).
       unit tests miss: each gate passes on a coherent fixture and fails on a broken one, and
       `phase_runner --propose` matches every transition declared in `workflow.yaml`
       (`tools/tests/test_phase_smoke.py`).
-- [ ] 6.2 (F3, #68) **Risk-model weights as data** — move the weights hardcoded in `risk_score.py`
-      into `risk.yaml`, so a domain can tune them (as it already tunes `mandatory_gate_level`); full
-      consistency with "knowledge as data".
+- [x] 6.2 (F3, #68) **Risk-model weights as data** — the factor weights, blast-radius threshold, and
+      points→level cutoffs move from `risk_score.py` into `risk.yaml`, each **per-domain overridable**
+      like `mandatory_gate_level`; the scorer reads them via `resolve(cfg, domain)` with built-in
+      fallbacks (back-compat, default scores unchanged). Full "knowledge as data"; `risk/_schema.md` updated.
 - [ ] 6.3 (G2, #63) **Single-artifact render for `refactor`** — render one template with the
       manifest context and place it via `sandbox.safe_write` (the "render the missing artifact →
       sandbox" step `refactor.md` describes but no tool yet performs).

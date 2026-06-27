@@ -19,6 +19,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
   transition declared in `workflow.yaml` LEGAL (and rejects an undeclared one), and that each entry
   gate's backing tool exists on disk — catching tool-integration (seam) bugs the per-tool unit
   tests cannot. Wired into the CI self-lint job. No pipeline behavior change.
+- **M6 / 6.2 — risk-model weights as data (F3, #68).** The factor weights (security surface, size,
+  blast radius), the `blast_radius_threshold`, and the points→level cutoffs move out of
+  `risk_score.py` into `risk.yaml` as data — each **per-domain overridable** (weights shallow-merged),
+  exactly as `mandatory_gate_level` already was (OQ2). The scorer reads them via a new
+  `resolve(cfg, domain)` with built-in fallbacks, so a pre-6.2 `risk.yaml` still scores identically
+  (back-compat) and the shipped default scores are unchanged. `risk/_schema.md` documents the new
+  keys; covered by the expanded `test_risk_score.py`. Knowledge as data — no special-casing in code.
 - **M6 / 6.9 — auto-sync shared action pins into the rendered templates (#76).** A new
   `tools/sync_action_pins.py` (`--check` / `--fix`) rewrites the workflow templates'
   (`templates/.github/workflows/*.tmpl`) action pins to the factory CI's pin for each shared action

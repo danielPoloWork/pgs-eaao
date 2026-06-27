@@ -1,0 +1,63 @@
+name: dependabot-pin-sync
+
+# Hands-off half of the action-pin lockstep (ADR-0009 / ADR-0013, roadmap M6 6.9).
+#
+# When Dependabot bumps a shared action pin in .github/workflows/ci.yml, it cannot touch the
+# rendered templates (templates/.github/workflows/*.tmpl), so the `action-pins` gate fails the PR.
+# This workflow re-syncs the templates automatically with `tools/sync_action_pins.py --fix` and
+# commits the result back onto the Dependabot PR — no manual companion edit.
+#
+# SECURITY: this uses `workflow_run`, NOT `pull_request_target`. workflow_run runs the workflow
+# definition from the DEFAULT branch (trusted) with a write token, after CI completes — it is not
+# auto-checked-out to, nor does it execute, PR-authored code paths. We only run the repo's own
+# deterministic pin fixer. The job is gated to GENUINE Dependabot PRs: `actor == dependabot[bot]`
+# (an actor login cannot be forged) AND the head repo is this repo (not a fork). A collaborator
+# pushing to a Dependabot branch shows as their own actor, so they cannot reach this privileged job.
+
+on:
+  workflow_run:
+    workflows: ["eados-ci"]
+    types: [completed]
+
+permissions:
+  contents: write          # the only permission needed: push the sync commit to the PR branch
+
+concurrency:
+  group: dependabot-pin-sync-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: sync template action pins (dependabot)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # Genuine Dependabot PRs only, in-repo (not a fork), and only when CI failed (the action-pins
+    # gate is the expected failure to remediate; a no-drift run pushes nothing anyway).
+    if: >
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    steps:
+      - name: Check out the Dependabot PR branch
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+          # A push by the default GITHUB_TOKEN does NOT re-trigger CI (GitHub's recursion guard), so
+          # the fix lands on the PR but its checks re-run on the next event / a manual re-run. To get
+          # the check to go green by itself, add a repo PAT or GitHub App token as the
+          # DEPENDABOT_SYNC_TOKEN secret — this workflow uses it when present, else GITHUB_TOKEN.
+          token: ${{ secrets.DEPENDABOT_SYNC_TOKEN || github.token }}
+      - name: Sync the workflow templates' action pins to the factory CI
+        run: python3 .eados-core/tools/sync_action_pins.py --fix
+      - name: Commit and push the sync (only if the templates drifted)
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "templates already in lockstep with the factory CI — nothing to push."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "ci: sync workflow-template action pins to the factory CI [dependabot-auto]"
+          git push origin "HEAD:${{ github.event.workflow_run.head_branch }}"

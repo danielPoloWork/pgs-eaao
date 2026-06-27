@@ -21,3 +21,4 @@ is sequential and never reused. Template: the generated
 | [0010](0010-content-hash-i18n-freshness.md) | Content-hash i18n freshness (squash-merge-proof) | Accepted |
 | [0011](0011-eados-phase-based-delivery-operating-system.md) | EADOS — phase-based agentic delivery operating system (the pivot) | Accepted |
 | [0012](0012-project-rename-to-eados.md) | Rename EAAO → EADOS: repo, path, and bundle migration | Accepted |
+| [0013](0013-dependabot-action-pin-auto-remediation.md) | Dependabot action-pin auto-remediation (`workflow_run` template re-sync) | Accepted |

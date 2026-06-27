@@ -541,10 +541,14 @@ def cross_spec_problems(authority, workflow, plan=None, rfc=None, risk=None, dom
                 one(f"risk.domain_overrides[{dname!r}].mandatory_gate_level",
                     override.get("mandatory_gate_level"), levels, "level")
 
-    # --- git: the cross-cutting (non-phase) traceability gate reference resolves to the gate
-    #     registry — the scope deferred from #62, so a typo'd cross-cutting gate id is caught too (6.8) ---
-    if isinstance(git, dict) and isinstance(git.get("traceability"), dict):
-        one("git.traceability.gate", git["traceability"].get("gate"), gates, "gate")
+    # --- git: the cross-cutting (non-phase) gate references resolve to the gate registry — the
+    #     scope deferred from #62 (6.8), now also the inbound-review gate (M8 8.5). A typo'd
+    #     cross-cutting gate id is caught here. ---
+    if isinstance(git, dict):
+        if isinstance(git.get("traceability"), dict):
+            one("git.traceability.gate", git["traceability"].get("gate"), gates, "gate")
+        if isinstance(git.get("pr"), dict):
+            one("git.pr.review_gate", git["pr"].get("review_gate"), gates, "gate")
 
     # --- domains: declared roles, role-label keys, and the workflow overlay all resolve ---
     for fname, data in sorted(domains.items()):

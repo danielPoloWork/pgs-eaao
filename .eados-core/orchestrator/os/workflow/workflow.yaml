@@ -96,6 +96,14 @@ gates:
     runs: "python .eados-core/tools/traceability.py <roadmap> <rfc-ids> --links <links>"
     blocking: true
     required_for: []
+  # Inbound-contribution review gate (M8): advisory + cross-cutting — it runs on a PR via
+  # `/eados review` (not a phase precondition), drafting a recommended disposition; the human
+  # disposes, so `blocking: false`. Referenced by git.yaml's `pr.review_gate`; cross-spec-validated.
+  - id: contribution-review
+    kind: lint
+    runs: "python .eados-core/tools/pr_review.py --pr <PR#>"
+    blocking: false
+    required_for: []
 
 # Per-domain adaptations. Absent keys inherit the base machine. These encode the delivery
 # guide's domain specifics (e.g. a game's asset pipeline, a mobile store-compliance gate).

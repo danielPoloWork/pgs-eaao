@@ -283,7 +283,7 @@ the contributor. Provenance stays 100% in-house. It is encoded as data the gates
       `security-auditor` + `reviewer` → **draft** the review comment + labels via `gh` → recommend a
       disposition. Cross-cutting like `/eados status` (not a phase transition). Boundary: drafts only;
       the human requests-changes / approves / merges.
-- [ ] 8.5 **Wire the inbound checks as a cross-cutting gate** — a `contribution-review` gate in
+- [x] 8.5 **Wire the inbound checks as a cross-cutting gate** — a `contribution-review` gate in
       `workflow.yaml` (`required_for: []`, like `traceability-lint`), referenced from a new `git.yaml`
       `pr` field + its `_schema.md`, validated by `cross-spec-consistency`. **No change to the shipped
       phase pipeline.** Optional: a rendered CI template `pr-contribution-review.yml` (comment-only —

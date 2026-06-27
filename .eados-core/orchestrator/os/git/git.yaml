@@ -22,6 +22,7 @@ pr:
   one_type_label: true
   required_crosslinks: [rfc, milestone]   # PR body must reference its RFC and milestone item
   template: ".github/PULL_REQUEST_TEMPLATE.md"
+  review_gate: contribution-review   # M8: /eados review drafts a recommendation on an inbound PR; the human disposes
 
 release:
   scheme: semver

@@ -25,15 +25,18 @@ sequenced **last** and every write is write-contained. Owned by the **enterprise
    ```
 3. **Migrate — one step = one PR**, in plan order (lowest-risk first). For each step:
    1. **authority** — `authority_check.py enterprise-architect <paths>` (the role may write them).
-   2. **render** the missing artifact from the EADOS templates (e.g. `AGENTS.md` from
-      `templates/AGENTS.md.tmpl`) — never hand-write what a template produces.
-   3. **write** it via the **sandbox** — `sandbox.safe_write(<repo>, <rel>, <content>)`: contained,
-      not `.git`, **additive** (a pre-existing file is a conflict the human resolves, not a clobber).
-   4. **risk** — `risk_score.py <paths> --domain <domain>`; if **REQUIRED**, run
+   2. **render + place** the missing artifact in one step — `render_artifact.py` renders the template
+      with the manifest (the same gates as a full render) and writes it through the **sandbox**
+      (contained, not `.git`, **additive** — a pre-existing file is a conflict the human resolves,
+      not a clobber). Never hand-write what a template produces:
+      ```bash
+      python .eados-core/tools/render_artifact.py AGENTS.md.tmpl <manifest> <repo>
+      ```
+   3. **risk** — `risk_score.py <paths> --domain <domain>`; if **REQUIRED**, run
       [`/eados audit`](audit.md) (the `security-auditor` gate) before proposing.
-   5. **draft the PR** — one logical change, with the `git` cross-links (RFC/milestone); the human
+   4. **draft the PR** — one logical change, with the `git` cross-links (RFC/milestone); the human
       reviews and merges.
-   6. **confirm** — re-run `brownfield.py <repo>`: the step's gap is closed. Proceed to the next.
+   5. **confirm** — re-run `brownfield.py <repo>`: the step's gap is closed. Proceed to the next.
 4. **Done** — when `brownfield.py` reports no gaps, the repo meets the EADOS standard. `refactor`
    is the terminal phase; from here the repo governs itself under its rendered `AGENTS.md`.
 

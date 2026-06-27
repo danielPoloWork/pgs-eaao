@@ -5,9 +5,33 @@ All notable changes to `pgs-eados` (EADOS) are documented here, following
 [Semantic Versioning 2.0.0](https://semver.org/).
 
 Every PR that introduces a user- or maintainer-visible change adds a line to `[Unreleased]`
-in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
+in the same PR. Releases follow Semantic Versioning; the latest is **v2.1.0**.
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+---
+
+## [2.1.0] - 2026-06-27
+
+**M6 — hardening & UX.** The post-v2.0.0 hardening milestone: the automation/completeness gaps
+(G2–G4) and feature suggestions (F1–F4) surfaced by the v2.0.0 enterprise review, plus the deferred
+cross-spec scope (#72). All opt-in and behind the unchanged pipeline — a MINOR release, no breaking
+changes. Highlights: a thin executable phase orchestrator (`eados.py`), the `/eados status` doctor,
+single-artifact render for `refactor`, an end-to-end phase smoke, risk-model weights as data,
+auto-derived traceability links, hands-off Dependabot action-pin sync, and two new dogfooded gates
+(`version-lockstep`, cross-cutting `cross-spec-consistency`).
 
 ### Added
 

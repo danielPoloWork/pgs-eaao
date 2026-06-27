@@ -286,9 +286,10 @@ posts the close — the #94 episode), encoding it as data the gates validate.
       phase pipeline.** Optional: a rendered CI template `pr-contribution-review.yml` (comment-only —
       never approve / merge) for generated repos.
 - [ ] 8.6 **Dogfood + docs** — an ADR for the inbound-contribution-trust model, a `/eados review`
-      walkthrough in USAGE/README, and the evaluator run against EADOS's own currently-open non-owner
-      PR (#96) as the worked example; RFC-0001, this roadmap, the affected specs, and the CHANGELOG
-      kept in lockstep (the cross-cutting invariant).
+      walkthrough in USAGE/README, and the evaluator run against the **#94** external-contribution
+      episode (the canonical case) as the worked example — plus the currently-open non-owner PR #96
+      as a live secondary case; RFC-0001, this roadmap, the affected specs, and the CHANGELOG kept in
+      lockstep (the cross-cutting invariant).
 
 **Acceptance gate.** A PR from a non-owner produces a structured report + a recommended disposition;
 an external PR touching an owned path is flagged for maintainer escalation; the human boundary (no

@@ -77,3 +77,15 @@ and an `action-pins` gate was added to `tools/eados_lint.py` that fails if a SHA
 shared by the factory CI and the workflow templates diverges. **The specific version numbers in
 §1 are illustrative of the original decision, not the current pins — the `action-pins` gate, not
 this prose, is now the source of truth for factory/template parity.**
+
+## Addendum (2026-06-27)
+
+The 2026-06-18 addendum noted the template pins "must be maintained deliberately" after each
+Dependabot `github-actions` bump (Dependabot never scans the `.tmpl` copies). `tools/sync_action_pins.py`
+now **automates** that maintenance: `--fix` rewrites every template pin to the factory CI's pin for
+the same action — the inverse of the `action-pins` gate, reusing the gate's regex so the two cannot
+disagree — turning a hand-edit into one deterministic command (documented in
+[`maintenance/stay-current.md`](../../maintenance/stay-current.md); covered by
+`tools/tests/test_sync_action_pins.py`). It only copies a SHA the factory CI already trusts; it never
+resolves a tag itself. Hands-off CI auto-remediation on Dependabot PRs (true zero-touch) is the next
+step, tracked in #76 — it touches `.github/**` (a supply-chain surface) and gets its own reviewed PR.

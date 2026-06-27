@@ -22,6 +22,20 @@ For each [`orchestrator/profiles/<lang>.yaml`](../orchestrator/profiles/):
 Also refresh shared bits: the `templates/.github/workflows/*` action pins and the
 `templates/tools/consistency_lint.py` Python version in CI.
 
+### When Dependabot bumps a shared action pin
+
+Dependabot's `github-actions` ecosystem updates only the real workflow files
+(`.github/workflows/*.yml`) — never the rendered `*.tmpl` templates (ADR-0009) — so a bump drifts
+the templates and the `action-pins` lockstep gate blocks the PR. Re-sync in one deterministic step,
+no hand-editing the SHA: on the Dependabot branch run
+
+```bash
+python .eados-core/tools/sync_action_pins.py --fix   # rewrite the template pins to match the factory CI
+```
+
+then commit. The default (`--check`) reports drift without writing. This is the same lockstep the
+`action-pins` gate enforces, applied as a fix.
+
 ## How to run it
 
 1. Adopt the `profile-author` role.

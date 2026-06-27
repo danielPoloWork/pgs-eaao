@@ -19,6 +19,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
   transition declared in `workflow.yaml` LEGAL (and rejects an undeclared one), and that each entry
   gate's backing tool exists on disk — catching tool-integration (seam) bugs the per-tool unit
   tests cannot. Wired into the CI self-lint job. No pipeline behavior change.
+- **M6 / 6.9 — auto-sync shared action pins into the rendered templates (#76).** A new
+  `tools/sync_action_pins.py` (`--check` / `--fix`) rewrites the workflow templates'
+  (`templates/.github/workflows/*.tmpl`) action pins to the factory CI's pin for each shared action
+  — reusing `eados_lint`'s pin regex so the fixer and the `action-pins` gate can never disagree. A
+  weekly Dependabot `github-actions` bump now needs **no manual template edit** to pass the lockstep
+  gate: run `--fix`, commit (documented in the stay-current routine; ADR-0009 addendum).
+  Deterministic and dependency-free; covered by `tools/tests/test_sync_action_pins.py`. Hands-off CI
+  auto-remediation on Dependabot PRs is the follow-up in #76. No pipeline behavior change.
 
 ### Changed
 

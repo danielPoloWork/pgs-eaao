@@ -247,16 +247,19 @@ non-owner contribution: **provenance / trust tier** (owner · collaborator · ex
 cross-links, one-logical-change), **untrusted-code security posture** (a fork can't reach CI secrets;
 a workflow-file change is a poisoned-pipeline surface; new deps are supply-chain), **authority /
 scope** (a non-owner holds no authority role, so a touch on an owned path escalates to the
-maintainer), and **triage / disposition** (label, route to the owning internal role, recommend
-approve-with-nits / request-changes / needs-maintainer / re-implement-in-house / close-with-thanks).
+maintainer), and **triage / disposition** (label, route to the owning internal role, recommend one of
+three outcomes — `re-implement-in-house` (adopt the idea our way), `close-with-thanks` (decline), or
+`needs-maintainer` (escalate); a non-owner's commits are never merged).
 It **recommends and drafts; it never merges** — the `pr.merged_by: human` boundary is untouched.
 `/eados review` is **cross-cutting** (usable in any phase, like `/eados status`), not a new state in
 the workflow machine. Each item is one PR, tracked under the `M8 — inbound contribution review`
 milestone.
 
-This milestone **automates the policy the owner already applies by hand** to external PRs (verify the
-change, not the person; honor a good idea via co-author + an in-house re-implementation; the owner
-posts the close — the #94 episode), encoding it as data the gates validate.
+This milestone **automates the policy the owner already applies by hand** to external PRs: verify the
+change, not the person; **never auto-accept** and **never merge a non-owner's commits** — a good idea
+is **adopted via an in-house re-implementation** (we author it ourselves, co-author the contributor, a
+rationale comment on their PR, and the owner posts the close — the #94 episode); and **always thank**
+the contributor. Provenance stays 100% in-house. It is encoded as data the gates validate.
 
 - [x] 8.1 **Contribution policy as data** — `orchestrator/os/contribution/{_schema.md,
       contribution.yaml}`: the owner-identity source (CODEOWNERS / manifest), the trust tiers
@@ -269,7 +272,7 @@ posts the close — the #94 episode), encoding it as data the gates validate.
       provenance / policy / triage, never merges) + an `authority.yaml` record (engineering pillar,
       `phases: []`, empty `owns` / `may_approve` like `reviewer`) + a registry row. Enforced by
       `agent-registry` + `authority-personas`.
-- [ ] 8.3 **`tools/pr_review.py` — the inbound-PR evaluator** — given a PR number, via `gh` and
+- [x] 8.3 **`tools/pr_review.py` — the inbound-PR evaluator** — given a PR number, via `gh` and
       degrading cleanly offline (the `derive_links.py` pattern): fetch author + fork status + files +
       commits + check status → **classify non-owner authorship** → run the 8.1 policy checks →
       compose `authority_check.py` (owned-path escalation) + `risk_score.py` (security / size /

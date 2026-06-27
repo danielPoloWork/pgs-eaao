@@ -11,6 +11,12 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
 
 ### Added
 
+- **M6 / 6.8 — cross-spec gate extended to cross-cutting gates (#72).** `traceability-lint` (the
+  `git`-spec CI gate, not a phase-transition gate) is now registered in `workflow.yaml`'s gate list
+  (cross-cutting, `required_for: []`), and `eados_lint`'s `cross-spec-consistency` validates
+  `git.yaml`'s `traceability.gate` against that registry — so a typo'd cross-cutting gate id is
+  caught too (the scope deferred from #62). `test_cross_spec.py` covers the resolve + typo cases.
+  **Completes M6.** No pipeline behavior change.
 - **M6 / 6.7 — version-lockstep dogfooding (F4, #69).** EADOS now dogfoods the `version-lockstep`
   gate it ships to generated repos: a new `eados_lint` check asserts every README release badge
   (EN + `docs/i18n/*`) and the CHANGELOG's "the latest is **vX.Y.Z**" prose match the CHANGELOG's

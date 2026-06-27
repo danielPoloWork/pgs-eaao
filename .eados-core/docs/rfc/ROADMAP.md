@@ -24,7 +24,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M4 — audit phase + risk** | ✅ **done** — M4-A..C merged (#50–#52) |
 | **M5 — refactor (brownfield)** | ✅ **done** — M5-A..D merged (#53–#56) |
 | **v2.0.0 release** | ✅ tagged on #70's merge — GitHub Release drafted, awaiting human publish |
-| **M6 — hardening & UX** | 🚧 in progress — 6.1–6.7 + 6.9 done (#63, #64, #65, #66, #67, #68, #69, #76); 6.8 planned (#72) |
+| **M6 — hardening & UX** | ✅ **done** — items 6.1–6.9 (#63–#69, #72, #76) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -184,9 +184,10 @@ GitHub issue under the `M6 — hardening & UX` milestone (#6).
       asserts every EADOS README release badge (EN + i18n) and the CHANGELOG's "latest is" prose
       match the CHANGELOG's latest released `## [X.Y.Z]` — the factory held to the bar it imposes
       downstream.
-- [ ] 6.8 (#72) **Cross-spec gate → cross-cutting gates** — extend `cross-spec-consistency` to
-      validate cross-cutting (non-phase) gate references too; `git.yaml`'s `traceability-lint` was
-      intentionally left out of the phase-gate registry check in #62.
+- [x] 6.8 (#72) **Cross-spec gate → cross-cutting gates** — `traceability-lint` is now registered in
+      `workflow.yaml`'s gate list (cross-cutting, `required_for: []`) and `cross-spec-consistency`
+      validates `git.yaml`'s `traceability.gate` against it, so a typo'd cross-cutting gate id is
+      caught too (the scope deferred from #62). **Closes M6.**
 - [x] 6.9 (#76) **Auto-sync shared action pins into templates** — `tools/sync_action_pins.py`
       (`--check` / `--fix`) rewrites the rendered workflow templates' action pins to the factory CI's,
       so a Dependabot `github-actions` bump needs no manual companion edit to pass the `action-pins`

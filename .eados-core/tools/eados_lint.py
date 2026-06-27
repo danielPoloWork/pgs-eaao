@@ -451,7 +451,7 @@ def _load_domains():
     return out
 
 
-def cross_spec_problems(authority, workflow, plan=None, rfc=None, risk=None, domains=None):
+def cross_spec_problems(authority, workflow, plan=None, rfc=None, risk=None, domains=None, git=None):
     """Pure referential-integrity check across the parsed delivery-OS specs. Returns a list of
     problem strings (empty == every cross-reference resolves). I/O-free so it is unit-testable
     with in-memory fixtures; check_cross_spec_consistency() supplies the on-disk specs."""
@@ -539,6 +539,11 @@ def cross_spec_problems(authority, workflow, plan=None, rfc=None, risk=None, dom
                 one(f"risk.domain_overrides[{dname!r}].mandatory_gate_level",
                     override.get("mandatory_gate_level"), levels, "level")
 
+    # --- git: the cross-cutting (non-phase) traceability gate reference resolves to the gate
+    #     registry — the scope deferred from #62, so a typo'd cross-cutting gate id is caught too (6.8) ---
+    if isinstance(git, dict) and isinstance(git.get("traceability"), dict):
+        one("git.traceability.gate", git["traceability"].get("gate"), gates, "gate")
+
     # --- domains: declared roles, role-label keys, and the workflow overlay all resolve ---
     for fname, data in sorted(domains.items()):
         if not isinstance(data, dict):
@@ -561,7 +566,8 @@ def check_cross_spec_consistency():
     if not isinstance(authority, dict) or not isinstance(workflow, dict):
         return  # os-spec-completeness reports a missing/unparseable core spec
     problems = cross_spec_problems(authority, workflow, _load_spec("plan"),
-                                   _load_spec("rfc"), _load_spec("risk"), _load_domains())
+                                   _load_spec("rfc"), _load_spec("risk"), _load_domains(),
+                                   _load_spec("git"))
     for problem in problems:
         fail(name, problem)
 

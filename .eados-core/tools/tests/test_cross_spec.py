@@ -2,7 +2,7 @@
 """Tests for the cross-spec-consistency gate (eados_lint check #11) — referential integrity
 ACROSS the delivery-OS specs. Pure-function tests on cross_spec_problems() with in-memory
 fixtures: a complete clean spec set has no problems, and every kind of dangling cross-reference
-(role / state / gate / overlay / level / domain) is caught. Dependency-free.
+(role / state / gate / overlay / level / domain / cross-cutting git gate) is caught. Dependency-free.
 
     python .eados-core/tools/tests/test_cross_spec.py
 """
@@ -108,6 +108,19 @@ def main():
     w["transitions"][1]["entry_gates"] = ["hardware-budget"]   # defined via the game overlay
     check("an overlay-defined gate (add_gates) is accepted, not flagged",
           el.cross_spec_problems(a, w, p, r, rk, d) == [], failures)
+
+    # 6.8: a cross-cutting (non-phase) gate referenced by git.yaml resolves to the gate registry —
+    # the scope deferred from #62. traceability-lint is registered with required_for: [].
+    a, w, p, r, rk, d = clean()
+    w["gates"].append({"id": "traceability-lint", "required_for": []})
+    check("a resolved cross-cutting git gate (traceability-lint) is accepted",
+          el.cross_spec_problems(a, w, p, r, rk, d, {"traceability": {"gate": "traceability-lint"}})
+          == [], failures)
+    check("a typo'd cross-cutting git gate is caught",
+          any("tracability-lint" in prob for prob in el.cross_spec_problems(
+              a, w, p, r, rk, d, {"traceability": {"gate": "tracability-lint"}})), failures)
+    check("git is optional — a None git yields no problems",
+          el.cross_spec_problems(*clean(), None) == [], failures)
 
     # Robustness: a missing/unparseable core spec is left to os-spec-completeness, not double-reported.
     check("a None workflow yields no problems (deferred to os-spec-completeness)",

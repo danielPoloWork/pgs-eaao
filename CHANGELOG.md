@@ -11,6 +11,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.0.0**.
 
 ### Added
 
+- **M6 / 6.3 — single-artifact render for the `refactor` phase (G2, #63).** A new
+  `tools/render_artifact.py` renders **one** template with the manifest context — reusing
+  `render.py`'s engine and the `validate_manifest` + unresolved-placeholder gates, so a single
+  artifact is byte-identical to its whole-render twin — and writes it into a target repo through
+  `tools/sandbox.py` (`safe_write`: contained, never `.git`, additive). It performs the "render the
+  missing artifact → sandbox" step `commands/refactor.md` describes (now invoked there instead of
+  done by hand). Covered by `tools/tests/test_render_artifact.py`. Factory tooling; no pipeline
+  behavior change.
 - **CI — Dependabot pin-sync now auto-re-triggers via a GitHub App (ADR-0013 addendum).** The
   `dependabot-pin-sync` workflow mints a short-lived App token (`actions/create-github-app-token`,
   SHA-pinned) when `SYNC_APP_ID` + `SYNC_APP_PRIVATE_KEY` are set and pushes the pin re-sync with it,

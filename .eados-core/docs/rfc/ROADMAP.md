@@ -24,7 +24,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M4 — audit phase + risk** | ✅ **done** — M4-A..C merged (#50–#52) |
 | **M5 — refactor (brownfield)** | ✅ **done** — M5-A..D merged (#53–#56) |
 | **v2.0.0 release** | ✅ tagged on #70's merge — GitHub Release drafted, awaiting human publish |
-| **M6 — hardening & UX** | 🚧 in progress — 6.1, 6.2, 6.9 done (#65, #68, #76); 6.3–6.8 planned (#63, #64, #66, #67, #69, #72) |
+| **M6 — hardening & UX** | 🚧 in progress — 6.1, 6.2, 6.3, 6.9 done (#63, #65, #68, #76); 6.4–6.8 planned (#64, #66, #67, #69, #72) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -164,9 +164,10 @@ GitHub issue under the `M6 — hardening & UX` milestone (#6).
       points→level cutoffs move from `risk_score.py` into `risk.yaml`, each **per-domain overridable**
       like `mandatory_gate_level`; the scorer reads them via `resolve(cfg, domain)` with built-in
       fallbacks (back-compat, default scores unchanged). Full "knowledge as data"; `risk/_schema.md` updated.
-- [ ] 6.3 (G2, #63) **Single-artifact render for `refactor`** — render one template with the
-      manifest context and place it via `sandbox.safe_write` (the "render the missing artifact →
-      sandbox" step `refactor.md` describes but no tool yet performs).
+- [x] 6.3 (G2, #63) **Single-artifact render for `refactor`** — `tools/render_artifact.py` renders
+      one template with the manifest context (the same gates as a full render) and places it via
+      `sandbox.safe_write`; the "render the missing artifact → sandbox" step in `refactor.md` now
+      invokes it (no longer manual).
 - [ ] 6.4 (F1, #66) **`/eados status` (doctor)** — current phase + legal transitions + gate status
       + traceability coverage at a glance.
 - [ ] 6.5 (G3, #64) **Thin CLI phase orchestrator** — `eados.py <phase> <manifest>` runs a phase's

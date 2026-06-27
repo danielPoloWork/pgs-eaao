@@ -171,6 +171,17 @@ curl -L -o /tmp/pgs-eados-bundle.tar.gz \
 tar xzf /tmp/pgs-eados-bundle.tar.gz   # extracts .eados-core/, AGENTS.md, … into the current folder
 ```
 
+PowerShell:
+
+```powershell
+Set-Location my-project        # your project's repo root (new or existing)
+$bundle = Join-Path $env:TEMP 'pgs-eados-bundle.tar.gz'
+Invoke-WebRequest `
+  -Uri 'https://github.com/danielPoloWork/pgs-eados/releases/latest/download/pgs-eados-bundle.tar.gz' `
+  -OutFile $bundle
+tar -xzf $bundle               # extracts .eados-core/, AGENTS.md, ... into the current folder
+```
+
 You should now have `my-project/.eados-core/` (next to `AGENTS.md`). Prefer a ZIP or your browser?
 Download either asset from the [latest release](https://github.com/danielPoloWork/pgs-eados/releases/latest)
 and unzip it **at the repo root** (its contents at the top level — no wrapping folder). Then
@@ -179,6 +190,13 @@ confirm and generate as in [Quickstart](#quickstart):
 ```bash
 ls .eados-core                           # orchestrator/ templates/ tools/ …
 python .eados-core/tools/eados_lint.py    # optional: confirm the factory is internally congruent
+```
+
+PowerShell:
+
+```powershell
+Get-ChildItem .eados-core                    # orchestrator/ templates/ tools/ ...
+python .eados-core/tools/eados_lint.py       # optional: confirm the factory is internally congruent
 ```
 
 **Clone the repository — to contribute to EADOS** (the full repo: CI, changelog, history):
@@ -215,6 +233,15 @@ without an agent:
 ```bash
 cp .eados-core/orchestrator/project.yaml.template .eados-core/orchestrator/project.yaml
 # edit .eados-core/orchestrator/project.yaml — see .eados-core/orchestrator/examples/reference.yaml for a worked one
+python .eados-core/tools/render.py .eados-core/orchestrator/project.yaml --in-place
+python tools/consistency_lint.py     # the generated repo's own gate (now at the repo root)
+```
+
+PowerShell:
+
+```powershell
+Copy-Item .eados-core/orchestrator/project.yaml.template .eados-core/orchestrator/project.yaml
+# edit .eados-core/orchestrator/project.yaml - see .eados-core/orchestrator/examples/reference.yaml for a worked one
 python .eados-core/tools/render.py .eados-core/orchestrator/project.yaml --in-place
 python tools/consistency_lint.py     # the generated repo's own gate (now at the repo root)
 ```

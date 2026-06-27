@@ -80,6 +80,15 @@ python .eados-core/tools/render.py .eados-core/orchestrator/project.yaml --in-pl
 python tools/consistency_lint.py
 ```
 
+PowerShell:
+
+```powershell
+Copy-Item .eados-core/orchestrator/project.yaml.template .eados-core/orchestrator/project.yaml
+# edit it - see .eados-core/orchestrator/examples/reference.yaml for a worked manifest
+python .eados-core/tools/render.py .eados-core/orchestrator/project.yaml --in-place
+python tools/consistency_lint.py
+```
+
 ---
 
 ## 4. What is FIXED — strict, do not change
@@ -141,6 +150,20 @@ curl -L -o /tmp/pgs-eados-bundle.tar.gz \
 tar xzf /tmp/pgs-eados-bundle.tar.gz    # extracts .eados-core/, AGENTS.md, … into the CWD
 ls .eados-core                          # sanity: orchestrator/ templates/ tools/ …
 # ZIP alternative: unzip the .zip asset at the repo root (its contents at the top level).
+# GitHub CLI: gh release download --repo danielPoloWork/pgs-eados --pattern 'pgs-eados-bundle.*'
+```
+
+PowerShell:
+
+```powershell
+Set-Location my-project          # your project's repo root (new or existing)
+$bundle = Join-Path $env:TEMP 'pgs-eados-bundle.tar.gz'
+Invoke-WebRequest `
+  -Uri 'https://github.com/danielPoloWork/pgs-eados/releases/latest/download/pgs-eados-bundle.tar.gz' `
+  -OutFile $bundle
+tar -xzf $bundle                  # extracts .eados-core/, AGENTS.md, ... into the CWD
+Get-ChildItem .eados-core         # sanity: orchestrator/ templates/ tools/ ...
+# ZIP alternative: Expand-Archive the .zip asset at the repo root (its contents at the top level).
 # GitHub CLI: gh release download --repo danielPoloWork/pgs-eados --pattern 'pgs-eados-bundle.*'
 ```
 

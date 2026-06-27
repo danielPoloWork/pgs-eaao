@@ -11,6 +11,10 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.1.0**.
 
 ### Added
 
+- **Docs — Windows/PowerShell install and render variants (#88).** Added PowerShell examples beside
+  the Unix bundle download/extract and deterministic render commands, using `$env:TEMP` for the
+  bundle path and refreshing the README i18n copies.
+
 ### Changed
 
 ### Deprecated

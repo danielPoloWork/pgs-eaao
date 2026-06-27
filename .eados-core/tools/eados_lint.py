@@ -23,6 +23,7 @@ import glob
 import hashlib
 import os
 import re
+import subprocess
 import sys
 
 TOOLS = os.path.dirname(os.path.abspath(__file__))
@@ -669,6 +670,159 @@ def check_manifest_template():
         fail(name, problem)
 
 
+# ---------------------------------------------------------------------------
+# 14. Data-file validity — the universal floor for the factory's machine-read data: every
+#     .eados-core/**/*.yaml must parse with the hand-rolled loader. Most are already loaded by a
+#     semantic check (profiles, os-specs, domains, lessons); this also covers the ones nothing else
+#     parsed inside the self-lint — questionnaire.yaml, config/defaults.yaml, the reference manifest
+#     — so a syntax slip in any data file fails here rather than at a consumer's render.
+# ---------------------------------------------------------------------------
+def data_file_problems(items):
+    """items: (relpath, text) pairs for every tracked .eados-core YAML. Returns a problem per file
+    that does not parse — empty == all data files are syntactically valid."""
+    problems = []
+    for rel, text in items:
+        try:
+            render.load_yaml(text)
+        except Exception as exc:                       # a hand-edit that breaks YAML must be caught
+            problems.append(f"{rel}: not valid YAML — {exc!r}")
+    return problems
+
+
+def check_data_files():
+    name = "data-file-validity"
+    items = []
+    for cur, _dirs, fns in os.walk(ROOT):
+        for fn in fns:
+            if fn.endswith((".yaml", ".yml")):
+                path = os.path.join(cur, fn)
+                items.append((os.path.relpath(path, REPO_ROOT).replace("\\", "/"), read(path)))
+    for problem in data_file_problems(items):
+        fail(name, problem)
+
+
+# ---------------------------------------------------------------------------
+# 15. Gate coverage (meta-gate) — every tracked file is either covered by a named gate or
+#     consciously allow-listed as human-reviewed prose (with a reason). A NEW file class that
+#     nobody gated fails CI until it is gated or allow-listed — so coverage can never silently
+#     regress. This is the enforcement behind "gate every externally-modifiable file": the
+#     issue-#90 episode (project.yaml.template was gated by nothing) becomes structurally
+#     impossible to repeat. `*` matches within a path segment; `**` spans directories.
+# ---------------------------------------------------------------------------
+GATE_COVERAGE = [
+    (".eados-core/templates/**",                          "render-smoke + placeholder-integrity"),
+    (".eados-core/orchestrator/profiles/*.yaml",          "profile-completeness"),
+    (".eados-core/orchestrator/profiles/_schema.md",      "profile-completeness (schema)"),
+    (".eados-core/orchestrator/os/**",                    "os-spec-completeness + cross-spec-consistency"),
+    (".eados-core/orchestrator/domains/*.yaml",           "domains + data-file-validity"),
+    (".eados-core/orchestrator/placeholders.md",          "placeholder-integrity (the dictionary)"),
+    (".eados-core/orchestrator/generate.md",              "generate-references"),
+    (".eados-core/orchestrator/project.yaml.template",    "manifest-template"),
+    (".eados-core/orchestrator/examples/*.yaml",          "render-smoke (the reference manifest)"),
+    (".eados-core/orchestrator/questionnaire.yaml",       "data-file-validity"),
+    (".eados-core/config/defaults.yaml",                  "data-file-validity"),
+    (".eados-core/agent/*.md",                            "agent-registry"),
+    (".eados-core/learning/lessons.yaml",                 "lessons + data-file-validity"),
+    (".eados-core/tools/*.py",                            "byte-compile + unit tests (CI)"),
+    (".eados-core/tools/tests/*.py",                      "byte-compile + unit tests (CI)"),
+    (".eados-core/docs/i18n/**",                          "i18n-freshness"),
+    ("README.md",                                         "version-lockstep + i18n-freshness"),
+    ("CHANGELOG.md",                                      "version-lockstep"),
+    (".github/workflows/*.yml",                           "action-pins"),
+]
+# Intentionally NOT machine-validated — prose/config under human review. Each needs a reason; this
+# is the conscious record of "we looked and chose not to gate this", not a blind skip.
+GATE_ALLOWLIST = [
+    ("AGENTS.md",                                  "agent contract — human-reviewed prose"),
+    ("CLAUDE.md",                                  "agent contract — human-reviewed prose"),
+    ("GEMINI.md",                                  "agent contract — human-reviewed prose"),
+    ("CONTRIBUTING.md",                            "governance prose — human-reviewed"),
+    ("SECURITY.md",                                "governance prose — human-reviewed"),
+    ("LICENSE",                                    "license text — render.py's source, exercised by render-smoke"),
+    (".gitattributes",                             "VCS / bundle export-ignore config"),
+    (".gitignore",                                 "VCS config"),
+    (".eados-dev",                                 "repo marker file"),
+    (".portfolio.json",                            "portfolio-card metadata"),
+    (".github/CODEOWNERS",                         "GitHub config"),
+    (".github/dependabot.yml",                     "GitHub config"),
+    (".github/PULL_REQUEST_TEMPLATE.md",           "GitHub PR template"),
+    (".github/ISSUE_TEMPLATE/**",                  "GitHub issue forms"),
+    (".eados-core/README.md",                      "bundle entry-point prose"),
+    (".eados-core/orchestrator/*.md",              "orchestrator playbook prose (interview, recovery, …)"),
+    (".eados-core/orchestrator/commands/*.md",     "phase command playbook prose"),
+    (".eados-core/orchestrator/domains/*.md",      "domain schema/readme prose"),
+    (".eados-core/agent/domains/**",               "domain persona prose"),
+    (".eados-core/config/*.md",                    "config prose (README, house-rules)"),
+    (".eados-core/config/agents/**",               "user role-override dir"),
+    (".eados-core/learning/*.md",                  "learning-ledger prose"),
+    (".eados-core/learning/runs/**",               "run-notes prose"),
+    (".eados-core/docs/*.md",                      "docs prose (USAGE, walkthrough)"),
+    (".eados-core/docs/adr/**",                    "ADR prose"),
+    (".eados-core/docs/rfc/**",                    "RFC / roadmap / diagram prose"),
+    (".eados-core/eval/**",                        "eval rubric prose"),
+    (".eados-core/maintenance/**",                 "maintenance prose"),
+    (".eados-core/tools/requirements-ci.txt",      "CI pinned + hashed deps (render-smoke)"),
+]
+
+
+def _glob_re(pattern):
+    """gitignore-ish glob: `*` matches within a path segment, `**` spans directories."""
+    out, i = [], 0
+    while i < len(pattern):
+        if pattern[i:i + 2] == "**":
+            out.append(".*"); i += 2
+        elif pattern[i] == "*":
+            out.append("[^/]*"); i += 1
+        elif pattern[i] == "?":
+            out.append("[^/]"); i += 1
+        else:
+            out.append(re.escape(pattern[i])); i += 1
+    return re.compile("^" + "".join(out) + "$")
+
+
+def gate_coverage_problems(tracked, covered=GATE_COVERAGE, allowlist=GATE_ALLOWLIST):
+    """tracked: repo-relative paths. A problem for any file matched by neither a covered nor an
+    allow-listed pattern. Pure (the registry is injectable) so the contract is unit-testable."""
+    cov = [_glob_re(p) for p, _ in covered]
+    allow = [_glob_re(p) for p, _ in allowlist]
+    problems = []
+    for path in tracked:
+        if any(rx.match(path) for rx in cov):
+            continue
+        if any(rx.match(path) for rx in allow):
+            continue
+        problems.append(f"{path}: no gate covers it and it is not allow-listed — add a validating "
+                        f"gate (GATE_COVERAGE) or, if it is reviewed prose, a GATE_ALLOWLIST entry")
+    return problems
+
+
+def check_gate_coverage():
+    name = "gate-coverage"
+    tracked = _tracked_files()
+    if tracked is None:
+        return  # not a git checkout (e.g. an extracted bundle) — cannot enumerate the tree
+    for problem in gate_coverage_problems(tracked):
+        fail(name, problem)
+    # registry hygiene: a pattern that matches nothing is dead weight / a moved path — surface it.
+    for pattern, _ in GATE_COVERAGE + GATE_ALLOWLIST:
+        rx = _glob_re(pattern)
+        if not any(rx.match(t) for t in tracked):
+            fail(name, f"stale registry entry — pattern matches no tracked file: '{pattern}'")
+
+
+def _tracked_files():
+    """The repo's tracked files (git ls-files), repo-relative with forward slashes. None when not
+    in a git checkout — the meta-gate then skips, like the other checks do on a partial tree."""
+    try:
+        out = subprocess.run(["git", "ls-files"], cwd=REPO_ROOT,
+                             capture_output=True, text=True, timeout=30)
+    except Exception:
+        return None
+    if out.returncode != 0:
+        return None
+    return [line.strip() for line in out.stdout.splitlines() if line.strip()]
+
+
 CHECKS = [
     check_placeholder_integrity,
     check_profile_completeness,
@@ -683,6 +837,8 @@ CHECKS = [
     check_cross_spec_consistency,
     check_version_lockstep,
     check_manifest_template,
+    check_data_files,
+    check_gate_coverage,
 ]
 
 

@@ -26,8 +26,9 @@ The mechanical step-by-step for cutting a release of `{{PROJECT_NAME}}`. The gov
    pass.
 6. **Open the release PR** — *the maintainer does this*. The agent prepares it.
 7. **Merge** — *the maintainer*.
-8. **Tag** — the agent runs `git tag -a v<X.Y.Z> -m "<headline>"` and
-   `git push origin v<X.Y.Z>` immediately after merge (if delegated).
+8. **Tag + draft (carry-through)** — the agent runs `git tag -a v<X.Y.Z> -m "<headline>"` and
+   `git push origin v<X.Y.Z>` immediately after merge; the tag push lets CI open the GitHub Release
+   as a **draft**. The agent always carries the release this far — only **Publish** is the human's.
 9. **Publish** the GitHub Release — *the maintainer* (the deliberate human checkpoint).
 10. **CI builds & attaches artifacts** on the tag push.
 {{#IF_ANNOUNCE}}11. **Announce** — the agent drafts the announcement text per channel; the
@@ -40,8 +41,8 @@ The mechanical step-by-step for cutting a release of `{{PROJECT_NAME}}`. The gov
 |---|---|
 | Bump version, roll changelog, draft notes | Agent |
 | Open / merge the release PR | **Human** |
-| Create & push the annotated tag | Agent (if delegated) |
-| Publish the GitHub Release | **Human** |
+| Create & push the annotated tag, then the **draft** release (CI drafts it on tag-push) | Agent |
+| Publish the GitHub Release (click **Publish**) | **Human** |
 | Build & attach artifacts | CI |
 {{#IF_ANNOUNCE}}| Draft announcement text / **post to channels** | Agent / **Human** |
 {{/IF_ANNOUNCE}}

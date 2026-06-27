@@ -107,6 +107,8 @@ first superseding [ADR-0002](docs/adr/0002-adopt-cross-language-source-layout.md
 | **Open / publish the pull request** | **Human** |
 | Code review | Human |
 | **Merge / squash / rebase to `{{DEFAULT_BRANCH}}`** | **Human** |
+| Tag + draft the GitHub Release (carry-through) | Agent |
+| **Publish the release** | **Human** |
 
 Agents **never merge**, **never force-push `{{DEFAULT_BRANCH}}`**, and **never push directly
 to `{{DEFAULT_BRANCH}}`**. When unsure, push the branch and ask.

@@ -28,10 +28,13 @@ traceability:       # the artifact lineage the graph + lint (M3/M4) are built fr
   are the references a PR body must carry; the traceability lint fails on a missing edge.
   `review_gate` names the cross-cutting inbound-review gate (`contribution-review`) that
   `/eados review` runs on a PR — a recommendation, never a merge (M8).
-- **`release`** — `{ scheme, tag_flow, merge_is_not_deploy, publish_by, delegation_flag }`.
-  `merge_is_not_deploy: true` models `merged → tagged/released → deployed` as distinct,
-  separately-gated states. `delegation_flag` records whether the owner delegated the publish
-  step to the agent (default `false`; the human publishes).
+- **`release`** — `{ scheme, tag_flow, merge_is_not_deploy, tag_by, draft_release_by, publish_by,
+  delegation_flag }`. **Carry-through:** the agent always takes a release up to a **draft** —
+  `tag_by: agent` creates + pushes the annotated tag, `draft_release_by: agent` opens the GitHub
+  Release as a draft (CI drafts it on tag-push in generated repos) — and the human only
+  **publishes** (`publish_by: human`, the deliberate checkpoint; `delegation_flag: true` delegates
+  the publish too). `merge_is_not_deploy: true` models `merged → tagged/released → deployed` as
+  distinct, separately-gated states.
 - **`traceability`** — `{ graph, gate }`. `graph` is the lineage string the lint walks.
 
 ## Invariants

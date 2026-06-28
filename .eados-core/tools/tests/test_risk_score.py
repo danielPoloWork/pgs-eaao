@@ -108,6 +108,16 @@ def main():
     check("a legacy config (no weights) still scores via DEFAULT_WEIGHTS (-> high)",
           legacy_lvl == "high", failures)
 
+    # --- fail-safe: a mandatory_gate_level not in levels requires the gate instead of crashing ---
+    misconfig = {"levels": ["low", "medium", "high", "critical"], "security_globs": [],
+                 "size_buckets": {"M": 100, "L": 400}, "mandatory_gate_level": "extreme"}
+    try:
+        gated, crashed = rs.requires_security_gate("low", misconfig), False
+    except ValueError:
+        gated, crashed = None, True
+    check("a mandatory_gate_level outside levels does not crash", not crashed, failures)
+    check("…and fails safe to requiring the gate", gated is True, failures)
+
     if failures:
         print("test-risk-score: FAIL\n")
         for f in failures:

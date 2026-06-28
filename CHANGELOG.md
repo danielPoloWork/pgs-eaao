@@ -34,6 +34,17 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.3.0**.
   [os/ spec index](.eados-core/orchestrator/os/README.md) and `AGENTS.md` §3; RFC-0001 §12 + the
   RFC index still described the roadmap as "M1 → M5" (now M1 → M9); and `templates/README.md`'s
   "What renders where" undercounted the rendered `.github/**` pack.
+- **Defensive hardening of the tooling against latent edge cases (#131).** Fail-safe fixes for
+  conditions that don't arise with shipped data but would otherwise crash or misfire on a
+  hand-edited config or an exotic filesystem: `risk_score` requires the security gate (instead of
+  raising) when a `risk.yaml` sets a `mandatory_gate_level` outside its `levels`; `cleanup_installer`
+  matches the `setup/` leftover on entry *type*, not just name, so a subdir/symlink merely named
+  like an installer file is never removed; `eados_lint`'s `gate-coverage` runs
+  `git -c core.quotePath=false ls-files` so a non-ASCII filename can't spuriously fail it; the
+  `doctor` / `eados` / `phase_runner` / `traceability` / `rfc_check` CLIs report a missing/invalid
+  input path as a clean non-zero exit instead of a raw traceback (new `test_cli_guards.py`); and
+  `git.yaml`'s commit `scopes` vocabulary is extended to the scopes actually in use. Found in the
+  post-v2.3.0 audit (milestone **M10**).
 
 ### Security
 

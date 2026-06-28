@@ -41,10 +41,17 @@ def installer_leftovers(root):
     setup_dir = os.path.join(root, INSTALLER_DIR)
     if os.path.isdir(setup_dir) and not os.path.islink(setup_dir):
         try:
-            entries = set(os.listdir(setup_dir))
+            entries = os.listdir(setup_dir)
         except OSError:
             entries = None
-        if entries is not None and entries.issubset(set(INSTALLER_FILES)):
+        # Match on TYPE, not just name: a subdir or symlink named like an installer file (e.g. a
+        # `setup.bat/` directory) must NOT make the dir look like a pure-installer leftover. An
+        # empty setup/ still qualifies (all() over [] is True).
+        if entries is not None and all(
+                e in INSTALLER_FILES
+                and os.path.isfile(os.path.join(setup_dir, e))
+                and not os.path.islink(os.path.join(setup_dir, e))
+                for e in entries):
             found.append(INSTALLER_DIR + "/")
     return found
 

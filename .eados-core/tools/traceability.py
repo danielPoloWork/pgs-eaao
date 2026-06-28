@@ -89,8 +89,12 @@ def main(argv=None):
     ap.add_argument("rfcs", nargs="*", help="the RFC ids to trace")
     ap.add_argument("--links", help="YAML edge file: {links: [{pr,rfc,milestone,commit,release}]}")
     args = ap.parse_args(argv)
-    with open(args.roadmap, encoding="utf-8") as handle:
-        text = handle.read()
+    try:
+        with open(args.roadmap, encoding="utf-8") as handle:
+            text = handle.read()
+    except OSError as exc:
+        print(f"traceability: cannot read roadmap {args.roadmap!r}: {exc}", file=sys.stderr)
+        return 2
 
     if args.links:
         problems = traceability_lint(text, args.rfcs, _load_links(args.links))

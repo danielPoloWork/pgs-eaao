@@ -35,9 +35,14 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.2.0**.
     resolution, arg validation, fail-closed checksum incl. the published `SHA256SUMS` format,
     additive no-clobber, and the interactive new/existing flow — all offline via `--from`; the trivial
     `.bat` shim is allow-listed), **plus a CI static-analysis step**: `shellcheck` for `setup/*.sh` +
-    `setup/*.command` and a dependency-free PowerShell parse-check for `setup/*.ps1`. The docs "Get it"
-    one-step path + **@AlexMnrs** credit (9.6 — this re-implements and elevates their closed PR #96)
-    follow.
+    `setup/*.command` and a dependency-free PowerShell parse-check for `setup/*.ps1`.
+  - **Docs:** the README + [`USAGE.md`](.eados-core/docs/USAGE.md) §6 "Get it" gain the one-step
+    installer path beside the manual `curl`/`tar` snippets (README i18n — zh-Hans + ja — refreshed in
+    lockstep).
+  - **Credit:** this milestone **re-implements and elevates [@AlexMnrs](https://github.com/AlexMnrs)'s
+    closed PR #96** ("Add Windows PowerShell setup examples") — built in-house our way and
+    **co-authored** to them, with thanks. With this, **M9 — guided cross-platform installer** is
+    **complete**.
 
 - **Carry-through release default.** The release boundary is now explicit policy: the agent always
   takes a release up to a **draft** — it creates + pushes the annotated tag and opens the GitHub

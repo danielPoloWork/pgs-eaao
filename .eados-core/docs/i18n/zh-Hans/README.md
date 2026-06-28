@@ -168,7 +168,22 @@ EADOS 是一座 markdown/YAML 工厂 —— 没有东西需要编译，几乎没
 
 ### 获取
 
-**把 bundle 下载到你项目的仓库 —— 推荐，无需克隆。** bundle 是工厂的自包含、**无前缀**副本
+**引导式安装器（一步）—— 推荐。** 从最新发布获取适合你操作系统的安装器并运行：它会询问安装位置
+（新建还是已有仓库、路径），**校验 bundle 的 SHA256**（失败即拒绝），并以**追加方式**解压
+（绝不覆盖已有文件）。完整选项（macOS 双击、脚本化参数、离线校验）见
+[`USAGE.md`](.eados-core/docs/USAGE.md) §6。
+
+```bash
+# Linux / macOS —— 下载后运行（会有交互提示）
+curl -fsSL https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.sh -o setup.sh && sh setup.sh
+```
+
+```powershell
+# Windows (PowerShell) —— 或从发布中双击 setup.bat
+Invoke-WebRequest https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.ps1 -OutFile setup.ps1; powershell -ExecutionPolicy Bypass -File setup.ps1
+```
+
+**或手动下载 bundle** —— 无需克隆，且你能看到具体执行了什么。bundle 是工厂的自包含、**无前缀**副本
 （不含 CI、changelog 或 git 历史）。在**你项目仓库的根目录**解压，其内容 —— `.eados-core/` 以及
 智能体契约和 `LICENSE` —— 会直接落在根目录，**而不是**子文件夹里：
 

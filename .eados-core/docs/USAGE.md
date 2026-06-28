@@ -136,7 +136,45 @@ The bundle is the factory you **operate** — `.eados-core/` + the agent contrac
 without this repository's own CI, changelog, and governance files. It is the easiest way to hand
 EADOS to someone who only needs to *use* it.
 
-### Get it (consumers) — no clone required
+### Guided installer (one step) — recommended
+
+A guided installer (in the release as `setup.{sh,command,ps1,bat}`) downloads the bundle,
+**verifies its SHA256** (fail-closed — it refuses to extract an unverified bundle unless
+`--no-verify`), and extracts it **additively** (never overwriting an existing file — the
+[ADR-0007](adr/0007-renderer-write-guards-and-validation-independence.md) no-clobber principle) into a
+target repo. It is **interactive** when run bare (asks new-vs-existing repo, path, and — for a new repo
+— the name; on a new repo it `git init`s and offers `gh repo create`) and fully **scriptable** via
+flags.
+
+**Linux / macOS** — download then run (it prompts):
+
+```bash
+curl -fsSL https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.sh -o setup.sh
+sh setup.sh
+# Double-click (macOS): download setup.command AND setup.sh into one folder, then open setup.command.
+```
+
+**Windows (PowerShell)** — download then run, or double-click `setup.bat`:
+
+```powershell
+Invoke-WebRequest https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.ps1 -OutFile setup.ps1
+powershell -ExecutionPolicy Bypass -File setup.ps1
+# Double-click: download setup.ps1 AND setup.bat into one folder, then double-click setup.bat.
+```
+
+**Non-interactive / scripted** (CI, dotfiles) — pass flags instead of answering prompts:
+
+```bash
+sh setup.sh --mode existing --path . --non-interactive       # into the current repo
+sh setup.sh --mode new --path ~/code --repo-name my-app      # new repo dir + git init
+```
+
+`setup.sh --help` (or `setup.ps1 -Help`) lists every flag: `--ref <tag>` pins a release, `--repo
+OWNER/REPO` retargets the source, and `--from <file>` + `--sums-file <file>` do an **air-gapped**
+install (verify a hand-downloaded bundle against a hand-downloaded `SHA256SUMS`). The default integrity
+source is the release's `SHA256SUMS` asset; `releases/latest/download/setup.{sh,ps1}` are stable links.
+
+### Or get the bundle manually — no clone required
 
 The bundle is **prefix-less**: extract it **at the root of your project's repo** and its contents
 (`.eados-core/` plus the agent contract and `LICENSE`) land directly there — *not* in a subfolder —

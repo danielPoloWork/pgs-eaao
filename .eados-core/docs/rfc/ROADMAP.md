@@ -29,7 +29,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M7 — onboarding & docs** | ✅ **done** — items 7.1–7.5 (#97–#101) |
 | **M8 — inbound contribution review** | ✅ **done** — items 8.1–8.6 (#105–#110) |
 | **v2.2.0 release** | ✅ published 2026-06-28 — M7 onboarding + contributor-safety hardening + M8 inbound review (bundles attached; Latest) |
-| **M9 — guided installer** | 🚧 in progress — 9.1–9.5 + 9.7 done (`setup/` installers + integrity + static gate); 9.6 (docs) next |
+| **M9 — guided installer** | ✅ **done** — items 9.1–9.7 (`setup/` guided installer: download + SHA256-verify + additive extract; release integrity; static gate; docs) |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -359,9 +359,11 @@ path made real: we build it our way and **co-author @AlexMnrs** (credited in the
       download / verify / extract **smoke** is the existing `test_setup_{sh,ps1}.py` (offline via
       `--from`). The `eados_lint` `gate-coverage` reasons move from "shellcheck in M9.5" to the real
       gate — honoring the gate-EVERY-file-class mandate.
-- [ ] 9.6 **Docs + dogfood + credit** — README/USAGE "Get it" gains the one-step installer path beside
-      the manual snippets; **credit @AlexMnrs** (co-author + CHANGELOG); RFC-0001, this roadmap, the
-      affected specs, and the CHANGELOG kept in lockstep.
+- [x] 9.6 **Docs + dogfood + credit** — README + [`USAGE.md`](../USAGE.md) §6 "Get it" gain the
+      one-step installer path beside the manual snippets (README i18n — zh-Hans + ja — refreshed in
+      lockstep, source-hash bumped); **@AlexMnrs credited** (co-author + CHANGELOG; their closed PR #96
+      re-implemented in-house, owner posts the thank-you/close). RFC-0001 needs no change (no installer
+      surface; its §12 defers to this roadmap, which tracks M9). **Closes M9.**
 - [x] 9.7 **Relocate + unify the installers under `setup/`** (owner-requested consistency pass) — move
       the guided installer out of `install/` to a top-level **`setup/`** with consistent
       **`setup.{sh,command,ps1,bat}`** naming, and **merge the POSIX engine + interactive wrapper into

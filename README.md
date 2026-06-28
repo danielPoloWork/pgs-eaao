@@ -175,7 +175,23 @@ auto-loads `AGENTS.md` and adopts the Enterprise Project Architect persona, read
 
 ### Get it
 
-**Download the bundle into your project's repo — recommended, no clone.** The bundle is a
+**Guided installer (one step) — recommended.** Grab the installer for your OS from the latest
+release and run it: it prompts for where to install (new vs existing repo, path), **verifies the
+bundle's SHA256** (fail-closed), and extracts it **additively** (never overwriting an existing file).
+Full options (macOS double-click, scripting flags, air-gapped verify) are in
+[`USAGE.md`](.eados-core/docs/USAGE.md) §6.
+
+```bash
+# Linux / macOS — download then run (it prompts)
+curl -fsSL https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.sh -o setup.sh && sh setup.sh
+```
+
+```powershell
+# Windows (PowerShell) — or double-click setup.bat from the release
+Invoke-WebRequest https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.ps1 -OutFile setup.ps1; powershell -ExecutionPolicy Bypass -File setup.ps1
+```
+
+**Or download the bundle manually** — no clone, and you see exactly what runs. The bundle is a
 self-contained, **prefix-less** copy of the factory (no CI, changelog, or git history). Extract it
 **at the root of your project's repo** so its contents — `.eados-core/` plus the agent contract and
 `LICENSE` — land directly there, **not** inside a subfolder:

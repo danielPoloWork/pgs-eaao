@@ -179,7 +179,23 @@ EADOS は markdown/YAML のファクトリです —— コンパイルするも
 
 ### 入手
 
-**バンドルをあなたのプロジェクトのリポジトリにダウンロード —— 推奨、クローン不要。** バンドルは
+**ガイド付きインストーラー（ワンステップ）—— 推奨。** 最新リリースからお使いの OS 向けインストーラーを
+取得して実行します：インストール先（新規か既存のリポジトリ、パス）を尋ね、**バンドルの SHA256 を検証**
+（失敗時は拒否）し、**追加方式**で展開します（既存ファイルを決して上書きしません）。全オプション
+（macOS のダブルクリック、スクリプト用フラグ、オフライン検証）は
+[`USAGE.md`](.eados-core/docs/USAGE.md) §6 にあります。
+
+```bash
+# Linux / macOS —— ダウンロードしてから実行（対話プロンプトあり）
+curl -fsSL https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.sh -o setup.sh && sh setup.sh
+```
+
+```powershell
+# Windows (PowerShell) —— またはリリースの setup.bat をダブルクリック
+Invoke-WebRequest https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.ps1 -OutFile setup.ps1; powershell -ExecutionPolicy Bypass -File setup.ps1
+```
+
+**または手動でバンドルをダウンロード** —— クローン不要で、何が実行されるかを正確に確認できます。バンドルは
 ファクトリの自己完結・**プレフィックスなし**のコピー（CI・changelog・git 履歴なし）です。
 **あなたのプロジェクトのリポジトリのルート**で展開すると、その中身 —— `.eados-core/` とエージェント
 契約および `LICENSE` —— がサブフォルダ**ではなく**ルートに直接展開されます：

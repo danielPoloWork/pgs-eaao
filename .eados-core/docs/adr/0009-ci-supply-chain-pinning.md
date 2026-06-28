@@ -90,3 +90,34 @@ disagree — turning a hand-edit into one deterministic command (documented in
 resolves a tag itself. Hands-off CI auto-remediation on Dependabot PRs (true zero-touch) shipped
 alongside the tool as [ADR-0013](0013-dependabot-action-pin-auto-remediation.md)
 (`.github/workflows/dependabot-pin-sync.yml`).
+
+## Addendum (2026-06-28)
+
+A post-v2.3.0 re-audit re-flagged this surface from the opposite direction: every
+`orchestrator/profiles/*.yaml` references its GitHub Actions by **floating tag**
+(`actions/checkout@v6`, `astral-sh/setup-uv@v3`, `dtolnay/rust-toolchain@master`) while the factory
+SHA-pins its own workflows — an apparent inconsistency between the core CI and the generated-repo CI.
+It is **not** a design gap: it is precisely the tiered policy **Decision §3** already records
+(language-ecosystem actions in profiles stay version-tag-pinned, Dependabot-managed). Tracked as
+issue #132 and resolved by **reaffirming §3**, not changing it — an apparent inconsistency surfaced
+on re-audit, not an actual gap. Two operating facts reinforce (not weaken) the trade-off:
+
+- **The factory maintains only the pins it itself uses.** Its `.github/workflows/ci.yml` references
+  just `actions/checkout` and `actions/setup-python`, so those are the only first-party SHAs it
+  holds, and `sync_action_pins.py` only ever copies a SHA the factory CI already trusts. The
+  first-party `actions/setup-go` / `setup-java` / `setup-node`, etc. live **only** in profiles;
+  SHA-pinning them would make the factory begin maintaining pins for actions it does not otherwise
+  use — the per-ecosystem maintenance §3 deliberately declined.
+- **Dependabot does not scan profiles** (see the 2026-06-18 addendum: it scans real workflow files,
+  never `.tmpl` copies nor the YAML fragments embedded in profiles). A SHA pinned *inside a profile*
+  would therefore have **no refresh mechanism in the factory** and would rot. A version tag does
+  not — and, crucially, the **generated** repo's own Dependabot *does* scan its rendered `ci.yml`,
+  so downstream the version refs are kept current regardless of how the factory expressed them.
+
+This is exactly the trust-domain split the design intends: the **core** domain (the factory CI and
+the `ci.yml.tmpl` / `release.yml.tmpl` baselines it authors) is SHA-pinned per §1; the **consumer**
+domain (per-language profile fragments) is tag-pinned per §3 and refreshed by each generated repo's
+Dependabot. A hybrid that SHA-pinned first-party actions *inside profiles* was considered and
+**rejected**: it would supersede §3 to buy a marginal hardening gain while reintroducing the
+unmaintainable, factory-side pin drift §3 exists to avoid. No structural, renderer, or gate change —
+this entry is the record, and #132 is closed by it.

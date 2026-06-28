@@ -13,6 +13,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.3.0**.
 
 ### Changed
 
+- **ADR-0009 addendum — profile action-pinning reaffirmed (#132).** A post-v2.3.0 re-audit re-flagged
+  that `profiles/*.yaml` reference GitHub Actions by floating tag while the factory SHA-pins its own
+  workflows; a dated addendum records this is the deliberate tiered policy of **ADR-0009 §3** (an
+  apparent inconsistency surfaced on re-audit, not a design gap), with the two operating facts that
+  reinforce it (Dependabot does not scan profiles; the factory maintains only the pins it itself
+  uses). Documentation only — no renderer, gate, or behavior change.
+
 ### Deprecated
 
 ### Removed

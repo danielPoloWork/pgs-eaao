@@ -1,7 +1,8 @@
-# エンタープライズ・エージェント型デリバリー・オペレーティング・システム（EADOS）
+# EADOS —— エンタープライズ・エージェント型デリバリー OS
 
 [![CI](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml/badge.svg)](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/danielPoloWork/pgs-eados/releases)
+[![Downloads](https://img.shields.io/github/downloads/danielPoloWork/pgs-eados/total.svg)](https://github.com/danielPoloWork/pgs-eados/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../../LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](../../../../.eados-core/orchestrator/profiles/)
@@ -21,27 +22,65 @@ EADOS は出荷する製品ではなく、**仕事の流れ方そのものを司
 —— 宣言的で、ゲートで強制され、人間が確認する統治層（ランタイムのカーネルではありません）。
 その **`scaffold` フェーズがファクトリ**であり、言語・フレームワーク・ツールを問わず、同じ
 エンタープライズ構造・GitHub ワークフロー・品質ゲート・AI エージェント契約を備えたリポジトリを
-打ち出します。ほかのフェーズ（`design`・`plan`・`audit`・`refactor`）は、その統治を
-デリバリー・ライフサイクル全体へ広げます。
+打ち出します。ほかのフェーズ（`design`・`plan`・`audit`・`refactor`）はその統治をデリバリー・
+ライフサイクル全体へ広げます。各フェーズは、永続的でゲート検査される manifest に対するオプトインの
+`/eados <phase>` コマンドです（設計は [RFC-0001](../../../../.eados-core/docs/rfc/0001-eados-delivery-os.md)）。
 
-> **パイプライン。** 各フェーズは、永続的でゲート検査される manifest に対するオプトインの
-> `/eados <phase>` コマンドです。設計は [RFC-0001](../../../../.eados-core/docs/rfc/0001-eados-delivery-os.md)、
-> 各フェーズは [`orchestrator/commands/`](../../../../.eados-core/orchestrator/commands/README.md) にあります。
-> 生成のみ（従来のファクトリ）は今も `/eados scaffold` のままで、何も変わっていません。
+> **はじめての方へ。** [`USAGE.md`](../../../../.eados-core/docs/USAGE.md) は EADOS に何ができるかの
+> 全体地図、[フェーズ別ウォークスルー](../../walkthrough.md)は実際に動くところを見せます。とにかく
+> インストールしたい方は[はじめかた](#はじめかた)へ。
 
-EADOS はある一つの問いに答えるために存在します：
+## 目次
+
+- [なぜ EADOS か](#なぜ-eados-か) · [機能ひとめ](#機能ひとめ)
+- [得られるもの](#得られるもの) · [フェーズパイプライン](#フェーズパイプライン) · [生成のしくみ](#生成のしくみ)
+- [リポジトリ構成](#リポジトリ構成) · [はじめかた](#はじめかた) · [Quickstart](#quickstart)
+- [設計原則](#設計原則なぜこの形なのか) · [セキュリティ態勢](#セキュリティ態勢) · [FAQ](#faq)
+- [コントリビューションとガバナンス](#コントリビューションとガバナンス) · [来歴](#来歴) · [ライセンスと所有](#ライセンスと所有)
+
+## なぜ EADOS か
+
+EADOS は一つの問いに答えます：
 
 > *「どの言語でも —— Rust / Python / TypeScript / Go / Java / …… —— **すべての**プロジェクトで
 > **同じ**エンタープライズの厳密さ（エージェント、ADR、CI 行列、consistency lint、SemVer
 > ガバナンス）をどう得るのか？」*
 
-その答え：**Enterprise Project Architect** エージェントを EADOS に向け、**インテイク・
-インタビュー**を実行し、新しいリポジトリを生成させること。
+**Enterprise Project Architect** エージェントを EADOS に向け、インテイク・インタビューを実行すれば
+新しいリポジトリが生成されます —— あるいは manifest を手で埋めて決定的にレンダリングすれば、
+エージェントは不要です。
 
-> **はじめての方へ。** [`.eados-core/docs/USAGE.md`](../../../../.eados-core/docs/USAGE.md) を
-> お読みください —— EADOS に何ができるか、どう動くか、何が固定で何をカスタマイズできるかの
-> 全体地図です。実際に動くところを*見て*みたいですか？
-> [フェーズ別ウォークスルー](../../walkthrough.md)をご覧ください。
+**なぜ cookiecutter / copier / Yeoman ではないのか？** それらはリポジトリを*一度*足場作りして
+立ち去ります。EADOS は一回限りのテンプレートではなく、**デリバリー・オペレーティング・システム**
+です：
+
+1. **データによる言語非依存** —— ツールチェーン知識は profile に置かれ、template にハードコード
+   されません。だから一つのファクトリが 19+ 言語に対応します（新言語の追加はコードではなくデータ）。
+2. **生成されたリポジトリは自己統治する** —— 自前のエージェント契約・CI・品質ゲート・SemVer
+   フローを備え、自給自足です（ランタイムで EADOS に逆結合しません）。
+3. **生成はそのうちの一フェーズに過ぎない** —— `design → plan → audit → refactor` が、役割権限と
+   トレーサビリティ・グラフを持つ永続的でゲート検査される manifest 上で、統治をライフサイクル全体へ
+   広げます。
+
+**決定的で人間がゲートします**：エージェントが起草し、人間がレビューしてマージします。未解決の
+placeholder は推測ではなくハードエラーです。
+
+## 機能ひとめ
+
+- **任意の言語**でエンタープライズ級リポジトリを**生成** —— 19 profile 同梱、新言語はデータ一つで追加。
+- **ライフサイクル全体を統治** —— 六つのオプトイン・フェーズ（`init · design · plan · scaffold ·
+  audit · refactor`）を持続 manifest 上で、各遷移にゲート付き。
+- **合成可能なエージェント役割**、**ペルソナ ≠ 権限**の分離 —— アーキテクト、reviewer、
+  security-auditor、release-manager、product-manager、tech-lead、producer、contribution-reviewer。
+- **品質・安全ゲート** —— placeholder / profile / 仕様の完全性、生成される `consistency_lint`、
+  リスクスコアリング、トレーサビリティ・グラフ（RFC → マイルストーン → PR → commit → release）。
+- **入力コントリビューション・レビュー**（`/eados review`） —— 非 owner の PR を信頼ティア・ポリシー・
+  リスクで分類し、処置を推奨（自動マージはしません）。
+- **ガイド付きインストーラー** —— クロスプラットフォームの `setup.{sh,command,ps1,bat}`、
+  **失敗時拒否の SHA256** 検証と追加方式・上書きなしの展開付き。
+- **自己改善、バージョン管理され人間がゲート** —— 教訓台帳、オートチューナー、セルフレビュー。
+- **オプトイン**の i18n（翻訳文書 + 新鮮度ゲート）、SNS アナウンス、ベンチマーク。
+- **エージェント不要 / オフライン経路** —— 標準ライブラリ Python；manifest から決定的にレンダリング。
 
 ---
 
@@ -73,7 +112,31 @@ EADOS はある一つの問いに答えるために存在します：
 
 ---
 
-## どう動くか（パイプライン）
+## フェーズパイプライン
+
+一回限りの生成にとどまらず、EADOS は六つの**オプトイン**フェーズでプロジェクトを統治します ——
+各フェーズは持続 manifest に対する `/eados <phase>` コマンドで、すべての遷移に決定的ゲートが
+あります（人間ゲートの遷移は人間が確認）。欲しいフェーズだけ採用できます：生成だけが欲しいなら
+`/eados scaffold` を実行し、残りは無視すればよいだけです。
+
+| フェーズ | 役割 | 主な成果物 / ゲート |
+|---|---|---|
+| **`init`** | プロジェクトを枠組みし、初期 manifest（`delivery_state`）を書く。 | manifest スケルトン |
+| **`design`** | レビュー手順のもとで RFC を執筆 / 取り込み。 | `rfc-approved` |
+| **`plan`** | RFC からロードマップを共創し、トレーサビリティ・グラフを構築。 | `roadmap-covers-rfcs` |
+| **`scaffold`** | 統治されたリポジトリを**生成** —— 従来のファクトリ。 | render + `consistency_lint` |
+| **`audit`** | 継続的リスクスコアリング + 強制トレーサビリティ lint。 | `traceability-lint`、リスク閾値 |
+| **`refactor`** | 既存リポジトリを、ゲート付き・サンドボックス化・**追加方式**の PR で標準へ。 | 書き込み制限サンドボックス |
+
+詳細は [`USAGE.md`](../../../../.eados-core/docs/USAGE.md) と
+[コマンド・プレイブック](../../../../.eados-core/orchestrator/commands/README.md) に。横断的な二つの
+コマンドはどのフェーズでも使えます：[`/eados status`](../../../../.eados-core/orchestrator/commands/status.md)
+（読み取り専用ドクター）と [`/eados review`](../../../../.eados-core/orchestrator/commands/review.md)
+（入力 PR の分流）。
+
+---
+
+## 生成のしくみ
 
 ```text
                  ┌─────────────────────────────────────────────────────────┐
@@ -307,6 +370,51 @@ python tools/consistency_lint.py     # the generated repo's own gate (now at the
   自体は維持者の言語で行えます。
 - **不可逆な手順は人間が所有する。** エージェントはブランチ・コミット・PR を起草し、人間が
   開き、レビューし、マージします。EADOS はこの境界を逐語的に再現します。
+
+---
+
+## セキュリティ態勢
+
+EADOS はサプライチェーンとエージェント境界を第一級として扱います：
+
+- **失敗時拒否のインストーラー完全性。** ガイド付きインストーラーは展開前にリリースの `SHA256SUMS`
+  で bundle の **SHA256** を検証し、未検証の bundle を拒否します（盲目的な `curl | sh` はなし）。
+  展開は**追加方式**で、既存ファイルを決して上書きしません。
+- **書き込み制限の生成。** レンダラーと `refactor` サンドボックスは、ターゲットの外へ逃げる書き込み
+  —— パストラバーサル / 絶対パス / シンボリックリンク / `.git` / 上書き —— を拒否します
+  （[ADR-0007](../../../../.eados-core/docs/adr/0007-renderer-write-guards-and-validation-independence.md)
+  の原則）。
+- **信頼できない入力コード。** `/eados review` は非 owner の PR を信頼ティアで分類し、汚染パイプライン
+  の露出面（ワークフロー変更、新規依存、シークレットへの到達）を指摘します。非 owner のコミットは
+  **決してマージされません** —— 良いアイデアはクレジット付きで自前で再実装されます。
+- **固定され監査可能な CI。** GitHub Actions は SHA 固定（Dependabot + 自動同期ゲートが固定値を
+  正直に保つ）。セルフ lint ゲートは**オフライン**で動きます（ゲート経路にネットワークなし）。
+- **不可逆な手順はすべて人間が所有** —— エージェントが起草し、人間が開き、マージし、公開します。
+- **監査可能な系譜。** トレーサビリティ・グラフが各リリースを PR → commit → マイルストーン → RFC へ
+  さかのぼって結びつけます。ぶら下がったエッジは lint を失敗させます。
+
+## FAQ
+
+**これは cookiecutter / プロジェクトテンプレートですか？** いいえ —— [なぜ EADOS か](#なぜ-eados-か)
+を参照。生成は統治されたデリバリー OS の一フェーズに過ぎず、成果物は自前の統治を備えます。
+
+**AI エージェントは必要ですか？** いいえ。会話的経路を推奨しますが、**決定的経路**（`project.yaml`
+を埋めて `render.py` を実行）は標準ライブラリ Python 3.12+ だけで足ります。
+
+**対応言語は？** 任意です。今日 19 profile を同梱。新言語はデータファイル（`profiles/<lang>.yaml`）
+であり、template を編集することはありません。
+
+**生成されたリポジトリはランタイムで EADOS に依存しますか？** いいえ —— 自給自足で、自前の
+`AGENTS.md`・CI・lint が付随します。EADOS の職務は生成で終わります。
+
+**オフライン / エアギャップで使えますか？** はい。インストーラーは `--from` + `--sums-file`
+（手動ダウンロードした bundle を検証）に対応し、決定的レンダリングとゲートはネットワーク不要です。
+
+**どのモデルが最適ですか？** [前提条件](#前提条件--ai-コーディングエージェントの入手)を参照 ——
+現状 **Claude Opus 4.8（high）** が最良で、次いで Codex 5.5 と Gemini 3.5 Flash。
+
+**EADOS は私のコードやデータをどこかに送りますか？** いいえ —— markdown / YAML / 標準ライブラリ
+Python で、テレメトリはありません。AI エージェントは別個のツールで、独自のデータ方針を持ちます。
 
 ---
 

@@ -9,6 +9,7 @@
 # export-ignored from the bundle. POSIX sh only (no bashisms); mirror of setup.ps1.
 
 set -eu
+unset CDPATH   # so a user's CDPATH can't redirect the `cd`s below (and keeps shellcheck happy)
 
 PROG=setup.sh
 BUNDLE_NAME=pgs-eados-bundle.tar.gz
@@ -327,7 +328,7 @@ tar xzf "$bundle" -C "$target" || die "extraction failed"
 # git init for a new repo (the lifecycle the engine defers to the interactive layer).
 if [ "$mode" = new ]; then
   if command -v git >/dev/null 2>&1; then
-    if ( CDPATH= cd -- "$target" && git init -q ); then
+    if ( cd -- "$target" && git init -q ); then
       info "git: initialised an empty repository in $target"
     else
       info "note: 'git init' did not complete for $target — you can run it yourself"
@@ -337,7 +338,7 @@ if [ "$mode" = new ]; then
   fi
   if [ "$no_gh" = 0 ] && command -v gh >/dev/null 2>&1; then
     if confirm "Create a GitHub repo for it now with gh?"; then
-      ( CDPATH= cd -- "$target" && gh repo create "$repo_name" --private --source=. --remote=origin ) \
+      ( cd -- "$target" && gh repo create "$repo_name" --private --source=. --remote=origin ) \
         || info "note: 'gh repo create' did not complete — you can run it later"
     fi
   fi

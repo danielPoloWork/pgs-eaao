@@ -5,7 +5,8 @@
 # to it. Kept as a thin shim so all the install logic lives in one place. On Linux just run
 # setup.sh from a terminal.
 
-dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+unset CDPATH   # so a user's CDPATH can't redirect the cd below
+dir=$(cd -- "$(dirname -- "$0")" && pwd)
 sh "$dir/setup.sh" "$@"
 status=$?
 

@@ -34,8 +34,10 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.2.0**.
   - Gated by `setup/*` `gate-coverage` classes + `test_setup_sh.py` / `test_setup_ps1.py` (plan
     resolution, arg validation, fail-closed checksum incl. the published `SHA256SUMS` format,
     additive no-clobber, and the interactive new/existing flow — all offline via `--from`; the trivial
-    `.bat` shim is allow-listed). The shellcheck/PSScriptAnalyzer static gate (9.5) and the docs +
-    **@AlexMnrs** credit (9.6 — this re-implements and elevates their closed PR #96) follow.
+    `.bat` shim is allow-listed), **plus a CI static-analysis step**: `shellcheck` for `setup/*.sh` +
+    `setup/*.command` and a dependency-free PowerShell parse-check for `setup/*.ps1`. The docs "Get it"
+    one-step path + **@AlexMnrs** credit (9.6 — this re-implements and elevates their closed PR #96)
+    follow.
 
 - **Carry-through release default.** The release boundary is now explicit policy: the agent always
   takes a release up to a **draft** — it creates + pushes the annotated tag and opens the GitHub

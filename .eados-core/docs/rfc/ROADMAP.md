@@ -29,7 +29,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M7 — onboarding & docs** | ✅ **done** — items 7.1–7.5 (#97–#101) |
 | **M8 — inbound contribution review** | ✅ **done** — items 8.1–8.6 (#105–#110) |
 | **v2.2.0 release** | ✅ published 2026-06-28 — M7 onboarding + contributor-safety hardening + M8 inbound review (bundles attached; Latest) |
-| **M9 — guided installer** | 🚧 in progress — 9.1–9.4 + 9.7 done (`setup/` installers + release integrity); 9.5–9.6 next |
+| **M9 — guided installer** | 🚧 in progress — 9.1–9.5 + 9.7 done (`setup/` installers + integrity + static gate); 9.6 (docs) next |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -352,9 +352,13 @@ path made real: we build it our way and **co-author @AlexMnrs** (credited in the
       all; the installers gained a `--sums-file` / `-SumsFile` seam to verify against a local
       `SHA256SUMS` (offline / air-gapped), which lets `test_setup_{sh,ps1}.py` prove the published
       format is consumed (the producer↔consumer contract).
-- [ ] 9.5 **Gate the new script file-class** — a self-lint / CI check for the installers (shellcheck for
-      `*.sh`, PSScriptAnalyzer or a parse check for `*.ps1`) + a smoke test of the core
-      download / verify / extract logic, honoring the gate-EVERY-file-class mandate.
+- [x] 9.5 **Gate the new script file-class** — a CI **static-analysis** step for the installers:
+      **shellcheck** for `setup/*.sh` + `setup/*.command` (pre-installed on the runner) and a
+      dependency-free **PowerShell parse-check** for `setup/*.ps1` (`Parser::ParseFile`, which avoids a
+      network `Install-Module PSScriptAnalyzer` — the roadmap's "or a parse check" branch). The core
+      download / verify / extract **smoke** is the existing `test_setup_{sh,ps1}.py` (offline via
+      `--from`). The `eados_lint` `gate-coverage` reasons move from "shellcheck in M9.5" to the real
+      gate — honoring the gate-EVERY-file-class mandate.
 - [ ] 9.6 **Docs + dogfood + credit** — README/USAGE "Get it" gains the one-step installer path beside
       the manual snippets; **credit @AlexMnrs** (co-author + CHANGELOG); RFC-0001, this roadmap, the
       affected specs, and the CHANGELOG kept in lockstep.

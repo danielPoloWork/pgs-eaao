@@ -121,9 +121,13 @@ def main(argv=None):
     ap.add_argument("--propose", metavar="TO",
                     help="validate a proposed transition to phase TO and emit its checkpoint")
     args = ap.parse_args(argv)
-    if args.propose:
-        return report_propose(args.manifest, args.propose)
-    return report(args.manifest)
+    try:
+        if args.propose:
+            return report_propose(args.manifest, args.propose)
+        return report(args.manifest)
+    except (OSError, ValueError) as exc:
+        print(f"phase-runner: cannot read manifest {args.manifest!r}: {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

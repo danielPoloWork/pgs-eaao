@@ -80,6 +80,17 @@ def main():
         os.mkdir(os.path.join(root, "setup"))
         check("an empty setup/ is reported", "setup/" in ci.installer_leftovers(root), failures)
 
+    # a setup/ whose entry only NAME-matches an installer but is not a regular file (e.g. a subdir
+    # named setup.bat) -> NOT a pure-installer leftover, never removed (issue #131)
+    with tempfile.TemporaryDirectory() as root:
+        os.mkdir(os.path.join(root, "setup"))
+        os.mkdir(os.path.join(root, "setup", "setup.bat"))   # a directory, not the installer file
+        check("a setup/ entry that only name-matches (a subdir) is NOT reported",
+              "setup/" not in ci.installer_leftovers(root), failures)
+        ci.main([root, "--apply"])
+        check("…and that setup/ survives --apply",
+              os.path.isdir(os.path.join(root, "setup", "setup.bat")), failures)
+
     # dry-run (default) removes nothing
     with tempfile.TemporaryDirectory() as root:
         touch(os.path.join(root, "setup.sh"))

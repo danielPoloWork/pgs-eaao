@@ -9,7 +9,7 @@ branch_naming:
 
 commit:
   convention: conventional-commits
-  scopes: [interview, profiles, templates, lint, agent, docs, adr, ci, os, workflow, authority, git]
+  scopes: [interview, profiles, templates, lint, agent, docs, adr, ci, os, workflow, authority, git, rfc, plan, risk, contribution, commands, traceability, tools, setup, release]
   one_logical_change_per_pr: true
   one_pr_at_a_time: true
 

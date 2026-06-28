@@ -123,10 +123,15 @@ def score(paths, lines, cfg, domain=None):
 
 def requires_security_gate(level, cfg, domain=None):
     """True when `level` is at/above the effective mandatory-gate level for `domain` (the domain
-    override if present, else the default)."""
+    override if present, else the default). Fail-safe: if either `level` or the configured
+    `mandatory_gate_level` is not in `levels` (a hand-edited risk.yaml), require the gate rather
+    than crashing on `list.index`."""
     eff = resolve(cfg, domain)
     levels = eff["levels"] or DEFAULT_LEVELS
-    return levels.index(level) >= levels.index(eff["mandatory_gate_level"])
+    gate = eff["mandatory_gate_level"]
+    if level not in levels or gate not in levels:
+        return True
+    return levels.index(level) >= levels.index(gate)
 
 
 def main(argv=None):

@@ -836,7 +836,7 @@ def _tracked_files():
     """The repo's tracked files (git ls-files), repo-relative with forward slashes. None when not
     in a git checkout — the meta-gate then skips, like the other checks do on a partial tree."""
     try:
-        out = subprocess.run(["git", "ls-files"], cwd=REPO_ROOT,
+        out = subprocess.run(["git", "-c", "core.quotePath=false", "ls-files"], cwd=REPO_ROOT,
                              capture_output=True, text=True, timeout=30)
     except Exception:
         return None

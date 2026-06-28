@@ -109,7 +109,11 @@ def main(argv=None):
     ap.add_argument("--links", help="traceability links file (default: <root>/links.yaml if present)")
     args = ap.parse_args(argv)
 
-    manifest = render.load_yaml(_read(args.manifest))
+    try:
+        manifest = render.load_yaml(_read(args.manifest))
+    except (OSError, ValueError) as exc:
+        print(f"doctor: cannot read manifest {args.manifest!r}: {exc}", file=sys.stderr)
+        return 2
     workflow = phase_runner.load_workflow()
 
     root = args.root or os.path.dirname(os.path.abspath(args.manifest))

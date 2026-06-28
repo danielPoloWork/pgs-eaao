@@ -60,8 +60,12 @@ def main(argv=None):
     if len(argv) != 1:
         print("usage: rfc_check.py <rfc.md>", file=sys.stderr)
         return 2
-    with open(argv[0], encoding="utf-8") as handle:
-        text = handle.read()
+    try:
+        with open(argv[0], encoding="utf-8") as handle:
+            text = handle.read()
+    except OSError as exc:
+        print(f"rfc-check: cannot read {argv[0]!r}: {exc}", file=sys.stderr)
+        return 2
     problems = check_rfc(text, load_protocol())
     if problems:
         print(f"rfc-check: FAIL — {argv[0]}")

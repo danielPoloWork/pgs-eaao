@@ -139,7 +139,11 @@ def main(argv=None):
     ap.add_argument("--rfc", help="an RFC file to check for the rfc-approved gate (design)")
     args = ap.parse_args(argv)
 
-    manifest = render.load_yaml(_read(args.manifest))
+    try:
+        manifest = render.load_yaml(_read(args.manifest))
+    except (OSError, ValueError) as exc:
+        print(f"eados: cannot read manifest {args.manifest!r}: {exc}", file=sys.stderr)
+        return 2
     workflow = phase_runner.load_workflow()
     root = args.root or os.path.dirname(os.path.abspath(args.manifest))
     roadmap_path = args.roadmap or os.path.join(root, "ROADMAP.md")

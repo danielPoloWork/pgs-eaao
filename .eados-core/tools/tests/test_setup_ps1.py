@@ -55,6 +55,23 @@ def make_bundle(path):
         return hashlib.sha256(fh.read()).hexdigest()
 
 
+def make_symlink_bundle(path):
+    """A malicious bundle: a symlink whose target escapes the target root, then a file written
+    through it. The entry NAMES are innocuous (no '..' / leading '/'), so only a link-type check
+    catches it. Return sha256 hex. (issue #129 — tar-slip)"""
+    with tarfile.open(path, "w:gz") as tar:
+        link = tarfile.TarInfo("pwn")
+        link.type = tarfile.SYMTYPE
+        link.linkname = "../escaped"
+        tar.addfile(link)
+        body = b"owned\n"
+        through = tarfile.TarInfo("pwn/escaped.txt")
+        through.size = len(body)
+        tar.addfile(through, io.BytesIO(body))
+    with open(path, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()
+
+
 def main():
     failures = []
 
@@ -158,6 +175,20 @@ def main():
         rc, _, _ = run("-From", "bundle.tar.gz", "-NoVerify", "-Mode", "existing",
                        "-Path", "absent-dir", "-NonInteractive", cwd=tmp)
         check("existing mode requires the target dir to exist", rc != 0, failures)
+
+        # --- tar-slip: reject a bundle carrying a symlink/hardlink entry (issue #129) ---
+        evil_sha = make_symlink_bundle(os.path.join(tmp, "evil.tar.gz"))
+        tgt = fresh_target()
+        rc, out, err = run("-From", "evil.tar.gz", "-Sha256", evil_sha, "-Mode", "existing",
+                           "-Path", tgt, "-NonInteractive", cwd=tmp)
+        check("rejects a symlink-bearing bundle even when its checksum matches (tar-slip)",
+              rc != 0 and "symlink" in (out + err).lower(), failures)
+        check("…and extracts nothing through the symlink",
+              not os.path.exists(os.path.join(tmp, tgt, "pwn")), failures)
+        tgt = fresh_target()
+        rc, _, _ = run("-From", "evil.tar.gz", "-NoVerify", "-Mode", "existing",
+                       "-Path", tgt, "-NonInteractive", cwd=tmp)
+        check("the symlink guard runs even under -NoVerify", rc != 0, failures)
 
         # interactive NEW (offline): extract AND git-init
         rc, out, err = run("-Interactive", "-NoGh", "-From", "bundle.tar.gz", "-NoVerify",

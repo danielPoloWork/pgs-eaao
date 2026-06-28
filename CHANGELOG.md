@@ -37,6 +37,13 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.3.0**.
 
 ### Security
 
+- **Installer hardened against tar-slip via symlink/hardlink entries (#129).** `setup.sh` and
+  `setup.ps1` inspected only entry *names* before extracting, so a bundle carrying a symlink whose
+  target escapes the target root (then a file written through it) could write outside it. Both now
+  refuse any symlink/hardlink entry in the archive (the EADOS bundle contains none) before
+  extracting, and the guard runs even under `--no-verify`. Regression tests added to
+  `test_setup_sh.py` / `test_setup_ps1.py`. Found in the post-v2.3.0 audit (milestone **M10**).
+
 ---
 
 ## [2.3.0] - 2026-06-28

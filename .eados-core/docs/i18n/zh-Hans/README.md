@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml/badge.svg)](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/danielPoloWork/pgs-eados/releases)
+[![Downloads](https://img.shields.io/github/downloads/danielPoloWork/pgs-eados/total.svg)](https://github.com/danielPoloWork/pgs-eados/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../../../../LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](../../../../.eados-core/orchestrator/profiles/)
@@ -18,24 +19,60 @@
 
 EADOS 不是你交付的产品；它是**关于工作如何流转的操作系统** —— 一个声明式、由门禁强制、保留
 人工确认的治理层（并非运行时内核）。其 **`scaffold` 阶段就是那座工厂**，批量生产共享同样企业级
-结构、GitHub 工作流、质量门禁与 AI 智能体契约的仓库 —— 无论语言、框架或工具如何。其余阶段
-（`design`、`plan`、`audit`、`refactor`）把这套治理扩展到整个交付生命周期。
+结构、GitHub 工作流、质量门禁与 AI 智能体契约的仓库 —— 无论语言、框架或工具如何；其余阶段
+（`design`、`plan`、`audit`、`refactor`）把这套治理扩展到整个交付生命周期。每个阶段都是一个可选用的
+`/eados <phase>` 命令，作用于一份持久、受门禁校验的 manifest（设计见
+[RFC-0001](../../../../.eados-core/docs/rfc/0001-eados-delivery-os.md)）。
 
-> **流水线。** 每个阶段都是一个可选用的 `/eados <phase>` 命令，作用于一份持久、受门禁校验的
-> manifest；设计见 [RFC-0001](../../../../.eados-core/docs/rfc/0001-eados-delivery-os.md)，各阶段
-> 位于 [`orchestrator/commands/`](../../../../.eados-core/orchestrator/commands/README.md)。仅做
-> 生成（经典工厂）依旧只是 `/eados scaffold` —— 它没有任何变化。
+> **初次接触？** [`USAGE.md`](../../../../.eados-core/docs/USAGE.md) 是 EADOS 能做什么的完整地图；
+> [逐阶段演练](../../walkthrough.md)展示它实际运行。只想安装它？直接前往[快速上手](#快速上手)。
 
-它的存在是为了回答一个问题：
+## 目录
+
+- [为什么选择 EADOS](#为什么选择-eados) · [能力一览](#能力一览)
+- [你能得到什么](#你能得到什么) · [阶段流水线](#阶段流水线) · [生成如何运作](#生成如何运作)
+- [仓库布局](#仓库布局) · [快速上手](#快速上手) · [Quickstart](#quickstart)
+- [设计原则](#设计原则为何如此塑形) · [安全态势](#安全态势) · [常见问题](#常见问题)
+- [贡献与治理](#贡献与治理) · [溯源](#溯源) · [许可与归属](#许可与归属)
+
+## 为什么选择 EADOS
+
+它回答一个问题：
 
 > *"无论用哪种语言 —— Rust / Python / TypeScript / Go / Java / …… —— 我如何在**每个**项目上
 > 获得**同样**的企业级严谨度：智能体、ADR、CI 矩阵、consistency lint、SemVer 治理？"*
 
-答案是：把 **Enterprise Project Architect** 智能体指向 EADOS，运行**接入访谈**，让它生成新仓库。
+把 **Enterprise Project Architect** 智能体指向 EADOS，运行接入访谈，它就会生成新仓库 ——
+或者你手工填写 manifest 并以确定性方式渲染，无需智能体。
 
-> **初次接触？** 阅读 [`.eados-core/docs/USAGE.md`](../../../../.eados-core/docs/USAGE.md) ——
-> EADOS 能做什么、如何运作、哪些是固定的、哪些可由你定制的完整地图。想*看*流程实际运行？
-> 请跟随[逐阶段演练](../../walkthrough.md)。
+**为什么不用 cookiecutter / copier / Yeoman？** 它们只**一次性**搭好脚手架就离开。EADOS 是一个
+**交付操作系统**，而非一次性模板：
+
+1. **以数据实现语言无关** —— 工具链知识存放在 profile 中，从不硬编码进 template，因此一座工厂
+   服务 19+ 种语言（新增一门语言是加数据，而非改代码）。
+2. **生成的仓库自我治理** —— 它自带智能体契约、CI、质量门禁与 SemVer 流程，且自给自足
+   （运行时不回耦到 EADOS）。
+3. **生成只是其中一个阶段** —— `design → plan → audit → refactor` 把治理扩展到整个生命周期，
+   作用于一份带角色权限与可追溯性图谱、受门禁校验的持久 manifest。
+
+它**确定且由人把关**：智能体起草，人类审阅并合并；未解析的 placeholder 是硬错误，绝不靠猜测。
+
+## 能力一览
+
+- **生成**任意语言的企业级仓库 —— 已交付 19 个 profile；新增一门语言即加一份数据。
+- **治理整个生命周期** —— 六个可选用阶段（`init · design · plan · scaffold · audit · refactor`），
+  作用于持久 manifest，并对每次转换设有门禁。
+- **可组合的智能体角色**，采用**人设 ≠ 权限**的分离 —— 架构师、reviewer、security-auditor、
+  release-manager、product-manager、tech-lead、producer、contribution-reviewer。
+- **质量与安全门禁** —— placeholder / profile / 规范完整性、生成的 `consistency_lint`、风险评分，
+  以及可追溯性图谱（RFC → 里程碑 → PR → commit → release）。
+- **入站贡献评审**（`/eados review`） —— 按信任层级、策略与风险分流非 owner 的 PR；给出处置建议
+  （绝不自动合并）。
+- **引导式安装器** —— 跨平台 `setup.{sh,command,ps1,bat}`，带**失败即拒绝的 SHA256** 校验与
+  追加式、不覆盖的解压。
+- **自我改进，版本化且由人把关** —— 经验台账、自动调参器与自评。
+- **可选的** i18n（翻译文档 + 新鲜度门禁）、社媒公告与基准测试。
+- **无智能体 / 离线路径** —— 仅标准库 Python；从 manifest 确定性渲染。
 
 ---
 
@@ -65,7 +102,29 @@ EADOS 不是你交付的产品；它是**关于工作如何流转的操作系统
 
 ---
 
-## 它如何运作（流水线）
+## 阶段流水线
+
+除了一次性生成，EADOS 还在六个**可选用**阶段上治理一个项目 —— 每个都是作用于持久 manifest 的
+`/eados <phase>` 命令，每次转换都有确定性门禁（人工确认需把关的转换）。你只采用想要的阶段：只想
+生成的用户运行 `/eados scaffold`，其余忽略即可。
+
+| 阶段 | 作用 | 关键产物 / 门禁 |
+|---|---|---|
+| **`init`** | 框定项目并写出初始 manifest（`delivery_state`）。 | manifest 骨架 |
+| **`design`** | 在评审协议下撰写 / 导入 RFC。 | `rfc-approved` |
+| **`plan`** | 从 RFC 共创路线图；构建可追溯性图谱。 | `roadmap-covers-rfcs` |
+| **`scaffold`** | **生成**受治理的仓库 —— 经典工厂。 | render + `consistency_lint` |
+| **`audit`** | 持续风险评分 + 强制的可追溯性 lint。 | `traceability-lint`、风险阈值 |
+| **`refactor`** | 通过受门禁、沙箱化、**追加式**的 PR 把既有仓库带到标准。 | 写入受限的沙箱 |
+
+完整细节见 [`USAGE.md`](../../../../.eados-core/docs/USAGE.md) 与
+[命令手册](../../../../.eados-core/orchestrator/commands/README.md)。两个跨切面命令在任何阶段都可用：
+[`/eados status`](../../../../.eados-core/orchestrator/commands/status.md)（只读体检）与
+[`/eados review`](../../../../.eados-core/orchestrator/commands/review.md)（入站 PR 分流）。
+
+---
+
+## 生成如何运作
 
 ```text
                  ┌─────────────────────────────────────────────────────────┐
@@ -286,6 +345,50 @@ placeholder 时中止**。EADOS 自身 CI 中的 render-smoke 任务会在每次
 - **磁盘上是英文，聊天中可任意语言。** 每个生成的产物都是英文；访谈本身可以用维护者的语言进行。
 - **不可逆步骤归人类所有。** 智能体起草分支、提交与 PR；人类负责打开、审阅与合并。EADOS 逐字
   复刻了这条边界。
+
+---
+
+## 安全态势
+
+EADOS 把供应链与智能体边界视为一等公民：
+
+- **失败即拒绝的安装器完整性。** 引导式安装器在解压前会用发布的 `SHA256SUMS` 校验 bundle 的
+  **SHA256**；未通过校验的 bundle 会被拒绝（没有盲目的 `curl | sh`），且以**追加方式**解压 ——
+  绝不覆盖已有文件。
+- **写入受限的生成。** 渲染器与 `refactor` 沙箱拒绝任何逃逸出目标的写入 —— 路径穿越 / 绝对路径 /
+  符号链接 / `.git` / 覆盖（[ADR-0007](../../../../.eados-core/docs/adr/0007-renderer-write-guards-and-validation-independence.md)
+  原则）。
+- **不可信的入站代码。** `/eados review` 按信任层级分类非 owner 的 PR，并标记“投毒流水线”的暴露面
+  （工作流改动、新依赖、对密钥的触达）；非 owner 的提交**绝不被合并** —— 好的想法以署名的方式
+  在内部重新实现。
+- **固定且可审计的 CI。** GitHub Actions 以 SHA 固定（Dependabot + 自动同步门禁保持固定值诚实）；
+  自检门禁**离线**运行（门禁路径中无网络）。
+- **每个不可逆步骤都归人类所有** —— 智能体起草；人类打开、合并并发布。
+- **可审计的谱系。** 一张可追溯性图谱把每次发布回溯到 PR → commit → 里程碑 → RFC；悬空的边会让
+  lint 失败。
+
+## 常见问题
+
+**这是 cookiecutter / 项目模板吗？** 不是 —— 见[为什么选择 EADOS](#为什么选择-eados)。生成只是一个受
+治理的交付 OS 的一个阶段，且产物自带治理。
+
+**我需要 AI 智能体吗？** 不需要。推荐对话式路径，但**确定性路径**（填写 `project.yaml`、运行
+`render.py`）只需标准库 Python 3.12+。
+
+**支持哪些语言？** 任意。今天交付 19 个 profile；新增一门语言是一份数据文件
+（`profiles/<lang>.yaml`），从不改 template。
+
+**生成的仓库在运行时依赖 EADOS 吗？** 不 —— 它自给自足；自带的 `AGENTS.md`、CI 与 lint 随其一同
+存在。EADOS 的职责止于生成。
+
+**能离线 / 气隙使用吗？** 能。安装器支持 `--from` + `--sums-file`（校验手工下载的 bundle），确定性
+渲染与门禁都无需网络。
+
+**哪个模型最好？** 见[前置准备](#前置准备--获取一个-ai-编码智能体) —— 目前 **Claude Opus 4.8
+（high）** 领先，其次是 Codex 5.5 与 Gemini 3.5 Flash。
+
+**EADOS 会把我的代码或数据发往任何地方吗？** 不会 —— 它是 markdown / YAML / 标准库 Python，无遥测。
+你的 AI 智能体是独立工具，有其自己的数据策略。
 
 ---
 

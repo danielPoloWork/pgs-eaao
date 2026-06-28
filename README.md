@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml/badge.svg)](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/danielPoloWork/pgs-eados/releases)
+[![Downloads](https://img.shields.io/github/downloads/danielPoloWork/pgs-eados/total.svg)](https://github.com/danielPoloWork/pgs-eados/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![Language profiles: 19](https://img.shields.io/badge/language%20profiles-19-success.svg)](.eados-core/orchestrator/profiles/)
@@ -17,27 +18,63 @@
 EADOS is not a product you ship; it is the **operating system for how the work flows** — a
 declarative, gate-enforced, human-in-the-loop governance layer (not a runtime kernel). Its
 **`scaffold` phase is the factory** that stamps out repositories sharing the same enterprise
-structure, GitHub workflow, quality gates, and AI-agent contract — regardless of language,
-framework, or tooling. The other phases (`design`, `plan`, `audit`, `refactor`) extend that
-governance across the whole delivery lifecycle.
+structure, GitHub workflow, quality gates, and AI-agent contract — regardless of language, framework,
+or tooling; the other phases (`design`, `plan`, `audit`, `refactor`) extend that governance across the
+whole delivery lifecycle. Each phase is an opt-in `/eados <phase>` command over a persistent,
+gate-checked manifest (design: [RFC-0001](.eados-core/docs/rfc/0001-eados-delivery-os.md)).
 
-> **The pipeline.** Each phase is an opt-in `/eados <phase>` command over a persistent,
-> gate-checked manifest; the design is [RFC-0001](.eados-core/docs/rfc/0001-eados-delivery-os.md),
-> the phases live in [`orchestrator/commands/`](.eados-core/orchestrator/commands/README.md).
-> Generation alone (the classic factory) is still just `/eados scaffold` — nothing about it changed.
+> **New here?** [`USAGE.md`](.eados-core/docs/USAGE.md) is the full map of what EADOS can do; the
+> [phase-by-phase walkthrough](.eados-core/docs/walkthrough.md) shows it running. Just want to install
+> it? Jump to [Getting started](#getting-started).
 
-It exists to answer one question:
+## Contents
 
-> *"How do I get the **same** enterprise rigor — agents, ADRs, CI matrix, consistency lint,
-> SemVer governance — on every project, whatever the language: Rust / Python / TypeScript /
-> Go / Java / …?"*
+- [Why EADOS](#why-eados) · [Capabilities at a glance](#capabilities-at-a-glance)
+- [What you get out of it](#what-you-get-out-of-it) · [The phase pipeline](#the-phase-pipeline) · [How generation works](#how-generation-works)
+- [Repository layout](#repository-layout) · [Getting started](#getting-started) · [Quickstart](#quickstart)
+- [Design principles](#design-principles-why-it-is-shaped-this-way) · [Security posture](#security-posture) · [FAQ](#faq)
+- [Contributing & governance](#contributing--governance) · [Provenance](#provenance) · [License & ownership](#license--ownership)
 
-The answer: point the **Enterprise Project Architect** agent at EADOS, run the
-**intake interview**, and let it generate the new repository.
+## Why EADOS
 
-> **New here?** Read [`.eados-core/docs/USAGE.md`](.eados-core/docs/USAGE.md) — the full map of
-> what EADOS can do, how it works, and what is fixed vs. what you can customize. Want to *see* the
-> pipeline run? Follow the [phase-by-phase walkthrough](.eados-core/docs/walkthrough.md).
+It answers one question:
+
+> *"How do I get the **same** enterprise rigor — agents, ADRs, CI matrix, consistency lint, SemVer
+> governance — on **every** project, whatever the language: Rust / Python / TypeScript / Go / Java / …?"*
+
+Point the **Enterprise Project Architect** agent at EADOS, run the intake interview, and it generates
+the new repository — or fill the manifest and render deterministically, no agent required.
+
+**Why not a cookiecutter / copier / Yeoman?** Those scaffold a repo *once* and walk away. EADOS is a
+**delivery operating system**, not a one-shot template:
+
+1. **Language-agnostic *by data*** — toolchain knowledge lives in profiles, never hardcoded in
+   templates, so one factory serves 19+ languages (and a new one is added as data, not code).
+2. **The generated repo governs itself** — it ships its own agent contract, CI, quality gate, and
+   SemVer flow, and is self-sufficient (no runtime coupling back to EADOS).
+3. **Generation is just one phase** — `design → plan → audit → refactor` extend governance across the
+   whole lifecycle, over a persistent, gate-checked manifest with role authority and a traceability
+   graph.
+
+It is **deterministic and human-gated**: the agent drafts, the human reviews and merges; an unresolved
+placeholder is a hard error, never a guess.
+
+## Capabilities at a glance
+
+- **Generate** an enterprise-grade repo in **any language** — 19 profiles shipped; add one as data.
+- **Govern the whole lifecycle** — six opt-in phases (`init · design · plan · scaffold · audit ·
+  refactor`) over a persistent manifest, with phase-transition gates.
+- **Composable agent roles** with a **persona ≠ authority** split — architect, reviewer,
+  security-auditor, release-manager, product-manager, tech-lead, producer, contribution-reviewer.
+- **Quality & safety gates** — placeholder / profile / spec completeness, a generated
+  `consistency_lint`, risk scoring, and a traceability graph (RFC → milestone → PR → commit → release).
+- **Inbound contribution review** (`/eados review`) — triage a non-owner PR by trust tier, policy, and
+  risk; recommend a disposition (it never auto-merges).
+- **Guided installer** — a cross-platform `setup.{sh,command,ps1,bat}` with **fail-closed SHA256**
+  verification and additive, no-clobber extraction.
+- **Self-improvement, versioned & human-gated** — a lessons ledger, an auto-tuner, and self-review.
+- **Opt-in** i18n (translated docs + a freshness gate), social announcements, and benchmarks.
+- **No-agent / offline path** — standard-library Python; render deterministically from a manifest.
 
 ---
 
@@ -69,7 +106,30 @@ in three places:
 
 ---
 
-## How it works (the pipeline)
+## The phase pipeline
+
+Beyond one-shot generation, EADOS governs a project across six **opt-in** phases — each an
+`/eados <phase>` command over the persistent manifest, with deterministic gates on every transition
+(the human confirms the human-gated moves). Adopt only the phases you want: a user who just wants
+generation runs `/eados scaffold` and ignores the rest.
+
+| Phase | What it does | Key artifact / gate |
+|---|---|---|
+| **`init`** | Frame the project and write the initial manifest (`delivery_state`). | manifest skeleton |
+| **`design`** | Author / import RFCs under a review protocol. | `rfc-approved` |
+| **`plan`** | Co-create the roadmap from the RFCs; build the traceability graph. | `roadmap-covers-rfcs` |
+| **`scaffold`** | **Generate** the governed repository — the classic factory. | render + `consistency_lint` |
+| **`audit`** | Continuous risk scoring + the enforced traceability lint. | `traceability-lint`, risk threshold |
+| **`refactor`** | Bring an existing repo up to standard via gated, sandboxed, **additive** PRs. | write-contained sandbox |
+
+Full detail is in [`USAGE.md`](.eados-core/docs/USAGE.md) and the
+[command playbooks](.eados-core/orchestrator/commands/README.md). Two cross-cutting commands work in
+any phase: [`/eados status`](.eados-core/orchestrator/commands/status.md) (a read-only doctor) and
+[`/eados review`](.eados-core/orchestrator/commands/review.md) (inbound-PR triage).
+
+---
+
+## How generation works
 
 ```text
                  ┌─────────────────────────────────────────────────────────┐
@@ -302,6 +362,50 @@ placeholder**. The render-smoke job in EADOS's own CI runs this against
   itself may be conducted in the maintainer's language.
 - **Human owns the irreversible steps.** The agent drafts branches, commits, and PRs;
   the human opens, reviews, and merges. EADOS reproduces that boundary verbatim.
+
+---
+
+## Security posture
+
+EADOS treats the supply chain and the agent boundary as first-class:
+
+- **Fail-closed installer integrity.** The guided installer verifies the bundle's **SHA256** against
+  the release `SHA256SUMS` before extracting; it refuses an unverified bundle (no blind `curl | sh`)
+  and extracts **additively** — never overwriting an existing file.
+- **Write-contained generation.** The renderer and the `refactor` sandbox refuse any write that
+  escapes the target — traversal / absolute / symlink / `.git` / clobber (the
+  [ADR-0007](.eados-core/docs/adr/0007-renderer-write-guards-and-validation-independence.md) principle).
+- **Untrusted inbound code.** `/eados review` classifies a non-owner PR by trust tier and flags the
+  poisoned-pipeline surface (workflow edits, new deps, secret reach); a non-owner's commits are
+  **never merged** — a good idea is re-implemented in-house with credit.
+- **Pinned, auditable CI.** GitHub Actions are SHA-pinned (Dependabot + an auto-sync gate keep the
+  pins honest); the self-lint gates run **offline** (no network in the gate path).
+- **Human owns every irreversible step** — the agent drafts; the human opens, merges, and publishes.
+- **Auditable lineage.** A traceability graph ties every release back through PR → commit → milestone
+  → RFC; a dangling edge fails the lint.
+
+## FAQ
+
+**Is this a cookiecutter / project template?** No — see [Why EADOS](#why-eados). Generation is one
+phase of a governed delivery OS, and the output carries its own governance.
+
+**Do I need an AI agent?** No. The conversational path is recommended, but the **deterministic path**
+(fill `project.yaml`, run `render.py`) needs only standard-library Python 3.12+.
+
+**Which languages are supported?** Any. 19 profiles ship today; a new language is a data file
+(`profiles/<lang>.yaml`), never a template edit.
+
+**Does a generated repo depend on EADOS at runtime?** No — it is self-sufficient; its own `AGENTS.md`,
+CI, and lint travel with it. EADOS's job ends at generation.
+
+**Can I use it offline / air-gapped?** Yes. The installer supports `--from` + `--sums-file` (verify a
+hand-downloaded bundle), and the deterministic render + gates need no network.
+
+**Which model works best?** See [Prerequisites](#prerequisites--getting-an-ai-coding-agent) — today
+**Claude Opus 4.8 (high)** leads, then Codex 5.5 and Gemini 3.5 Flash.
+
+**Does EADOS send my code or data anywhere?** No — it is markdown / YAML / standard-library Python with
+no telemetry. Your AI agent is a separate tool with its own data policy.
 
 ---
 

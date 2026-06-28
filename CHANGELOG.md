@@ -62,6 +62,10 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.2.0**.
   Flash**; **Mistral AI** / **Sakana AI** untested) and an **AI-can-hallucinate** caveat — review every
   diff/RFC/command; it is a power tool, most effective in expert hands. i18n source-hash refreshed.
 
+- **README title → `EADOS — Enterprise Agentic Delivery OS`** (all languages). Shortened the H1 to
+  lead with the **EADOS** brand across the EN / zh-Hans / ja READMEs (replacing the long-form
+  "Enterprise Agentic Delivery Operating System (EADOS)"); README i18n source-hash refreshed.
+
 ### Deprecated
 
 ### Removed

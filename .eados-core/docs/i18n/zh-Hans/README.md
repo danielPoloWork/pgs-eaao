@@ -1,4 +1,4 @@
-# 企业级智能体交付操作系统（EADOS）
+# EADOS —— 企业级智能体交付操作系统
 
 [![CI](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml/badge.svg)](https://github.com/danielPoloWork/pgs-eados/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/release-v2.2.0-blue.svg)](https://github.com/danielPoloWork/pgs-eados/releases)

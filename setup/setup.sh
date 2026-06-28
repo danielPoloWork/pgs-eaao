@@ -308,6 +308,16 @@ if [ -n "$unsafe" ]; then
 $unsafe"
 fi
 
+# Defense in depth: refuse any symlink/hardlink entry. A symlink whose target escapes the root
+# (e.g. `evil -> ../etc`, then a file written through it) is a classic tar-slip the name-only check
+# above cannot see. The EADOS bundle contains no links, so the whole class is refused. The verbose
+# listing types each entry in column 1: `l` symlink, `h` hardlink.
+links=$(tar tzvf "$bundle" 2>/dev/null | awk '/^[lh]/ { print }')
+if [ -n "$links" ]; then
+  die "refusing to extract — the archive contains symlink/hardlink entries:
+$links"
+fi
+
 # Additive: refuse to overwrite any existing FILE (directories may coexist).
 clobber=
 while IFS= read -r entry; do

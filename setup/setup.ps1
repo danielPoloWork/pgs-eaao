@@ -249,6 +249,12 @@ try {
   $unsafe = $listing | Where-Object { $_ -match '^/' -or $_ -match '(^|/)\.\.(/|$)' }
   if ($unsafe) { Die ("refusing to extract - the archive has unsafe paths:`n" + ($unsafe -join "`n")) }
 
+  # Defense in depth: refuse symlink/hardlink entries. A symlink whose target escapes the root is a
+  # classic tar-slip the name-only check above cannot see; the bundle has none. The verbose listing
+  # types each entry in column 1 ('l' symlink, 'h' hardlink).
+  $links = (& tar -tzvf $bundle 2>$null) | Where-Object { $_ -match '^[lh]' }
+  if ($links) { Die ("refusing to extract - the archive contains symlink/hardlink entries:`n" + ($links -join "`n")) }
+
   # Additive: refuse to overwrite any existing FILE (directories may coexist).
   $clobber = @()
   foreach ($entry in $listing) {

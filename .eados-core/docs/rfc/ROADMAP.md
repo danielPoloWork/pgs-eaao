@@ -29,7 +29,7 @@ The **single source of truth** for EADOS's own delivery plan, from start to fini
 | **M7 — onboarding & docs** | ✅ **done** — items 7.1–7.5 (#97–#101) |
 | **M8 — inbound contribution review** | ✅ **done** — items 8.1–8.6 (#105–#110) |
 | **v2.2.0 release** | ✅ published 2026-06-28 — M7 onboarding + contributor-safety hardening + M8 inbound review (bundles attached; Latest) |
-| **M9 — guided installer** | ⏳ planned — items 9.1–9.6 (cross-platform `install.sh`/`.command`/`.ps1`) |
+| **M9 — guided installer** | 🚧 in progress — 9.1 installer core (POSIX `install.sh`) done; 9.2–9.6 next |
 
 Legend: ⏳ not started · 🚧 in progress · ✅ done.
 
@@ -318,11 +318,14 @@ This milestone **re-implements and elevates @AlexMnrs's PR #96** ("Add Windows P
 examples", opened then closed by the author) — the `contribution-reviewer`'s `re-implement-in-house`
 path made real: we build it our way and **co-author @AlexMnrs** (credited in the CHANGELOG).
 
-- [ ] 9.1 **Installer core (POSIX) — `install.sh`** — a non-interactive engine: download
-      `pgs-eados-bundle.tar.gz` from the latest release, **verify its SHA256**, and extract it
-      **additively** at a target repo root (refuse to clobber an existing file). Scripting flags
-      (`--path`, `--repo-name`, `--mode new|existing`, `--ref`); a pure, testable core that degrades
-      cleanly offline (the `derive_links.py` pattern).
+- [x] 9.1 **Installer core (POSIX) — `install.sh`** — a non-interactive engine: download
+      `pgs-eados-bundle.tar.gz` from the latest release, **verify its SHA256** (fail-closed — refuses
+      to extract an unverified bundle unless `--no-verify`), and extract it **additively** at a target
+      repo root (refuse to clobber an existing file). Scripting flags (`--path`, `--repo-name`,
+      `--mode new|existing`, `--ref`), plus a pure `--print-plan` (resolve without touching the
+      network or disk) and a `--from <file>` local-bundle seam — a pure, testable core that degrades
+      cleanly offline (the `derive_links.py` pattern). Gated by a new `install/*.sh` `gate-coverage`
+      class + the `test_install_sh.py` smoke (CI).
 - [ ] 9.2 **Interactive layer (POSIX)** — the Q&A wrapper around 9.1: prompt for new-vs-existing repo,
       path, and repo name; on **new** run `git init` at `<path>/<name>` (offer `gh repo create` when
       `gh` is present); confirm before writing; clear success / next-steps output (point at `AGENTS.md`

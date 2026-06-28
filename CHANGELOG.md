@@ -11,6 +11,20 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.2.0**.
 
 ### Added
 
+- **M9 / 9.1 — guided-installer core (POSIX).** New [`install/install.sh`](install/install.sh): a
+  non-interactive engine that downloads the release bundle (`pgs-eados-bundle.tar.gz`), **verifies its
+  SHA256** (fail-closed — it refuses to extract an unverified bundle unless `--no-verify`), and
+  extracts it **additively** at a target repo root (refuses to overwrite any existing file — the
+  [ADR-0007](.eados-core/docs/adr/0007-renderer-write-guards-and-validation-independence.md)
+  no-clobber principle). Scripting flags `--path` / `--repo-name` / `--mode new|existing` / `--ref`,
+  plus a pure `--print-plan` (resolve the URL + target without touching the network or disk) and a
+  `--from <file>` local-bundle seam — so the core is testable and degrades cleanly offline (the
+  `derive_links.py` pattern). Gated by a new `install/*.sh` `gate-coverage` class + a
+  `test_install_sh.py` smoke (wired into CI); the installer is `export-ignore`d from the factory
+  bundle (it downloads it). The interactive wrapper + macOS `.command` (9.2), the PowerShell
+  equivalent (9.3), release-published `SHA256SUMS` + installers (9.4), and the shellcheck static gate
+  (9.5) follow. Re-implements and elevates @AlexMnrs's closed PR #96 (credited at the M9 capstone).
+
 - **Carry-through release default.** The release boundary is now explicit policy: the agent always
   takes a release up to a **draft** — it creates + pushes the annotated tag and opens the GitHub
   Release as a draft (CI drafts it on tag-push in generated repos) — and the human only clicks

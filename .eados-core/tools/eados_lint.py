@@ -747,6 +747,7 @@ GATE_COVERAGE = [
     ("README.md",                                         "version-lockstep + i18n-freshness"),
     ("CHANGELOG.md",                                      "version-lockstep"),
     (".github/workflows/*.yml",                           "action-pins + workflow-safety"),
+    ("install/*.sh",                                      "installer-smoke (test_install_sh.py); shellcheck in M9.5"),
 ]
 # Intentionally NOT machine-validated — prose/config under human review. Each needs a reason; this
 # is the conscious record of "we looked and chose not to gate this", not a blind skip.

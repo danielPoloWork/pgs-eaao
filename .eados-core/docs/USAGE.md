@@ -138,29 +138,48 @@ EADOS to someone who only needs to *use* it.
 
 ### Guided installer (one step) — recommended
 
-A guided installer (in the release as `setup.{sh,command,ps1,bat}`) downloads the bundle,
+A guided installer (published in each release as `setup.{sh,command,ps1,bat}`) downloads the bundle,
 **verifies its SHA256** (fail-closed — it refuses to extract an unverified bundle unless
 `--no-verify`), and extracts it **additively** (never overwriting an existing file — the
 [ADR-0007](adr/0007-renderer-write-guards-and-validation-independence.md) no-clobber principle) into a
-target repo. It is **interactive** when run bare (asks new-vs-existing repo, path, and — for a new repo
-— the name; on a new repo it `git init`s and offers `gh repo create`) and fully **scriptable** via
-flags.
+target repo. Run **bare** it is **interactive** (asks new-vs-existing repo, the path, and — for a new
+repo — the name; on a new repo it `git init`s and offers `gh repo create`); with flags it is fully
+**scriptable**.
 
-**Linux / macOS** — download then run (it prompts):
+**Which file do I grab?** Each is at
+`https://github.com/danielPoloWork/pgs-eados/releases/latest/download/<name>`:
+
+| Platform | Download | Run it |
+|---|---|---|
+| **Linux / macOS** (terminal) | `setup.sh` | `sh setup.sh` |
+| **macOS** (double-click) | `setup.command` **and** `setup.sh` (same folder) | open `setup.command` |
+| **Windows** (terminal) | `setup.ps1` | `powershell -ExecutionPolicy Bypass -File setup.ps1` |
+| **Windows** (double-click) | `setup.bat` **and** `setup.ps1` (same folder) | double-click `setup.bat` |
+
+`setup.command` and `setup.bat` are thin double-click shims — each just launches the matching script,
+so its sibling (`setup.sh` / `setup.ps1`) **must sit in the same folder**.
+
+**Terminal — the reliable path** (works everywhere, no permission fuss):
 
 ```bash
+# Linux / macOS
 curl -fsSL https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.sh -o setup.sh
 sh setup.sh
-# Double-click (macOS): download setup.command AND setup.sh into one folder, then open setup.command.
 ```
-
-**Windows (PowerShell)** — download then run, or double-click `setup.bat`:
 
 ```powershell
+# Windows (PowerShell)
 Invoke-WebRequest https://github.com/danielPoloWork/pgs-eados/releases/latest/download/setup.ps1 -OutFile setup.ps1
 powershell -ExecutionPolicy Bypass -File setup.ps1
-# Double-click: download setup.ps1 AND setup.bat into one folder, then double-click setup.bat.
 ```
+
+**Double-click — no terminal.** Download **both** files for your OS (table above) into one folder, then:
+
+- **macOS** — the first time, **right-click `setup.command` → Open** (macOS *quarantines* a downloaded
+  script, so a plain double-click is blocked by Gatekeeper; "Open" approves it once). If Finder still
+  refuses, mark the scripts executable once: `chmod +x setup.command setup.sh`.
+- **Windows** — double-click **`setup.bat`** (it runs `setup.ps1` with `-ExecutionPolicy Bypass`, so no
+  policy change is needed). A bare `setup.ps1` would just open in an editor — use the `.bat`.
 
 **Non-interactive / scripted** (CI, dotfiles) — pass flags instead of answering prompts:
 

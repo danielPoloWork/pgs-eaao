@@ -52,6 +52,16 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.2.0**.
   `release-manager` role, both agent contracts (this repo's `AGENTS.md` + `templates/AGENTS.md.tmpl`),
   and the generated `release.md.tmpl` playbook — so every project EADOS builds inherits it.
 
+- **Installer cleanup at `/eados init`.** A new
+  [`tools/cleanup_installer.py`](.eados-core/tools/cleanup_installer.py) tidies the guided installer's
+  leftovers from a repo root — the downloaded `setup.sh` / `setup.ps1` / `setup.bat` / `setup.command`
+  (and a `setup/` dir only when it holds nothing but those). It removes **only** those known names —
+  never `.eados-core/`, the agent contract, or your own files; symlinks are ignored; dry-run by
+  default, `--apply` removes.
+  [`/eados init`](.eados-core/orchestrator/commands/init.md) now runs it as a first-run housekeeping
+  step, so however EADOS was installed the repo is left with just the factory (`.eados-core/` + the
+  agent contract + `LICENSE`).
+
 ### Changed
 
 - **README: standalone framing + license/owner + agent guidance.** The README (and its zh-Hans / ja

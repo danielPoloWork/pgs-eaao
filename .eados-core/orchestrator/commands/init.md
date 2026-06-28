@@ -3,6 +3,19 @@
 The **entry command** of the pipeline. It frames the project and writes the initial manifest so
 every later phase has state to read. Owned by the **enterprise-architect** role.
 
+## Housekeeping (first run)
+
+If the repo was set up via the **guided installer** ([`setup/`](../../../setup/setup.sh)), its
+downloaded scripts are just the bootstrap and are no longer needed once `.eados-core/` is in place.
+Tidy them — this removes **only** the known installer artifacts (`setup.sh` / `setup.ps1` /
+`setup.bat` / `setup.command`, and a `setup/` dir only when it holds nothing but those); it never
+touches `.eados-core/`, the agent contract, or your own files:
+
+```bash
+python .eados-core/tools/cleanup_installer.py .          # dry-run: list what would be removed
+python .eados-core/tools/cleanup_installer.py . --apply  # remove them
+```
+
 ## Procedure
 
 1. **Frame** — run interview [Phase 0](../interview.md) (Q0.1–Q0.4), **including

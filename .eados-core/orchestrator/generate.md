@@ -177,7 +177,14 @@ Reproduce the reference project's agent-vs-human boundary exactly:
    already excludes `.eados-core/`, so the factory is never committed into the project.
 2. If a remote exists and the maintainer authorized it, push the branch and **draft**
    (`gh pr create --draft`) — never open or merge. Otherwise print the suggested commands.
-3. Hand off: from here, the generated repo's own `AGENTS.md` governs all further work. EADOS
+3. **Gate — CI live & green (opens per-milestone delivery).** The bootstrap PR is the first CI
+   run. **Before any per-milestone PR is opened, confirm CI is configured and green** on the
+   bootstrap PR — the required `consistency / lint` check, plus the build-matrix contexts once
+   their names appear (`docs/workflow/github-setup.md` §3). Milestone-scoped delivery begins only
+   once CI is live and green against the seeded `MN — name` milestones (Step 6 / github-setup §5).
+   A red or not-yet-running CI is a hard stop: fix the cause (never silence the gate) before
+   opening milestone PRs.
+4. Hand off: from here, the generated repo's own `AGENTS.md` governs all further work. EADOS
    steps back.
 
 ## Output report
@@ -188,4 +195,6 @@ Conclude with a short report to the maintainer:
 - the file tree created (counts per area);
 - consistency-lint result;
 - the exact next action (open the drafted PR / run the printed git commands);
+- the **CI live & green** precondition (Step 8.3): per-milestone PR delivery opens only after CI
+  is confirmed green on the bootstrap PR, against the seeded `MN — name` milestones;
 - any spec requirement that has no mechanical CI check yet (flagged in Phase 5).

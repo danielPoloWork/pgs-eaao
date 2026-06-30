@@ -27,6 +27,10 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
   PR-metadata docs reference the open **roadmap** milestone (`MN — name`) rather than a `vX.Y.Z`
   release milestone — matching EADOS's own `M1 … MN`. Parser is markdown-only, dependency-free,
   UTF-8-guarded, fixture-tested (incl. the shipped EADOS roadmap), and wired into CI.
+- **Explicit "CI live & green" bootstrap gate (#142, M11).** `generate.md` Step 8 now makes
+  confirming CI is configured and green on the bootstrap PR an explicit gate that **opens
+  per-milestone PR delivery** (against the seeded `MN — name` milestones); a red or not-yet-running
+  CI is a hard stop. The Output report surfaces the precondition. Completes M11.
 - **Verbose squash-body policy as data (#144, M11).** `os/git/git.yaml` `commit.squash_body`
   now requires the squash-merge commit (squash is the only method) to carry a verbose,
   professional body — subject = the Conventional-Commit one-liner, body = the PR description

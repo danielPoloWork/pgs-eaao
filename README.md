@@ -10,7 +10,7 @@
 
 > **🌐 Translations:** [简体中文](.eados-core/docs/i18n/zh-Hans/README.md) · [日本語](.eados-core/docs/i18n/ja/README.md) — derived from this English source. Policy & freshness: [`.eados-core/docs/i18n/`](.eados-core/docs/i18n/README.md).
 
-> A language-agnostic **delivery operating system** for enterprise software, games, and mobile
+> A language-agnostic **delivery operating system** for enterprise software, web, games, and mobile
 > apps: an opt-in phase pipeline — `init → design → plan → scaffold → audit → refactor` — that
 > governs a project from its first RFC to release. Its `scaffold` phase stamps out an **enterprise
 > agent system** for *any* language, from a single manifest and parameterized templates.

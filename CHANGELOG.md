@@ -11,6 +11,20 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
 
 ### Added
 
+- **First-class `web` domain + enterprise posture (#149, M12).** New shipped
+  `orchestrator/domains/web.yaml` (website / web app / web service): baseline authority roles with a
+  web vocabulary (`product-owner` / `web-architect` / `full-stack-lead` via `role_labels`),
+  **hard** accessibility + Core Web Vitals NFR budgets (plus security + latency), a `[design, content]`
+  cross-discipline pipeline, and a new `web` overlay in `workflow.yaml` (`accessibility-review` +
+  `web-vitals-budget` gates). `Q0.4` now offers `web` (`interview.md` + `questionnaire.yaml`), and a
+  new **`Q0.5 — enterprise posture`** captures `governance.posture: standard | enterprise` as an
+  **orthogonal flag** that raises the governance/compliance bar on *any* domain — deliberately **not**
+  a fourth domain (a `domain_overlays` key must be a domain id, and the posture is axis-independent).
+  Decision recorded in **ADR-0015**; the manifest template carries `governance.posture` (default
+  `standard`). Enumerations refreshed across the domain README/schema, workflow schema, RFC-0001
+  diagram, and the (i18n-tracked) README tagline (EN/zh-Hans/ja + source-hash bump
+  `8463caf13561`→`0a980fcdd7aa`). Fixture-tested (`tests/test_web_domain.py`) and wired into CI;
+  passes `domain-completeness` + cross-spec.
 - **Environment preflight (#154, M12).** New dependency-free `tools/preflight.py` detects the
   toolchain the pipeline assumes — the running Python version vs a floor, `git`, `gh`, and
   `gh auth status` — and prints an **OS-specific install/auth hint** (Windows / macOS / Linux) for

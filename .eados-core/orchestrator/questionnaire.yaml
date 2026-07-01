@@ -31,10 +31,15 @@ phases:
         sets: [PROJECT_NAME, PROJECT_SLUG]
       - id: Q0.4
         prompt: "Development target?"
-        choices: [software, game, mobile]
+        choices: [software, web, game, mobile]
         default: software
         validate: domain_profile_exists    # else: author domains/<domain>.yaml from _template first
         sets: [domain]                      # loads orchestrator/domains/<domain>.yaml
+      - id: Q0.5
+        prompt: "Enterprise posture (raised governance/compliance bar)?"
+        choices: [standard, enterprise]
+        default: standard
+        sets: [governance.posture]         # orthogonal to domain, not a target of its own (ADR-0015)
 
   - id: 1
     name: Languages

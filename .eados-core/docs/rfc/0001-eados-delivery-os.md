@@ -76,7 +76,7 @@ flowchart LR
   classDef phase fill:#ffffff,stroke:#555555,color:#111111;
 
   LP["Language Profiles"]:::data
-  DP["Domain / Target Profiles<br/>software · game · mobile"]:::data
+  DP["Domain / Target Profiles<br/>software · web · game · mobile"]:::data
   MAN[("Persistent Delivery Manifest<br/>shared state · reference-based")]:::state
 
   LP --> MAN

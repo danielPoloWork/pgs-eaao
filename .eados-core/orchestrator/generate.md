@@ -20,6 +20,14 @@ on the previous one. Prerequisite: a `project.yaml` the maintainer has confirmed
 
 ## Step 0 — Preconditions
 
+- **Environment preflight.** Re-run the toolchain check `/eados init` already ran, now that the
+  scaffold/bootstrap steps below assume `git` (Step 8) and an authenticated `gh` (draft PR, milestone
+  seeding):
+  ```bash
+  python .eados-core/tools/preflight.py        # add --no-gh for the pure, no-GitHub render path
+  ```
+  It exits non-zero and prints an OS-specific install/auth hint for anything missing — a hard stop
+  before rendering, so a bootstrap step never fails mid-run on a missing tool.
 - `orchestrator/project.yaml` exists, is filled, and the maintainer confirmed it.
 - A language profile exists for every `language.lang` / `language.secondary_lang`. If not,
   author it from [`profiles/_schema.md`](profiles/_schema.md) and record an ADR **before**

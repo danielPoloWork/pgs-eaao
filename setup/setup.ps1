@@ -298,3 +298,13 @@ Info 'Done. Next:'
 Info "  cd `"$Target`""
 Info '  open the repo with an AI agent (it auto-loads AGENTS.md), or render deterministically:'
 Info '  python .eados-core/tools/render.py .eados-core/orchestrator/project.yaml --in-place'
+
+# Preflight advisory (#154): the orchestrator that follows needs python + git + gh (authenticated).
+# The installer only downloads the bundle, so a missing tool is a note, not a failure - but python
+# is special (the preflight tool is itself Python), so flag its absence with an install hint.
+if ((Get-Command python -ErrorAction SilentlyContinue) -or (Get-Command python3 -ErrorAction SilentlyContinue)) {
+  Info '  verify tooling: python .eados-core/tools/preflight.py   (checks git + gh are ready)'
+}
+else {
+  Warn 'Python not found - EADOS needs it to run the orchestrator. Install: winget install Python.Python.3.12  (or https://www.python.org/downloads/)'
+}

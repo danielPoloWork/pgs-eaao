@@ -2,7 +2,7 @@
 
 The project **state machine**: the phases (states), the legal transitions between them, the
 registry of gates a transition must clear, and the per-domain overlays that adapt the machine
-to a target (software / game / mobile). The orchestrator is **state-driven**: a thin
+to a target (software / web / game / mobile). The orchestrator is **state-driven**: a thin
 deterministic checker reads the persistent manifest's current state plus this spec and computes
 which transitions are *legal now*; the agent **proposes** a transition, the gates validate it
 mechanically, and a human confirms every `human_gate: true` step. No transition is automatic.

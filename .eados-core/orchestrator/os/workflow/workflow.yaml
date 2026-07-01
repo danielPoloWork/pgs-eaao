@@ -109,6 +109,8 @@ gates:
 # guide's domain specifics (e.g. a game's asset pipeline, a mobile store-compliance gate).
 domain_overlays:
   software: {}
+  web:
+    add_gates: [accessibility-review, web-vitals-budget]   # WCAG conformance + Core Web Vitals budget
   game:
     insert_states: [asset-pipeline-review]   # Art / Animation / Sound cross-discipline deps
     add_gates: [hardware-budget]             # RAM / GPU / framerate budget is a hard NFR

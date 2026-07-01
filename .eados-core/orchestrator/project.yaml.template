@@ -8,7 +8,7 @@
 # --- EADOS delivery-state layer (M1-B) — OPTIONAL; the renderer ignores it. ---
 # schema_version versions the manifest for backward-compatible evolution (resolves OQ1).
 schema_version: 1
-domain: software             # development target: software|game|mobile -> orchestrator/domains/<domain>.yaml
+domain: software             # development target: software|web|game|mobile -> orchestrator/domains/<domain>.yaml
 # delivery_state holds STATE + cross-link REFS (ids), never content — Git stays the source of
 # truth for content (RFC-0001 §8). The phase runner (M1-E) reads/writes it; a legacy manifest
 # without this block renders unchanged.
@@ -77,6 +77,7 @@ ci:                          # Defaults come from profiles/<lang>.yaml.
   extra_jobs:   ""           # YAML snippet for extra jobs (sanitizers/Valgrind/…). -> {{CI_EXTRA_JOBS}}
 
 governance:
+  posture: standard                               # standard | enterprise: raised governance/compliance bar on any domain (ADR-0015)
   scopes: [api, build, tests, docs, ci]          # Conventional-Commit scopes for generated docs. -> {{#EACH_SCOPE}}
   # Two distinct version fields — do not swap them (render validates start_version is X.Y.Z):
   version_start: "pre-1.0 milestone-driven"       # PROSE policy descriptor      -> {{VERSION_START}}

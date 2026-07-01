@@ -3,7 +3,7 @@
 The **domain / target axis**: a second dimension of genericity, *parallel to* the language
 profiles and authored the same way — **knowledge as data, not code**. Where a language profile
 answers "what toolchain?", a domain profile answers "what kind of thing are we building?"
-(software · game · mobile · …) and adapts the delivery pipeline accordingly: which roles are
+(software · web · game · mobile · …) and adapts the delivery pipeline accordingly: which roles are
 active, which artifacts it uses (GDD vs PRD), which NFR axes are hard budgets, the milestone
 vocabulary, the non-engineering (asset-pipeline) dependencies, and which `workflow.yaml`
 overlay applies. Designed in [RFC-0001](../../docs/rfc/0001-eados-delivery-os.md) §3–4.
@@ -15,7 +15,7 @@ are not checked — exactly like the language-profile convention.
 ## Required structure
 
 ```yaml
-domain:                # id (software | game | mobile | …); matches the filename stem
+domain:                # id (software | web | game | mobile | …); matches the filename stem
 display_name:          # human-readable name
 roles:                 # canonical authority.yaml role ids active in this domain
 role_labels:           # domain vocabulary: canonical role id -> domain-specific label

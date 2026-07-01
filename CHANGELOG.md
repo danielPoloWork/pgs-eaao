@@ -11,6 +11,18 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
 
 ### Added
 
+- **Authoring languages asked, not silently defaulted (#150, M12; ADR-0016).** `Q4.7` is now the
+  **unconditional authoring-languages question**: it states and confirms the **documentation
+  language** (`DOC_DEFAULT_LANG`, default `en`), a new **code-comment language**
+  (`language.comment_lang` → `{{CODE_COMMENT_LANG}}`, default `en`), and any **extra doc
+  languages** — naming targets is what enables i18n, instead of the i18n toggle hiding the language
+  question. Identifiers, public API names, commits, branches, and PR text stay **English
+  regardless** (the cross-project consistency bar); a non-English comment or doc choice is honoured
+  as a **recorded exception** rendered into the generated `AGENTS.md` §2 (new derived flags
+  `{{#IF_COMMENT_LANG_NONEN}}` / `{{#IF_DOC_LANG_NONEN}}`), so the generated contract always tells
+  the agent the truth about the repo it governs. With the `en`/`en` defaults the rendered output is
+  byte-identical to before. Decision recorded in **ADR-0016** (+ the missing ADR-0015 index row
+  restored). Fixture-tested (`tests/test_authoring_language.py`) and wired into CI. Completes M12.
 - **Spec provenance: import-and-validate branch (#153, M12).** Phase 5 no longer assumes the spec is
   co-authored from scratch: a new **`Q5.0 — provenance`** question (asked **first**; `import` |
   `coauthor`, default `coauthor`) lets a maintainer who already has a technical spec / PRD / SRS take

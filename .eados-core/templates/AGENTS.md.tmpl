@@ -33,6 +33,19 @@ strict quality gates. Apply that perspective to every change:
 identifiers, comments, documentation, ADRs, commit messages, branch names, PR titles and
 descriptions. The maintainer may converse in another language; conversational replies may
 match that language, but anything that lands on disk or in Git is English-only.
+{{#IF_COMMENT_LANG_NONEN}}
+**Recorded exception — comment language (intake Q4.7):** source-code **comments** are written
+in **{{CODE_COMMENT_LANG}}**. This is an explicit, recorded maintainer decision; identifiers,
+public API names, documentation sources, commit messages, branch names, and PR text stay
+English regardless (the cross-project consistency bar). Changing this choice supersedes the
+decision recorded here.
+{{/IF_COMMENT_LANG_NONEN}}
+{{#IF_DOC_LANG_NONEN}}
+**Recorded exception — documentation language (intake Q4.7):** prose documentation is
+authored in **{{DOC_DEFAULT_LANG}}** as the canonical source language. This is an explicit,
+recorded maintainer decision; code-facing artifacts (identifiers, API, commits, PR text)
+stay English regardless.
+{{/IF_DOC_LANG_NONEN}}
 {{#IF_I18N}}
 The **only** exception is translated documentation under `docs/i18n/<code>/`: explicitly
 tracked, *derived* copies of the English sources, never the source of truth. The English

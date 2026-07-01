@@ -28,6 +28,7 @@ language:
   group_dotted: it.d4np
   namespace: it::d4np::memorypool
   src_ext: cpp
+  comment_lang: en             # confirmed at Q4.7 — comments in English (the default; ADR-0016)
   public_include_hint: "#include <it/d4np/memorypool/memory_pool.h>"
 
 toolchain:

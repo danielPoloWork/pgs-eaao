@@ -43,6 +43,7 @@ language:
   group_dotted:    "it.d4np" # Same namespace, '.'-separated. -> {{GROUP_DOTTED}}
   namespace:       ""        # Native namespace idiom (e.g. it::d4np::memorypool). -> {{NAMESPACE}}
   src_ext:         ""        # Primary source extension (e.g. cpp, rs, py). -> {{SRC_EXT}}
+  comment_lang:    "en"      # Natural language for source comments (Q4.7); identifiers/API stay English (ADR-0016). -> {{CODE_COMMENT_LANG}}
   public_include_hint: ""    # Example include/import shown in generated docs.
 
 # Derived from language + group_path + project_slug (computed during render):

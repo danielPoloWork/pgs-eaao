@@ -371,6 +371,7 @@ def build_context(m):
         "ARCHITECTURE_STYLE": spec.get("architecture_style", ""),          # #151: structured §5 style
         "PATTERN_DISCIPLINE": spec.get("pattern_discipline") or "advisory",  # advisory (default) | enforced
         "SPEC_VERIFICATION": spec.get("verification", ""),
+        "CODE_COMMENT_LANG": lang.get("comment_lang") or "en",   # #150: comment language, default en
         "DOC_DEFAULT_LANG": i18n.get("default_lang", "en"),
         "I18N_ENABLED": "True" if caps.get("i18n") else "False",
         "HOUSE_RULES": gov.get("house_rules", ""),
@@ -390,6 +391,10 @@ def build_context(m):
         "IF_HOUSE_RULES": bool(str(gov.get("house_rules", "") or "").strip()),
         "IF_ARCHITECTURE_STYLE": bool(str(spec.get("architecture_style", "") or "").strip()),  # #151
         "IF_LAYERED": bool(caps.get("layered")),   # #152: opt-in layered package skeleton
+        # #150: recorded authoring-language exceptions (ADR-0016) — non-English choices render an
+        # explicit exception block into the generated AGENTS.md §2 instead of silently deviating.
+        "IF_COMMENT_LANG_NONEN": scalars["CODE_COMMENT_LANG"].strip().lower() not in ("", "en"),
+        "IF_DOC_LANG_NONEN": scalars["DOC_DEFAULT_LANG"].strip().lower() not in ("", "en"),
     }
 
     sections = {

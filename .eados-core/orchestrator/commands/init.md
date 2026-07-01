@@ -18,21 +18,31 @@ python .eados-core/tools/cleanup_installer.py . --apply  # remove them
 
 ## Procedure
 
-1. **Frame** — run interview [Phase 0](../interview.md) (Q0.1–Q0.4), **including
+1. **Preflight** — verify the toolchain the pipeline assumes is present before anything else:
+   ```bash
+   python .eados-core/tools/preflight.py        # add --no-gh for the pure, no-GitHub render path
+   ```
+   It checks the Python version, `git`, `gh`, and `gh auth status`, printing an OS-specific
+   install/auth hint for anything missing and exiting non-zero — so a missing or unauthenticated
+   tool surfaces here, not mid-run. (Python-missing-entirely is out of scope for a Python tool; the
+   guided installer under [`setup/`](../../../setup/setup.sh) carries that non-Python bootstrap hint.)
+   On a non-zero result, resolve what it flags, then continue.
+2. **Frame** — run interview [Phase 0](../interview.md) (Q0.1–Q0.4), **including
    `Q0.4 — development target`** (`software` / `game` / `mobile`), which loads the matching
    [`domains/<domain>.yaml`](../domains/_schema.md).
-2. **Write the manifest skeleton** — copy [`project.yaml.template`](../project.yaml.template) to
+3. **Write the manifest skeleton** — copy [`project.yaml.template`](../project.yaml.template) to
    `orchestrator/project.yaml` and fill the framing facts: `identity`, the top-level `domain`, the
    `schema_version`, and a `delivery_state` block with `phase: init` (empty `checkpoints` /
    `refs`). Leave the deeper sections (language, toolchain, spec, …) for their phases.
-3. **Confirm** — present the skeleton to the maintainer (the cheap checkpoint; `AGENTS.md` §5).
-4. **Report the next move** — run the deterministic phase runner:
+4. **Confirm** — present the skeleton to the maintainer (the cheap checkpoint; `AGENTS.md` §5).
+5. **Report the next move** — run the deterministic phase runner:
    ```bash
    python .eados-core/tools/phase_runner.py orchestrator/project.yaml
    ```
    At `phase: init` it reports the one legal transition, `-> design` (gate `manifest-valid`,
-   **human-gated**).
-5. **Hand off** — the maintainer chooses the next phase:
+   **human-gated**). Surface the preflight verdict from step 1 in the hand-off so the maintainer
+   sees the environment is ready (or what to fix) alongside the next move.
+6. **Hand off** — the maintainer chooses the next phase:
    - the **delivery pipeline** → `/eados design` (authoring RFCs; lands in M2); or
    - the **classic one-shot path** → finish the full interview (Phases 1–5) and `/eados scaffold`
      ([`generate.md`](../generate.md)) to render the repository as today.

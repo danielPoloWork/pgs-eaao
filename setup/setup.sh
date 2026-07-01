@@ -360,3 +360,18 @@ info "  next:  cd \"$target\" && ls .eados-core      # orchestrator/ templates/ 
 info "  then:  open the repo with an AI agent (it auto-loads AGENTS.md), or render deterministically:"
 info "         python .eados-core/tools/render.py .eados-core/orchestrator/project.yaml --in-place"
 info "  see .eados-core/README.md for the bundle entry-point instructions."
+
+# Preflight advisory (#154): what follows the install (the orchestrator) needs python3 + git + gh
+# (authenticated). This installer only downloads the bundle, so a missing tool is a note, not a
+# failure -- but python is special (the preflight tool is itself Python), so flag its absence loudly.
+if command -v python3 >/dev/null 2>&1 || command -v python >/dev/null 2>&1; then
+  info "  verify tooling: python .eados-core/tools/preflight.py   (checks git + gh are ready)"
+else
+  case "$(uname -s 2>/dev/null)" in
+    Darwin)               py_hint="brew install python@3.12  (or https://www.python.org/downloads/)" ;;
+    Linux)                py_hint="sudo apt install python3  |  sudo dnf install python3" ;;
+    MINGW*|MSYS*|CYGWIN*) py_hint="winget install Python.Python.3.12  (or https://www.python.org/downloads/)" ;;
+    *)                    py_hint="https://www.python.org/downloads/" ;;
+  esac
+  warn "Python not found - EADOS needs it to run the orchestrator. Install: $py_hint"
+fi

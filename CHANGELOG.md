@@ -11,6 +11,17 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
 
 ### Added
 
+- **Environment preflight (#154, M12).** New dependency-free `tools/preflight.py` detects the
+  toolchain the pipeline assumes — the running Python version vs a floor, `git`, `gh`, and
+  `gh auth status` — and prints an **OS-specific install/auth hint** (Windows / macOS / Linux) for
+  anything missing, exiting non-zero so it doubles as a pre-flight gate. Partial environments (e.g.
+  git present, gh absent) degrade to clear per-tool guidance, never a traceback; `--no-gh` drops the
+  GitHub CLI to advisory for the pure render path. `/eados init` runs it first and surfaces the
+  verdict in its hand-off; `generate.md` Step 0 re-runs it before scaffold/bootstrap. Because a
+  Python tool cannot help when Python itself is absent, `setup/setup.sh` and `setup.ps1` carry a
+  **non-Python bootstrap hint** that flags a missing interpreter with an OS-appropriate install line.
+  Fixture-tested (`tests/test_preflight.py`, injected which/run/version/platform + a behavioural
+  no-traceback tail), UTF-8-guarded, and wired into CI.
 - **PR-metadata contract as data (#141, M11).** `os/git/git.yaml` now encodes a `pr.metadata`
   block — the GitHub fields **set on creation** (`assignee`, one type `label`, `milestone`,
   `project`-if-present) — kept distinct from `required_crosslinks` (the RFC/milestone references

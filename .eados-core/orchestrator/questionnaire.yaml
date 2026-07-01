@@ -176,8 +176,11 @@ phases:
         prompt: "Non-functional requirements (perf, memory, security, deps, portability)?"
         sets: [NONFUNCTIONAL_REQS]
       - id: Q5.4
-        prompt: "Logical architecture & core algorithm/data structure?"
-        sets: [SPEC_ARCHITECTURE]
+        prompt: "Logical architecture & core algorithm/data structure? Plus a STRUCTURED architecture
+                 style (design-patterns.md §5: Layered|Hexagonal|Clean|MVC|Event-Driven|CQRS|DDD|…;
+                 none for a library), the expected first-class patterns, and the pattern-discipline posture."
+        default: { architecture_style: "", pattern_discipline: advisory }   # per kind/domain: library->none; service/app->Layered|Hexagonal; web->Layered|MVC|Clean; mobile->MVVM|Clean
+        sets: [SPEC_ARCHITECTURE, ARCHITECTURE_STYLE, PATTERNS, PATTERN_DISCIPLINE]
       - id: Q5.5
         prompt: "Public interface (functions/types/endpoints) and error model?"
         sets: [PUBLIC_API, PUBLIC_INCLUDE_HINT]

@@ -104,6 +104,9 @@ spec:                         # Filled from Phase 5 of the intake interview.
   functional_reqs:  []        # Functional requirements. -> {{#EACH_FUNCTIONAL_REQ}}
   nonfunctional_reqs: []      # Non-functional requirements. -> {{#EACH_NONFUNCTIONAL_REQ}}
   architecture:     ""        # Architecture prose + diagram for the spec & first ADRs.
+  architecture_style: ""      # Structured style from design-patterns.md §5 (Layered|Hexagonal|Clean|MVC|Event-Driven|CQRS|DDD|…); blank for a library. -> {{ARCHITECTURE_STYLE}}
+  patterns:         []        # Expected first-class patterns: [{name, why}]. Seeds docs/patterns/README.md. -> {{#EACH_PATTERN}}
+  pattern_discipline: advisory # advisory (agent advises, human decides) | enforced (force pattern discipline). -> {{PATTERN_DISCIPLINE}}
   public_api:       []        # Public API (used when capabilities.public_api). -> {{#EACH_PUBLIC_API}}
   verification:     ""        # Verification strategy. -> {{SPEC_VERIFICATION}}
   milestone1_items: []        # Extra M1 items beyond the bootstrap. -> {{#EACH_MILESTONE1_ITEM}}

@@ -368,6 +368,8 @@ def build_context(m):
         "CI_RACE_JOB": ci.get("race_job", ""),
         "SPEC_OBJECTIVE": spec.get("objective", ""),
         "SPEC_ARCHITECTURE": spec.get("architecture", ""),
+        "ARCHITECTURE_STYLE": spec.get("architecture_style", ""),          # #151: structured §5 style
+        "PATTERN_DISCIPLINE": spec.get("pattern_discipline") or "advisory",  # advisory (default) | enforced
         "SPEC_VERIFICATION": spec.get("verification", ""),
         "DOC_DEFAULT_LANG": i18n.get("default_lang", "en"),
         "I18N_ENABLED": "True" if caps.get("i18n") else "False",
@@ -386,6 +388,7 @@ def build_context(m):
         "IF_SERIES": bool(series.strip()),
         "IF_PKG_ECOSYSTEM": bool(pkg_eco.strip()),
         "IF_HOUSE_RULES": bool(str(gov.get("house_rules", "") or "").strip()),
+        "IF_ARCHITECTURE_STYLE": bool(str(spec.get("architecture_style", "") or "").strip()),  # #151
     }
 
     sections = {
@@ -396,6 +399,7 @@ def build_context(m):
         "EACH_PUBLIC_API": spec.get("public_api", []) or [],
         "EACH_MILESTONE1_ITEM": spec.get("milestone1_items", []) or [],
         "EACH_MILESTONE": spec.get("milestones", []) or [],
+        "EACH_PATTERN": spec.get("patterns", []) or [],   # #151: expected first-class patterns (name, why)
         "EACH_DOC_LANG": i18n.get("targets", []) or [],
         "EACH_ANNOUNCE_CHANNEL": ann.get("channels", []) or [],
     }

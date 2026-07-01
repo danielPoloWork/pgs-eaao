@@ -97,6 +97,13 @@ spec:
     - No heap allocation after construction
     - Zero leaks under Valgrind leak-check=full
   architecture: A free-list over a contiguous arena; allocate pops a node, deallocate pushes one.
+  architecture_style: ""        # a library exposes an API, not an application architecture style
+  pattern_discipline: advisory
+  patterns:
+    - name: Object Pool
+      why: "Reuse pre-allocated fixed-size blocks instead of per-operation malloc/free."
+    - name: Free List
+      why: "Track available blocks as an intrusive singly-linked list for O(1) alloc/dealloc."
   public_api:
     - "memory_pool(block_size, block_count)"
     - "void* allocate()"

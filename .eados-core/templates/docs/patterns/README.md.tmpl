@@ -8,6 +8,15 @@ or removes a pattern, and updated in the same PR.
 - **Canonical taxonomy** — [`design-patterns.md`](design-patterns.md). All pattern names
   used here, in ADRs, and in commit messages must match its spelling and categorisation.
 
+## Architecture style
+
+{{#IF_ARCHITECTURE_STYLE}}**Committed style:** {{ARCHITECTURE_STYLE}} — from [`design-patterns.md`](design-patterns.md) §5.
+**Pattern discipline:** `{{PATTERN_DISCIPLINE}}` — `advisory` means the agent advises and the human
+decides; `enforced` makes conformance to the committed style + adopted patterns a review expectation.
+{{/IF_ARCHITECTURE_STYLE}}{{^IF_ARCHITECTURE_STYLE}}_No single architectural style committed at intake (typical for a library, which exposes an API
+rather than an application architecture). Record one in an ADR here if that changes._
+{{/IF_ARCHITECTURE_STYLE}}
+
 ## How to use this catalogue
 
 - **Adding a pattern** — when a PR adopts one, add a row to *Adopted* with the ADR link and
@@ -21,12 +30,14 @@ in `src/main/...`, ADR `Accepted`) · `Considered` · `Rejected` · `Superseded`
 
 ## Adopted / Planned
 
-_No patterns adopted yet. Each adoption lands with its ADR and a code location in the same
-PR._
+_Patterns named in the spec at intake are seeded below as **Planned**; each becomes
+**Implemented** with its ADR and a real code location in the PR that introduces it._
 
 | # | Pattern | Status | Problem it addresses | Code location | ADR / PR |
 |---|---------|--------|----------------------|---------------|----------|
-| — | —       | —      | —                    | —             | —        |
+{{#EACH_PATTERN}}| — | {{name}} | Planned | {{why}} | _TBD_ | _spec (intake)_ |
+{{/EACH_PATTERN}}{{^EACH_PATTERN}}| — | —       | —      | —                    | —             | —        |
+{{/EACH_PATTERN}}
 
 ## Rejected
 

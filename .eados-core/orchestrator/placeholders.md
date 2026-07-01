@@ -102,6 +102,9 @@ Mustache-compatible renderer (or a careful manual pass) works.
 | `{{#EACH_FUNCTIONAL_REQ}}` | Functional requirements list | — |
 | `{{#EACH_NONFUNCTIONAL_REQ}}` | Non-functional requirements list | — |
 | `{{SPEC_ARCHITECTURE}}` | Logical architecture prose + diagram block | — |
+| `{{ARCHITECTURE_STYLE}}` | Structured architecture style from `design-patterns.md` §5 (blank if none, e.g. a library) | `Hexagonal (Ports & Adapters)` |
+| `{{PATTERN_DISCIPLINE}}` | Pattern-discipline posture: `advisory` (default) or `enforced` | `advisory` |
+| `{{#EACH_PATTERN}}` | Expected first-class patterns named at intake; per-item fields: `name`, `why` | `Repository`/`decouple domain from persistence` |
 | `{{#EACH_PUBLIC_API}}` | Public surface entries | — |
 | `{{SPEC_VERIFICATION}}` | Verification & test strategy paragraph | — |
 | `{{#EACH_MILESTONE1_ITEM}}` | Extra Milestone-1 roadmap items (beyond the universal bootstrap 1.1–1.5) | — |
@@ -124,6 +127,7 @@ These gate optional sections so a CLI does not ship a library's packaging docs, 
 | `{{#IF_ANNOUNCE}}` | Releases/news are announced on social channels (enables the announcements workflow) |
 | `{{#IF_PKG_ECOSYSTEM}}` | The language has a Dependabot ecosystem (derived: `PKG_ECOSYSTEM` non-empty) |
 | `{{#IF_HOUSE_RULES}}` | An organization house-rules overlay is present (derived: `HOUSE_RULES` non-empty) |
+| `{{#IF_ARCHITECTURE_STYLE}}` | A structured architecture style was committed (derived: `ARCHITECTURE_STYLE` non-empty) |
 
 ## 9. Documentation i18n, announcements & customization
 

@@ -11,6 +11,18 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
 
 ### Added
 
+- **Architecture-style & design-pattern elicitation (#151, M12).** The interview now captures the
+  project's **architectural style** and **pattern posture** instead of shipping a rich taxonomy
+  nobody commits to and an empty catalogue. `Q5.4` elicits a structured `spec.architecture_style`
+  (from `design-patterns.md` §5, with per-kind/domain defaults — a library commits to none), the
+  **expected first-class patterns** (`spec.patterns: [{name, why}]`), and a **pattern-discipline
+  posture** (`spec.pattern_discipline: advisory | enforced`). These carry into the manifest and
+  **seed the generated `docs/patterns/README.md`** — an architecture-style note (with a graceful
+  inverted-section fallback for a library) + *Planned* rows for each named pattern — via new render
+  placeholders `{{ARCHITECTURE_STYLE}}`, `{{PATTERN_DISCIPLINE}}`, `{{#EACH_PATTERN}}`, and the
+  `{{#IF_ARCHITECTURE_STYLE}}` flag (documented in `placeholders.md`). The reference manifest shows
+  it (Object Pool / Free List). Fixture-tested (`tests/test_architecture_style.py`: populated,
+  empty-library, and reference end-to-end) and wired into CI.
 - **First-class `web` domain + enterprise posture (#149, M12).** New shipped
   `orchestrator/domains/web.yaml` (website / web app / web service): baseline authority roles with a
   web vocabulary (`product-owner` / `web-architect` / `full-stack-lead` via `role_labels`),

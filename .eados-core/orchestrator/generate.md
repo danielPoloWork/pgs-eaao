@@ -104,7 +104,7 @@ Render, stripping the `.tmpl` suffix and substituting placeholders:
 | `templates/docs/adr/README.md.tmpl` | `docs/adr/README.md` | seeds the ADR index |
 | `templates/docs/adr/0001-record-architecture-decisions.md` | `docs/adr/0001-...md` | verbatim |
 | `templates/docs/adr/0002-adopt-cross-language-source-layout.md.tmpl` | `docs/adr/0002-...md` | parameterized |
-| `templates/docs/patterns/README.md.tmpl` | `docs/patterns/README.md` | empty catalogue, ready to fill |
+| `templates/docs/patterns/README.md.tmpl` | `docs/patterns/README.md` | seeded from `spec.architecture_style` + `spec.patterns` (style note + *Planned* rows); grows per PR |
 | `templates/docs/patterns/design-patterns.md` | `docs/patterns/design-patterns.md` | verbatim taxonomy |
 | `templates/docs/specs/template.md` | `docs/specs/template.md` | verbatim |
 | `templates/docs/specs/01_spec.md.tmpl` | `docs/specs/01_spec_<slug>.md` | filled from Phase 5 |

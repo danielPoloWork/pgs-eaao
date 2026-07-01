@@ -144,9 +144,11 @@ phases:
       - id: Q4.7
         # NOTE: prompts stay SINGLE-LINE — the hand-rolled loader does not fold multi-line quoted
         # scalars and silently truncated everything after the first one here (#153 discovery).
-        prompt: "Translate the documentation (i18n)? If yes, which is the canonical source language and which are the target languages?"
-        default: { IF_I18N: false, DOC_DEFAULT_LANG: en }
-        sets: [IF_I18N, DOC_DEFAULT_LANG, DOC_LANGS]
+        # Asked UNCONDITIONALLY (#150): the doc + comment language defaults are stated for
+        # confirmation, never applied silently; naming extra target languages is what turns i18n on.
+        prompt: "Authoring languages — documentation language (default en), code-comment language (default en; identifiers/API/commits stay English), and any extra doc translation languages (naming them enables i18n)?"
+        default: { DOC_DEFAULT_LANG: en, CODE_COMMENT_LANG: en, IF_I18N: false }
+        sets: [DOC_DEFAULT_LANG, CODE_COMMENT_LANG, IF_I18N, DOC_LANGS]
       - id: Q4.8
         prompt: "Announce releases/news on social channels? If yes, which (X, Discord, LinkedIn, Reddit, Mastodon, a blog, …)?"
         default: { IF_ANNOUNCE: false }

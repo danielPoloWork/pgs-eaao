@@ -127,6 +127,8 @@ These gate optional sections so a CLI does not ship a library's packaging docs, 
 | `{{#IF_SERIES}}` | The project belongs to an umbrella series (`PROJECT_SERIES` non-empty) |
 | `{{#IF_ANNOUNCE}}` | Releases/news are announced on social channels (enables the announcements workflow) |
 | `{{#IF_LAYERED}}` | The project opts into a layered package skeleton (`capabilities.layered`; renders the layout ADR note + seeds the layer directories) |
+| `{{#IF_COMMENT_LANG_NONEN}}` | A non-English code-comment language was chosen (derived: `CODE_COMMENT_LANG` ≠ `en`; renders the recorded exception in `AGENTS.md` §2) |
+| `{{#IF_DOC_LANG_NONEN}}` | A non-English documentation language was chosen (derived: `DOC_DEFAULT_LANG` ≠ `en`; renders the recorded exception in `AGENTS.md` §2) |
 | `{{#IF_PKG_ECOSYSTEM}}` | The language has a Dependabot ecosystem (derived: `PKG_ECOSYSTEM` non-empty) |
 | `{{#IF_HOUSE_RULES}}` | An organization house-rules overlay is present (derived: `HOUSE_RULES` non-empty) |
 | `{{#IF_ARCHITECTURE_STYLE}}` | A structured architecture style was committed (derived: `ARCHITECTURE_STYLE` non-empty) |
@@ -135,7 +137,8 @@ These gate optional sections so a CLI does not ship a library's packaging docs, 
 
 | Placeholder | Meaning | Example |
 |---|---|---|
-| `{{DOC_DEFAULT_LANG}}` | Canonical on-disk doc language (sources stay English) | `en` |
+| `{{DOC_DEFAULT_LANG}}` | Canonical on-disk doc language (confirmed at Q4.7, default `en`) | `en` |
+| `{{CODE_COMMENT_LANG}}` | Natural language for source comments (confirmed at Q4.7, default `en`; identifiers/API stay English — ADR-0016) | `en` |
 | `{{I18N_ENABLED}}` | Python literal for the lint's CONFIG (`True`/`False`, capitalized) | `False` |
 | `{{#EACH_DOC_LANG}}` | Loop over translation target languages (`code`, `name`) | `it`/`Italian`, `es`/`Spanish` |
 | `{{#EACH_ANNOUNCE_CHANNEL}}` | Loop over announcement channels (`name`, `handle`, `mode`) | `X`/`@d4np`/`draft` |

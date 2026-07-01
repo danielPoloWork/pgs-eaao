@@ -5,9 +5,25 @@ All notable changes to `pgs-eados` (EADOS) are documented here, following
 [Semantic Versioning 2.0.0](https://semver.org/).
 
 Every PR that introduces a user- or maintainer-visible change adds a line to `[Unreleased]`
-in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
+in the same PR. Releases follow Semantic Versioning; the latest is **v2.5.0**.
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+---
+
+## [2.5.0] - 2026-07-01
 
 ### Added
 
@@ -115,10 +131,6 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
   to `{{OWNER}}` (`render.py`), and the defaults/interview/placeholder hints recommend the owner —
   `@me` was wrong because it resolves to whichever actor (human or agent) runs `gh`.
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 
 - **`questionnaire.yaml` silently truncated by the hand-rolled loader (#153 discovery).** The
@@ -129,8 +141,6 @@ in the same PR. Releases follow Semantic Versioning; the latest is **v2.4.0**.
   lists are block sequences (the loader-supported subset, same policy as `git.yaml` `scopes`), with
   a full-parse guard + an opportunistic PyYAML differential in `tests/test_spec_provenance.py`
   (executed with real PyYAML in the render-smoke CI job) so the truncation cannot silently return.
-
-### Security
 
 ---
 

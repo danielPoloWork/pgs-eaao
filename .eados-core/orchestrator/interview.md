@@ -163,7 +163,18 @@ Walk these, asking follow-ups until each is concrete enough to test against:
 - **Q5.3 — Non-functional requirements.** Performance, memory, portability, security,
   no-leak / no-UB guarantees, dependency policy. → `EACH_NONFUNCTIONAL_REQ`.
 - **Q5.4 — Logical architecture & core algorithm.** The central data structure or control
-  flow. Capture it as prose + a diagram block; it seeds the first design ADRs.
+  flow. Capture it as prose + a diagram block; it seeds the first design ADRs. **Also elicit a
+  structured architecture style** from
+  [`design-patterns.md`](../templates/docs/patterns/design-patterns.md) §5 — *Layered / Hexagonal /
+  Clean / MVC-MVVM / Event-Driven / CQRS / Microkernel / DDD building blocks* — with a sensible
+  default per kind/domain: a **library** commits to none (it exposes an API, not an app
+  architecture); a **service/app** → Layered or Hexagonal; **web** → Layered / MVC / Clean;
+  **mobile** → MVVM / Clean. Optionally name the **expected first-class patterns** (each a `name` +
+  one-line `why`) and choose the **pattern-discipline posture**: `advisory` (default — the agent
+  advises, the human decides) or `enforced` (conformance to the style + adopted patterns becomes a
+  review expectation). These seed the generated `docs/patterns/README.md` (architecture-style note +
+  the *Planned* table), so the choice shapes the repo instead of leaving the catalogue empty. →
+  `SPEC_ARCHITECTURE`, `spec.architecture_style`, `spec.patterns`, `spec.pattern_discipline`.
 - **Q5.5 — Public interface.** The functions/types/endpoints consumers depend on, with the
   error model. → `EACH_PUBLIC_API`, `PUBLIC_INCLUDE_HINT`.
 - **Q5.6 — Verification & test strategy.** How correctness and performance are *proven* —
